@@ -3,14 +3,26 @@
   "rules": {
     "linebreak-style": [
         "error",
-        "unix"
+        "unix",
     ],
     "semi": [
         "error",
-        "always"
+        "always",
     ],
     "no-trailing-spaces": [
-      "error"
-    ]
-  }
+      "error",
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "paths": [{
+          "name": "styled-components",
+          "message": "Please import from styled-components/macro."
+        }],
+        "patterns": [
+          "!styled-components/macro",
+        ],
+      },
+    ],
+  },
 }
