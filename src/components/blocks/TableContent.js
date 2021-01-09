@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { ModalStateContext } from '../../contexts/ModalContext';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
 import Table from '../elements/Table.js';

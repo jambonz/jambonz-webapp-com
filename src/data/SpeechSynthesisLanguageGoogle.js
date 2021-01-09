@@ -1,4 +1,4 @@
-export default [
+const SpeechSynthesisLanguageGoogle = [
   {
     code: 'ar-XA',
     name: 'Arabic',
@@ -408,3 +408,5 @@ export default [
     ],
   },
 ];
+
+export default SpeechSynthesisLanguageGoogle;

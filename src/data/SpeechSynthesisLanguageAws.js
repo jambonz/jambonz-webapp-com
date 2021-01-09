@@ -1,4 +1,4 @@
-export default [
+const SpeechSynthesisLanguageAws = [
   {
     code: 'arb',
     name: 'Arabic',
@@ -235,3 +235,5 @@ export default [
     ],
   },
 ];
+
+export default SpeechSynthesisLanguageAws;
