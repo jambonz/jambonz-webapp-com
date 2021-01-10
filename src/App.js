@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { NotificationStateContext } from './contexts/NotificationContext';
 
-import Login from './components/pages/Login';
+import SignIn from './pages/sign-in/index.js';
 import CreatePassword from './components/pages/setup/CreatePassword';
 import ConfigureAccount from './components/pages/setup/ConfigureAccount';
 import CreateApplication from './components/pages/setup/CreateApplication';
@@ -32,7 +32,7 @@ function App() {
       <Notification notifications={notifications} />
       <Nav />
       <Switch>
-        <Route exact path="/"><Login /></Route>
+        <Route exact path="/"><SignIn /></Route>
         <Route exact path="/create-password"><CreatePassword /></Route>
         <Route exact path="/configure-account"><ConfigureAccount /></Route>
         <Route exact path="/create-application"><CreateApplication /></Route>
