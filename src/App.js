@@ -19,7 +19,8 @@ import SipTrunksAddEdit from './components/pages/internal/SipTrunksAddEdit';
 import PhoneNumbersAddEdit from './components/pages/internal/PhoneNumbersAddEdit';
 import MsTeamsTenantsAddEdit from './components/pages/internal/MsTeamsTenantsAddEdit';
 import Settings from './components/pages/internal/Settings';
-import InvalidRoute from './components/pages/InvalidRoute';
+import InvalidRouteExternal from './pages/404-external';
+import InvalidRouteInternal from './pages/404-internal';
 
 import Notification from './components/blocks/Notification';
 import Nav from './components/blocks/Nav';
@@ -84,10 +85,11 @@ function App() {
             </Route>
 
             <Route exact path="/internal/settings"><Settings /></Route>
+            <Route path="/internal"><InvalidRouteInternal /></Route>
           </div>
         </Route>
 
-        <Route><InvalidRoute /></Route>
+        <Route><InvalidRouteExternal /></Route>
       </Switch>
     </Router>
   );
