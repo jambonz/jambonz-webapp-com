@@ -4,6 +4,7 @@ import axios from 'axios';
 import SetupTemplate from '../../components/templates/SetupTemplate';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
+import Link from '../../components/elements/Link';
 import Input from '../../components/elements/Input';
 import PasswordInput from '../../components/elements/PasswordInput';
 import FormError from '../../components/blocks/FormError';
@@ -217,6 +218,7 @@ const Login = props => {
         >
           Log In
         </Button>
+        <Link to="/register">Register</Link>
       </Form>
     </SetupTemplate>
   );

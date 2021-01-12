@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { NotificationStateContext } from './contexts/NotificationContext';
 
 import SignIn from './pages/sign-in/index.js';
+import Register from './pages/register/index.js';
+import RegisterChooseSubdomain from './pages/register/subdomain.js';
+import OauthCallbackGitHub from './pages/oauth-callback/github.js';
 import CreatePassword from './components/pages/setup/CreatePassword';
 import ConfigureAccount from './components/pages/setup/ConfigureAccount';
 import CreateApplication from './components/pages/setup/CreateApplication';
@@ -34,6 +37,9 @@ function App() {
       <Nav />
       <Switch>
         <Route exact path="/"><SignIn /></Route>
+        <Route exact path="/register"><Register /></Route>
+        <Route exact path="/register/subdomain"><RegisterChooseSubdomain /></Route>
+        <Route exact path="/oauth-callback/github"><OauthCallbackGitHub /></Route>
         <Route exact path="/create-password"><CreatePassword /></Route>
         <Route exact path="/configure-account"><ConfigureAccount /></Route>
         <Route exact path="/create-application"><CreateApplication /></Route>
