@@ -1,4 +1,4 @@
-# Jambonz Web Application
+# Jambonz Hosted Web Application
 
 ## Deploy to Production
 
