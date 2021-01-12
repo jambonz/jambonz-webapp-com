@@ -16,11 +16,9 @@
   "scripts": {
     "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "serve": "serve -s build -l 3001",
-    "pm2": "pm2 start npm --name \"jambonz-webapp\" -- run serve",
-    "deploy": "npm i && npm run build && npm run pm2"
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
