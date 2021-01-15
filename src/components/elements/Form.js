@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro';
 
 const Form = styled.form`
-  text-align: right;
+  text-align: ${props => props.left ? 'left' : 'right'};
   padding: 2rem;
   ${props => !props.large && `
     & input {

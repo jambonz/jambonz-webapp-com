@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import SetupTemplate from '../../components/templates/SetupTemplate';
+import Link from '../../components/elements/Link.js';
+
 const Register = props => {
   useEffect(() => {
     document.title = `Register | Jambonz`;
@@ -17,6 +19,7 @@ const Register = props => {
       <div>
         <a href={gitHubUrl}>GitHub</a>
       </div>
+      <div><Link to="/register/email">Email</Link></div>
     </SetupTemplate>
   );
 };

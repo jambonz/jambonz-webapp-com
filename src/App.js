@@ -4,6 +4,8 @@ import { NotificationStateContext } from './contexts/NotificationContext';
 
 import SignIn from './pages/sign-in/index.js';
 import Register from './pages/register/index.js';
+import RegisterWithEmail from './pages/register/email.js';
+import RegisterWithEmailVerify from './pages/register/email-verify.js';
 import RegisterChooseSubdomain from './pages/register/subdomain.js';
 import OauthCallbackGitHub from './pages/oauth-callback/github.js';
 import CreatePassword from './components/pages/setup/CreatePassword';
@@ -38,7 +40,9 @@ function App() {
       <Switch>
         <Route exact path="/"><SignIn /></Route>
         <Route exact path="/register"><Register /></Route>
-        <Route exact path="/register/subdomain"><RegisterChooseSubdomain /></Route>
+        <Route exact path="/register/email"><RegisterWithEmail /></Route>
+        <Route exact path="/register/verify-your-email"><RegisterWithEmailVerify /></Route>
+        <Route exact path="/register/choose-a-subdomain"><RegisterChooseSubdomain /></Route>
         <Route exact path="/oauth-callback/github"><OauthCallbackGitHub /></Route>
         <Route exact path="/create-password"><CreatePassword /></Route>
         <Route exact path="/configure-account"><ConfigureAccount /></Route>
