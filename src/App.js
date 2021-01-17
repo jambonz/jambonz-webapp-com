@@ -10,6 +10,7 @@ import RegisterChooseSubdomain from './pages/register/subdomain.js';
 import RegisterMobileNumber from './pages/register/mobile-number.js';
 import RegisterMobileNumberVerify from './pages/register/mobile-number-verify.js';
 import RegisterComplete from './pages/register/complete.js';
+import AccountHome from './pages/account/index.js';
 import OauthCallbackGitHub from './pages/oauth-callback/github.js';
 import CreatePassword from './components/pages/setup/CreatePassword';
 import ConfigureAccount from './components/pages/setup/ConfigureAccount';
@@ -55,6 +56,7 @@ function App() {
         <Route exact path="/create-application"><CreateApplication /></Route>
         <Route exact path="/configure-sip-trunk"><ConfigureSipTrunk /></Route>
         <Route exact path="/setup-complete"><SetupComplete /></Route>
+        <Route exact path="/account"><AccountHome /></Route>
 
         <Route path="/internal">
           <div style={{ display: "flex" }}>
