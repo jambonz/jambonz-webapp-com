@@ -171,6 +171,11 @@ const RegisterChooseSubdomain = () => {
               quickValid={quickValid}
               autoFocus
             />
+            {subdomain &&
+              <FormParagraph>
+                FQDN: {subdomain}.{root_domain}
+              </FormParagraph>
+            }
             {errorMessage && (
               <FormError message={errorMessage} />
             )}
