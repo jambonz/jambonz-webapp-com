@@ -64,15 +64,17 @@ const EmailVerify = () => {
         },
       });
 
-      if (response.status === 204) {
-        isMounted = false;
-        history.push('/register/choose-a-subdomain');
+      if (response.status !== 204) {
+        throw new Error(`Unable to verify email. Please try again.`);
       }
+
+      isMounted = false;
+      history.push('/register/choose-a-subdomain');
 
     } catch (err) {
       setErrorMessage(
         (err.response && err.response.data && err.response.data.msg) ||
-        'Something went wrong, please try again.'
+        err.message || 'Something went wrong, please try again.'
       );
       console.error(err.response || err);
     } finally {
