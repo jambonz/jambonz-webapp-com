@@ -26,7 +26,7 @@ const RegisterChooseSubdomain = () => {
   const [ errorMessage, setErrorMessage ] = useState('');
 
   useEffect(() => {
-    document.title = 'Choose a Subdomain | Register | Jambonz';
+    document.title = 'Choose a Subdomain | Jambonz';
   });
 
   const subdomainValidation = /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/;
