@@ -115,7 +115,7 @@ const EmailVerify = () => {
               <FormError message={errorMessage} />
             )}
             <Button fullWidth>Continue →</Button>
-            <Link to="/register">Go back</Link>
+            <Link to="/register/email">Go back</Link>
           </>
         )}
       </Form>
