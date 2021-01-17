@@ -143,7 +143,7 @@ const RegisterMobileNumber = () => {
     <SetupTemplate title="Mobile Number">
       <Form left onSubmit={handleSubmit}>
         {showLoader ? (
-          <Loader height="211px" />
+          <Loader height="199px" />
         ) : (
           <>
             <FormParagraph>

@@ -89,7 +89,7 @@ const RegisterMobileNumberVerify = () => {
     <SetupTemplate title="Verify Your Mobile">
       <Form left onSubmit={handleSubmit}>
         {showLoader ? (
-          <Loader height="211px" />
+          <Loader height="142px" />
         ) : (
           <>
             <FormParagraph>
