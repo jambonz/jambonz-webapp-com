@@ -2,6 +2,7 @@ import React, { useRef, forwardRef, useImperativeHandle } from 'react';
 import styled from 'styled-components/macro';
 import { ReactComponent as ViewPassword } from '../../images/ViewPassword.svg';
 import { ReactComponent as HidePassword } from '../../images/HidePassword.svg';
+import { ReactComponent as CheckGreen } from '../../images/CheckGreen.svg';
 
 const Container = styled.div`
   position: relative;
@@ -74,6 +75,22 @@ const PasswordButton = styled.button`
   }
 `;
 
+const QuickValidContainer = styled.span`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: ${props => props.large ? '0.375rem' : '0.25rem'};
+  right: 1rem;
+  height: ${props => props.large ? '2.25rem' : '1.75rem'};
+  width: 2.5rem;
+`;
+
+const Invalid = styled.span`
+  color: #D91C5C;
+  font-size: 1.75rem;
+`;
+
 const Input = (props, ref) => {
   const inputRef = useRef();
   useImperativeHandle(ref, () => ({
@@ -104,6 +121,21 @@ const Input = (props, ref) => {
             }
           </span>
         </PasswordButton>
+      }
+      {
+        props.quickValid !== null &&
+        props.quickValid !== undefined &&
+        <QuickValidContainer
+          type="button"
+          large={props.large}
+          onClick={props.toggleShowPassword}
+        >
+          {
+            props.quickValid === true
+              ? <CheckGreen title="Subdomain is available" />
+              : <Invalid title="Subdomain is not available">&times;</Invalid>
+          }
+        </QuickValidContainer>
       }
     </Container>
   );

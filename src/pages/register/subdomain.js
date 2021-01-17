@@ -21,6 +21,7 @@ const RegisterChooseSubdomain = () => {
   // Invalid form inputs
   const [ invalidSubdomain, setInvalidSubdomain ] = useState(false);
 
+  const [ quickValid, setQuickValid ] = useState(null);
   const [ showLoader, setShowLoader ] = useState(false);
   const [ errorMessage, setErrorMessage ] = useState('');
 
@@ -28,6 +29,36 @@ const RegisterChooseSubdomain = () => {
     document.title = 'Choose a Subdomain | Register | Jambonz';
   });
 
+  const subdomainValidation = /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/;
+  const root_domain = localStorage.getItem('root_domain');
+  const jwt         = localStorage.getItem('jwt');
+  const account_sid = localStorage.getItem('account_sid');
+
+  const handleChange = async (e) => {
+    setSubdomain(e.target.value);
+    setInvalidSubdomain(false);
+    setErrorMessage('');
+
+    if (subdomainValidation.test(e.target.value)) {
+      const availabilityResponse = await axios({
+        method: 'get',
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: `/Availability/?type=subdomain&value=${e.target.value}.${root_domain}`,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      if (availabilityResponse.data.available) {
+        setQuickValid(true);
+      } else {
+        setQuickValid(false);
+      }
+      return;
+    }
+
+    setQuickValid(null);
+  };
 
   const handleSubmit = async (e) => {
     let isMounted = true;
@@ -69,10 +100,6 @@ const RegisterChooseSubdomain = () => {
       //===============================================
       // Submit
       //===============================================
-      const root_domain = localStorage.getItem('root_domain');
-      const jwt         = localStorage.getItem('jwt');
-      const account_sid = localStorage.getItem('account_sid');
-
       const availabilityResponse = await axios({
         method: 'get',
         baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -138,9 +165,10 @@ const RegisterChooseSubdomain = () => {
               id="subdomain"
               placeholder="your-name-here"
               value={subdomain}
-              onChange={e => setSubdomain(e.target.value)}
+              onChange={handleChange}
               ref={refSubdomain}
               invalid={invalidSubdomain}
+              quickValid={quickValid}
               autoFocus
             />
             {errorMessage && (
