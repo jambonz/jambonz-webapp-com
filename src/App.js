@@ -8,6 +8,8 @@ import RegisterWithEmail from './pages/register/email.js';
 import RegisterWithEmailVerify from './pages/register/email-verify.js';
 import RegisterChooseSubdomain from './pages/register/subdomain.js';
 import RegisterMobileNumber from './pages/register/mobile-number.js';
+import RegisterMobileNumberVerify from './pages/register/mobile-number-verify.js';
+import RegisterComplete from './pages/register/complete.js';
 import OauthCallbackGitHub from './pages/oauth-callback/github.js';
 import CreatePassword from './components/pages/setup/CreatePassword';
 import ConfigureAccount from './components/pages/setup/ConfigureAccount';
@@ -45,6 +47,8 @@ function App() {
         <Route exact path="/register/verify-your-email"><RegisterWithEmailVerify /></Route>
         <Route exact path="/register/choose-a-subdomain"><RegisterChooseSubdomain /></Route>
         <Route exact path="/register/mobile-number"><RegisterMobileNumber /></Route>
+        <Route exact path="/register/verify-your-mobile-number"><RegisterMobileNumberVerify /></Route>
+        <Route exact path="/register/complete"><RegisterComplete /></Route>
         <Route exact path="/oauth-callback/github"><OauthCallbackGitHub /></Route>
         <Route exact path="/create-password"><CreatePassword /></Route>
         <Route exact path="/configure-account"><ConfigureAccount /></Route>

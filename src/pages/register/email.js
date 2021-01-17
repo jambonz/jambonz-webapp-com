@@ -9,6 +9,7 @@ import Input from '../../components/elements/Input';
 import PasswordInput from '../../components/elements/PasswordInput';
 import FormError from '../../components/blocks/FormError';
 import Loader from '../../components/blocks/Loader';
+import generateActivationCode from '../../helpers/generateActivationCode';
 
 const RegisterWithEmail = props => {
   let history = useHistory();
@@ -114,8 +115,7 @@ const RegisterWithEmail = props => {
       //===============================================
       // Submit
       //===============================================
-      const rNum = () => Math.floor(Math.random() * 10);
-      const email_activation_code = `${rNum()}${rNum()}${rNum()}${rNum()}${rNum()}${rNum()}`;
+      const email_activation_code = generateActivationCode();
 
       const response = await axios({
         method: 'post',
