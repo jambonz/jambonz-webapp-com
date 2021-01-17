@@ -27,7 +27,7 @@ const FormErrorContainer = styled.div`
 
 const FormError = props => (
   <FormErrorContainer {...props}>
-    <ErrorIcon />
+    <ErrorIcon style={{ flexShrink: 0 }} />
     <div>
       {typeof props.message === 'object' && props.message.length ? (
         <ul>

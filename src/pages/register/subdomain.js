@@ -91,7 +91,7 @@ const RegisterChooseSubdomain = () => {
       }
 
       if (!/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/.test(subdomain)) {
-        setErrorMessage('Invalid subdomain.');
+        setErrorMessage('Subdomains can only include lower case letters, numbers, and hyphens. Hyphens cannot be used as the first or last characters.');
         setInvalidSubdomain(true);
         refSubdomain.current.focus();
         return;
