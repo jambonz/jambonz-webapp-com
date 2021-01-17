@@ -132,8 +132,10 @@ const RegisterWithEmail = props => {
 
       localStorage.setItem('jwt', response.data.jwt);
       localStorage.setItem('user_sid', response.data.user_sid);
+      localStorage.setItem('account_sid', response.data.account_sid);
       localStorage.setItem('provider', response.data.provider);
       localStorage.setItem('email', response.data.email);
+      localStorage.setItem('root_domain', response.data.root_domain);
 
       isMounted = false;
       history.push('/register/verify-your-email');
