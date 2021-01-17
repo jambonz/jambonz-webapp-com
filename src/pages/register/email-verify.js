@@ -24,13 +24,14 @@ const EmailVerify = () => {
 
   const [ showLoader, setShowLoader ] = useState(false);
   const [ errorMessage, setErrorMessage ] = useState('');
-  const [ email, setEmail ] = useState('');
 
   useEffect(() => {
     document.title = 'Verify Your Email | Jambonz';
-    setEmail(localStorage.getItem('email'));
-  }, [setEmail]);
+  });
 
+  const jwt = localStorage.getItem('jwt');
+  const email = localStorage.getItem('email');
+  const user_sid = localStorage.getItem('user_sid');
 
   const handleSubmit = async (e) => {
     let isMounted = true;
@@ -56,10 +57,10 @@ const EmailVerify = () => {
         baseURL: process.env.REACT_APP_API_BASE_URL,
         url: `/ActivationCode/${code}`,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+          Authorization: `Bearer ${jwt}`,
         },
         data: {
-          user_sid: localStorage.getItem('user_sid'),
+          user_sid,
           type: 'email',
         },
       });

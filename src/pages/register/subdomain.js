@@ -29,10 +29,11 @@ const RegisterChooseSubdomain = () => {
     document.title = 'Choose a Subdomain | Jambonz';
   });
 
-  const subdomainValidation = /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/;
+  const jwt = localStorage.getItem('jwt');
   const root_domain = localStorage.getItem('root_domain');
-  const jwt         = localStorage.getItem('jwt');
   const account_sid = localStorage.getItem('account_sid');
+
+  const subdomainValidation = /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/;
 
   const handleChange = async (e) => {
     setSubdomain(e.target.value);
