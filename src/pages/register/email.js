@@ -72,6 +72,35 @@ const RegisterWithEmail = props => {
           refPassword.current.focus();
           focusHasBeenSet = true;
         }
+
+      } else {
+
+        if (password.length < 6) {
+          errorMessages.push('Password must be at least 6 characters long.');
+          setInvalidPassword(true);
+          if (!focusHasBeenSet) {
+            refPassword.current.focus();
+            focusHasBeenSet = true;
+          }
+        }
+
+        if (!/[a-zA-Z]/.test(password)) {
+          errorMessages.push('Password must contain a letter.');
+          setInvalidPassword(true);
+          if (!focusHasBeenSet) {
+            refPassword.current.focus();
+            focusHasBeenSet = true;
+          }
+        }
+
+        if (!/[0-9]/.test(password)) {
+          errorMessages.push('Password must contain a number.');
+          setInvalidPassword(true);
+          if (!focusHasBeenSet) {
+            refPassword.current.focus();
+            focusHasBeenSet = true;
+          }
+        }
       }
 
       if (errorMessages.length > 1) {
