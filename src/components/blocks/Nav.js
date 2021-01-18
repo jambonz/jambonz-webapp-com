@@ -21,7 +21,7 @@ const NavH1 = styled.h1`
   line-height: 1em;
 `;
 
-const LogOutContainer = styled.div`
+const SignOutContainer = styled.div`
   margin-right: 3rem;
   @media (max-width: 34rem) {
     margin-right: 1rem;
@@ -33,8 +33,8 @@ const Nav = () => {
   const location = useLocation();
   const dispatch = useContext(NotificationDispatchContext);
 
-  const logOut = () => {
-    localStorage.removeItem('token');
+  const signOut = () => {
+    localStorage.clear();
     sessionStorage.clear();
     history.push('/');
     dispatch({
@@ -48,16 +48,16 @@ const Nav = () => {
     <StyledNav>
       <NavH1>Jambonz</NavH1>
       {location.pathname !== '/' && (
-        <LogOutContainer>
+        <SignOutContainer>
           <Button
             large
             gray
             text
-            onClick={logOut}
+            onClick={signOut}
           >
-            Log Out
+            Sign Out
           </Button>
-        </LogOutContainer>
+        </SignOutContainer>
       )}
     </StyledNav>
   );
