@@ -45,8 +45,14 @@ const OauthCallbackGithub = () => {
 
         localStorage.removeItem('oauth-github-state');
 
+        localStorage.setItem('jwt',         response.data.jwt);
+        localStorage.setItem('user_sid',    response.data.user_sid);
+        localStorage.setItem('account_sid', response.data.account_sid);
+        localStorage.setItem('provider',    response.data.provider);
+        localStorage.setItem('root_domain', response.data.root_domain);
+
         if (response.status === 200) {
-          history.replace('/register/subdomain');
+          history.replace('/register/choose-a-subdomain');
         } else {
           throw Error('Non-200 response');
         }
