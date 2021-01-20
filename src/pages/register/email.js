@@ -129,6 +129,7 @@ const RegisterWithEmail = props => {
           email_activation_code,
         },
       });
+      console.log('CODE: ', email_activation_code);
 
       localStorage.setItem('jwt', response.data.jwt);
       localStorage.setItem('user_sid', response.data.user_sid);

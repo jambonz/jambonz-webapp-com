@@ -101,6 +101,7 @@ const RegisterMobileNumber = () => {
       }
 
       const code = generateActivationCode();
+      console.log('CODE: ', code);
 
       const activationCodeResponse = await axios({
         method: 'post',

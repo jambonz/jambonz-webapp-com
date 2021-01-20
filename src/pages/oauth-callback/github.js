@@ -43,6 +43,8 @@ const OauthCallbackGithub = () => {
           },
         });
 
+        console.log(response.data);
+
         localStorage.removeItem('oauth-github-state');
 
         localStorage.setItem('jwt',         response.data.jwt);
