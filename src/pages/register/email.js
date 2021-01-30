@@ -183,7 +183,6 @@ const RegisterWithEmail = props => {
               onChange={e => setEmail(e.target.value)}
               ref={refEmail}
               invalid={invalidEmail}
-              autoFocus
             />
             <PasswordInput
               allowShowPassword
