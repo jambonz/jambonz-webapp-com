@@ -12,6 +12,7 @@ import RegisterMobileNumberVerify from './pages/register/mobile-number-verify.js
 import RegisterComplete from './pages/register/complete.js';
 import AccountHome from './pages/account/index.js';
 import OauthCallbackGitHub from './pages/oauth-callback/github.js';
+import OauthCallbackGoogle from './pages/oauth-callback/google.js';
 import CreatePassword from './components/pages/setup/CreatePassword';
 import ConfigureAccount from './components/pages/setup/ConfigureAccount';
 import CreateApplication from './components/pages/setup/CreateApplication';
@@ -51,6 +52,7 @@ function App() {
         <Route exact path="/register/verify-your-mobile-number"><RegisterMobileNumberVerify /></Route>
         <Route exact path="/register/complete"><RegisterComplete /></Route>
         <Route exact path="/oauth-callback/github"><OauthCallbackGitHub /></Route>
+        <Route exact path="/oauth-callback/google"><OauthCallbackGoogle /></Route>
         <Route exact path="/create-password"><CreatePassword /></Route>
         <Route exact path="/configure-account"><ConfigureAccount /></Route>
         <Route exact path="/create-application"><CreateApplication /></Route>

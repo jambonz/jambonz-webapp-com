@@ -4,7 +4,7 @@ import axios from 'axios';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
 import Loader from '../../components/blocks/Loader.js';
 
-const OauthCallbackGithub = () => {
+const OauthCallbackGoogle = () => {
   const history = useHistory();
   const location = useLocation();
   const dispatch = useContext(NotificationDispatchContext);
@@ -12,7 +12,7 @@ const OauthCallbackGithub = () => {
   useEffect(() => {
     document.title = `Authenticating... | Jambonz`;
 
-    const authenticateWithGithub = async () => {
+    const authenticateWithGoogle = async () => {
       const queryParams = new URLSearchParams(location.search);
       const code = queryParams.get('code');
       const newState = queryParams.get('state');
@@ -35,11 +35,11 @@ const OauthCallbackGithub = () => {
           url: '/register',
           data: {
             service_provider_sid: process.env.REACT_APP_SERVICE_PROVIDER_SID,
-            provider: 'github',
+            provider: 'google',
             oauth2_code: code,
             oauth2_state: originalState,
-            oauth2_client_id: process.env.REACT_APP_GITHUB_CLIENT_ID,
-            oauth2_redirect_uri: process.env.REACT_APP_GITHUB_REDIRECT_URI,
+            oauth2_client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+            oauth2_redirect_uri: process.env.REACT_APP_GOOGLE_REDIRECT_URI,
           },
         });
 
@@ -70,7 +70,7 @@ const OauthCallbackGithub = () => {
       }
     };
 
-    authenticateWithGithub();
+    authenticateWithGoogle();
 
   }, [history, location, dispatch]);
 
@@ -79,4 +79,4 @@ const OauthCallbackGithub = () => {
   );
 };
 
-export default OauthCallbackGithub;
+export default OauthCallbackGoogle;
