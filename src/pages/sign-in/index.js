@@ -1,123 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { v4 as uuid } from 'uuid';
 import SetupTemplate from '../../components/templates/SetupTemplate';
-import Form from '../../components/elements/Form';
-import Button from '../../components/elements/Button';
-import Link from '../../components/elements/Link';
-import Input from '../../components/elements/Input';
-import PasswordInput from '../../components/elements/PasswordInput';
-import FormError from '../../components/blocks/FormError';
+import Link from '../../components/elements/Link.js';
 
 const SignIn = props => {
-  let history = useHistory();
   useEffect(() => {
     document.title = `Sign In | Jambonz`;
   });
 
-  // Refs
-  const refEmail = useRef(null);
-  const refPassword = useRef(null);
-
-  // Form inputs
-  const [ email,        setEmail        ] = useState('');
-  const [ password,     setPassword     ] = useState('');
-  const [ errorMessage, setErrorMessage ] = useState('');
-
-  // Invalid form inputs
-  const [ invalidEmail, setInvalidEmail ] = useState(false);
-  const [ invalidPassword, setInvalidPassword ] = useState(false);
-
-  const handleSubmit = async e => {
-    try {
-      e.preventDefault();
-      setErrorMessage('');
-      setInvalidEmail(false);
-      setInvalidPassword(false);
-
-      if (!email && !password) {
-        setErrorMessage('Email and password are required');
-        setInvalidEmail(true);
-        setInvalidPassword(true);
-        refEmail.current.focus();
-        return;
-      }
-      if (!email) {
-        setErrorMessage('Email is required');
-        setInvalidEmail(true);
-        refEmail.current.focus();
-        return;
-      }
-
-      if (!password) {
-        setErrorMessage('Password is required');
-        setInvalidPassword(true);
-        refPassword.current.focus();
-        return;
-      }
-
-      // Sign in
-      const response = await axios({
-        method: 'post',
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: '/signin',
-        data: { email, password },
-      });
-
-      localStorage.setItem('jwt', response.data.jwt);
-      localStorage.setItem('user_sid', response.data.user_sid);
-      localStorage.setItem('provider', response.data.provider);
-
-      history.push('/account');
-
-    } catch (err) {
-      setErrorMessage(
-        (err.response && err.response.data && err.response.data.msg) ||
-        'Username and/or password are incorrect.'
-      );
-      console.error(err.response || err);
-    }
-  };
+  const state = uuid();
+  localStorage.setItem('location-before-oauth', '/sign-in');
+  localStorage.setItem('oauth-state', state);
+  const gitHubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&state=${state}&scope=user:email&allow_signup=false`;
+  const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=email+profile+https://www.googleapis.com/auth/cloud-platform&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
 
   return (
     <SetupTemplate title="Sign In">
-      <Form left onSubmit={handleSubmit}>
-        <Input
-          large
-          fullWidth
-          type="email"
-          name="email"
-          id="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          ref={refEmail}
-          invalid={invalidEmail}
-          autoFocus
-        />
-        <PasswordInput
-          large
-          allowShowPassword
-          name="password"
-          id="password"
-          placeholder="Password"
-          password={password}
-          setPassword={setPassword}
-          setErrorMessage={setErrorMessage}
-          ref={refPassword}
-          invalid={invalidPassword}
-        />
-        {errorMessage && (
-          <FormError message={errorMessage} />
-        )}
-        <Button
-          large
-          fullWidth
-        >
-          Sign In
-        </Button>
-        <Link to="/register">Register</Link>
-      </Form>
+      <p>Sign in with:</p>
+      <div>
+        <a href={gitHubUrl}>GitHub</a>
+      </div>
+      <div>
+        <a href={googleUrl}>Google</a>
+      </div>
+      <div><Link to="/sign-in/email">Email</Link></div>
+      <Link to="/register">Register</Link>
     </SetupTemplate>
   );
 };

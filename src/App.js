@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { NotificationStateContext } from './contexts/NotificationContext';
 
 import SignIn from './pages/sign-in/index.js';
+import SignInEmail from './pages/sign-in/email.js';
 import Register from './pages/register/index.js';
 import RegisterWithEmail from './pages/register/email.js';
 import RegisterWithEmailVerify from './pages/register/email-verify.js';
@@ -43,7 +44,9 @@ function App() {
       <Notification notifications={notifications} />
       <Nav />
       <Switch>
-        <Route exact path="/"><SignIn /></Route>
+        <Route exact path="/"><Redirect to="/sign-in" /></Route>
+        <Route exact path="/sign-in"><SignIn /></Route>
+        <Route exact path="/sign-in/email"><SignInEmail /></Route>
         <Route exact path="/register"><Register /></Route>
         <Route exact path="/register/email"><RegisterWithEmail /></Route>
         <Route exact path="/register/verify-your-email"><RegisterWithEmailVerify /></Route>

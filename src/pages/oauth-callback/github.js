@@ -54,7 +54,11 @@ const OauthCallbackGithub = () => {
         localStorage.setItem('root_domain', response.data.root_domain);
 
         if (response.status === 200) {
-          history.replace('/register/choose-a-subdomain');
+          if (previousLocation === '/register') {
+            history.replace('/register/choose-a-subdomain');
+          } else {
+            history.replace('/account');
+          }
         } else {
           throw Error('Non-200 response');
         }
