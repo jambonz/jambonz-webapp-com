@@ -124,6 +124,7 @@ const RegisterWithEmail = props => {
         data: {
           service_provider_sid: process.env.REACT_APP_SERVICE_PROVIDER_SID,
           provider: 'local',
+          name,
           email,
           password,
           email_activation_code,
