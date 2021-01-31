@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import styled from 'styled-components/macro';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
 import Button from '../elements/Button';
@@ -34,6 +35,19 @@ const Nav = () => {
   const dispatch = useContext(NotificationDispatchContext);
 
   const signOut = () => {
+    const jwt = localStorage.getItem('jwt');
+    // not using async/await because the user's storage should be cleared
+    // and they should be redirected to the login page regardless of whether
+    // or not the API finds the user's JWT
+    axios({
+      method: 'post',
+      baseURL: process.env.REACT_APP_API_BASE_URL,
+      url: '/logout',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
     localStorage.clear();
     sessionStorage.clear();
     history.push('/');
