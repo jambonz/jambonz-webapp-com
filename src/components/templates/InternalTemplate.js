@@ -36,7 +36,7 @@ const InternalTemplate = props => {
   const dispatch = useContext(NotificationDispatchContext);
 
   useEffect(() => {
-    if (!localStorage.getItem('token')) {
+    if (!localStorage.getItem('jwt')) {
       history.push('/');
       dispatch({
         type: 'ADD',

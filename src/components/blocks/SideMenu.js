@@ -1,14 +1,17 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { ModalStateContext } from '../../contexts/ModalContext';
-import { ShowMsTeamsStateContext, ShowMsTeamsDispatchContext } from '../../contexts/ShowMsTeamsContext';
-import { ReactComponent as AccountsIcon } from '../../images/AccountsIcon.svg';
+import { ReactComponent as HomeIcon         } from '../../images/HomeIcon.svg';
 import { ReactComponent as ApplicationsIcon } from '../../images/ApplicationsIcon.svg';
-import { ReactComponent as SipTrunksIcon } from '../../images/SipTrunksIcon.svg';
+import { ReactComponent as RecentCallsIcon  } from '../../images/RecentCallsIcon.svg';
+import { ReactComponent as AlertsIcon       } from '../../images/AlertsIcon.svg';
+import { ReactComponent as CarriersIcon     } from '../../images/CarriersIcon.svg';
 import { ReactComponent as PhoneNumbersIcon } from '../../images/PhoneNumbersIcon.svg';
-import { ReactComponent as MsTeamsIcon } from '../../images/MsTeamsIcon.svg';
-import { ReactComponent as SettingsIcon } from '../../images/SettingsIcon.svg';
+import { ReactComponent as SpeechIcon       } from '../../images/SpeechIcon.svg';
+import { ReactComponent as AddOnsIcon       } from '../../images/AddOnsIcon.svg';
+
+
 
 const StyledSideMenu = styled.div`
   width: 15rem;
@@ -16,7 +19,7 @@ const StyledSideMenu = styled.div`
   height: calc(100vh - 4rem);
   overflow: auto;
   background: #FFF;
-  padding-top: 3.25rem;
+  padding: 3.25rem 0;
 `;
 
 const activeClassName = 'nav-item-active';
@@ -68,10 +71,18 @@ const MenuText = styled.span`
   outline: 0;
 `;
 
+const StyledH2 = styled.h2`
+  margin: 3rem 0 1rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #757575;
+`;
+
 const MenuLink = props => {
   const modalOpen = useContext(ModalStateContext);
   return (
     <StyledNavLink
+      exact={props.exact}
       to={props.to}
       activeClassName={activeClassName}
       tabIndex={modalOpen ? '-1' : ''}
@@ -87,22 +98,21 @@ const MenuLink = props => {
 };
 
 const SideMenu = () => {
-  const showMsTeams = useContext(ShowMsTeamsStateContext);
-  const getMsTeamsData = useContext(ShowMsTeamsDispatchContext);
-  useEffect(() => {
-    getMsTeamsData();
-    // eslint-disable-next-line
-  }, []);
   return (
     <StyledSideMenu>
-      <MenuLink to="/internal/accounts"      name="Accounts"      icon={<AccountsIcon     />} />
-      <MenuLink to="/internal/applications"  name="Applications"  icon={<ApplicationsIcon />} />
-      <MenuLink to="/internal/sip-trunks"    name="SIP Trunks"    icon={<SipTrunksIcon    />} />
-      <MenuLink to="/internal/phone-numbers" name="Phone Numbers" icon={<PhoneNumbersIcon />} />
-      {showMsTeams && (
-        <MenuLink to="/internal/ms-teams-tenants" name="MS Teams Tenants" icon={<MsTeamsIcon />} />
-      )}
-      <MenuLink to="/internal/settings" name="Settings" icon={<SettingsIcon />} />
+      <MenuLink exact to="/account"           name="Home"             icon={<HomeIcon         />} />
+      <MenuLink to="/account/applications"    name="Applications"     icon={<ApplicationsIcon />} />
+      <MenuLink to="/account/recent-calls"    name="Recent Calls"     icon={<RecentCallsIcon  />} />
+      <MenuLink to="/account/alerts"          name="Alerts"           icon={<AlertsIcon       />} />
+
+      <StyledH2>Bring Your Own Services</StyledH2>
+      <MenuLink to="/account/carriers"        name="Carriers"         icon={<CarriersIcon     />} />
+      <MenuLink to="/account/phone-numbers"   name="Phone Numbers"    icon={<PhoneNumbersIcon />} />
+      <MenuLink to="/account/speech-services" name="Speech"           icon={<SpeechIcon       />} />
+
+      <StyledH2>Bring Your Own Services</StyledH2>
+      <MenuLink to="/account/add-ons"         name="Explore Add-Ons"  icon={<AddOnsIcon       />} />
+
     </StyledSideMenu>
   );
 };
