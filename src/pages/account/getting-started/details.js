@@ -6,7 +6,6 @@ const GettingStartedDetails = () => {
     <InternalTemplate title="Getting Started Details">
       <Link to="/account/getting-started">← Back to Getting Started</Link>
     </InternalTemplate>
-
   );
 };
 

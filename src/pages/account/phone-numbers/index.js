@@ -6,7 +6,6 @@ const PhoneNumbersIndex = () => {
     <InternalTemplate title="Phone Numbers">
       <Link to="/account/phone-numbers/add">Add Phone Number</Link>
     </InternalTemplate>
-
   );
 };
 

@@ -6,7 +6,6 @@ const GettingStartedIndex = () => {
     <InternalTemplate title="Getting Started">
       <Link to="/account/getting-started/test">Getting Started Details</Link>
     </InternalTemplate>
-
   );
 };
 

@@ -6,7 +6,6 @@ const CarriersIndex = () => {
     <InternalTemplate title="Carriers">
       <Link to="/account/carriers/add">Add Carrier</Link>
     </InternalTemplate>
-
   );
 };
 
