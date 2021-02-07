@@ -7,7 +7,7 @@ const AccountHome = () => {
   const [ data, setData ] = useState({});
 
   useEffect(() => {
-    document.title = `Account Home | Jambonz`;
+    document.title = `Account Home | jambonz`;
 
     const getData = async () => {
       const dataResponse = await axios({

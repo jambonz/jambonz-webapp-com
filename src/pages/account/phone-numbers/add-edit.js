@@ -44,7 +44,7 @@ const PhoneNumbersAddEdit = () => {
   const [ errorMessage, setErrorMessage ] = useState('');
 
   useEffect(() => {
-    document.title = `${pageTitle} | Jambonz`;
+    document.title = `${pageTitle} | jambonz`;
 
     const getAPIData = async () => {
       let isMounted = true;

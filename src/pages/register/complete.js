@@ -9,7 +9,7 @@ const RegisterComplete = () => {
   let history = useHistory();
 
   useEffect(() => {
-    document.title = `Registration Complete | Jambonz`;
+    document.title = `Registration Complete | jambonz`;
   });
 
   const handleSubmit = e => {

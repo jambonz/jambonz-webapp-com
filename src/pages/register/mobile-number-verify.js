@@ -14,7 +14,7 @@ import phoneNumberFormat from '../../helpers/phoneNumberFormat';
 const RegisterMobileNumberVerify = () => {
   let history = useHistory();
   useEffect(() => {
-    document.title = `Verify Your Mobile | Jambonz`;
+    document.title = `Verify Your Mobile | jambonz`;
   });
 
   const jwt = localStorage.getItem('jwt');

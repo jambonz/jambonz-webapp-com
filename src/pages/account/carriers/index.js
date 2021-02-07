@@ -15,7 +15,7 @@ const CarriersIndex = () => {
   const [ sipRealm, setSipRealm ] = useState('');
 
   useEffect(() => {
-    document.title = `Carriers | Jambonz`;
+    document.title = `Carriers | jambonz`;
   });
 
   //=============================================================================

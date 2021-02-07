@@ -60,7 +60,7 @@ const Nav = () => {
 
   return (
     <StyledNav>
-      <NavH1>Jambonz</NavH1>
+      <NavH1>jambonz</NavH1>
       {location.pathname !== '/' && (
         <SignOutContainer>
           <Button

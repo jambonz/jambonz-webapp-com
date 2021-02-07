@@ -12,7 +12,7 @@ import FormError from '../../components/blocks/FormError';
 const SignIn = props => {
   let history = useHistory();
   useEffect(() => {
-    document.title = `Sign In With Email | Jambonz`;
+    document.title = `Sign In With Email | jambonz`;
   });
 
   // Refs

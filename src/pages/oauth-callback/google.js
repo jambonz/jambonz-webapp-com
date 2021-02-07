@@ -10,7 +10,7 @@ const OauthCallbackGoogle = () => {
   const dispatch = useContext(NotificationDispatchContext);
 
   useEffect(() => {
-    document.title = `Authenticating... | Jambonz`;
+    document.title = `Authenticating... | jambonz`;
 
     const authenticateWithGoogle = async () => {
       const queryParams = new URLSearchParams(location.search);

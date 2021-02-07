@@ -10,7 +10,7 @@ const OauthCallbackGithub = () => {
   const dispatch = useContext(NotificationDispatchContext);
 
   useEffect(() => {
-    document.title = `Authenticating... | Jambonz`;
+    document.title = `Authenticating... | jambonz`;
 
     const authenticateWithGithub = async () => {
       const queryParams = new URLSearchParams(location.search);

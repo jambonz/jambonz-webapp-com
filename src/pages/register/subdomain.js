@@ -26,7 +26,7 @@ const RegisterChooseSubdomain = () => {
   const [ errorMessage, setErrorMessage ] = useState('');
 
   useEffect(() => {
-    document.title = 'Choose a Subdomain | Jambonz';
+    document.title = 'Choose a Subdomain | jambonz';
   });
 
   const jwt = localStorage.getItem('jwt');
@@ -155,9 +155,9 @@ const RegisterChooseSubdomain = () => {
         ) : (
           <>
             <FormParagraph>
-              This will be the FQDN where your SIP trunking providers
-              will send calls, and where you can register devices to.
-              This can be changed at any time.
+              This will be the FQDN where your carrier will
+              send calls, and where you can register devices
+              to. This can be changed at any time.
             </FormParagraph>
             <Input
               fullWidth

@@ -11,7 +11,7 @@ const ApplicationsIndex = () => {
   const jwt = localStorage.getItem('jwt');
 
   useEffect(() => {
-    document.title = `Applications | Jambonz`;
+    document.title = `Applications | jambonz`;
   });
 
   //=============================================================================

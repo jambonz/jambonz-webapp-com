@@ -14,7 +14,7 @@ import generateActivationCode from '../../helpers/generateActivationCode';
 const RegisterMobileNumber = () => {
   let history = useHistory();
   useEffect(() => {
-    document.title = `Mobile Number | Jambonz`;
+    document.title = `Mobile Number | jambonz`;
   });
 
   const jwt = localStorage.getItem('jwt');

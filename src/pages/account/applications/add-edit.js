@@ -28,7 +28,7 @@ const ApplicationsAddEdit = () => {
   const type = application_sid ? 'edit' : 'add';
   const pageTitle = type === 'edit' ? 'Edit Application' : 'Add Application';
   useEffect(() => {
-    document.title = `${pageTitle} | Jambonz`;
+    document.title = `${pageTitle} | jambonz`;
   });
 
   // Refs

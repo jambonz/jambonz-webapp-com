@@ -12,7 +12,7 @@ const PhoneNumbersIndex = () => {
   const jwt = localStorage.getItem('jwt');
 
   useEffect(() => {
-    document.title = `Phone Number Routing | Jambonz`;
+    document.title = `Phone Numbers | jambonz`;
   });
 
   //=============================================================================

@@ -14,7 +14,7 @@ import generateActivationCode from '../../helpers/generateActivationCode';
 const RegisterWithEmail = props => {
   let history = useHistory();
   useEffect(() => {
-    document.title = `Register With Email | Jambonz`;
+    document.title = `Register With Email | jambonz`;
   });
 
   // Refs

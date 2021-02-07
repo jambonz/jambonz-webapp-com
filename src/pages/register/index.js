@@ -5,7 +5,7 @@ import Link from '../../components/elements/Link.js';
 
 const Register = props => {
   useEffect(() => {
-    document.title = `Register | Jambonz`;
+    document.title = `Register | jambonz`;
   });
 
   const state = uuid();

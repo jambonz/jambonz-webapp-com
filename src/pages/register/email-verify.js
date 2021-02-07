@@ -26,7 +26,7 @@ const EmailVerify = () => {
   const [ errorMessage, setErrorMessage ] = useState('');
 
   useEffect(() => {
-    document.title = 'Verify Your Email | Jambonz';
+    document.title = 'Verify Your Email | jambonz';
   });
 
   const jwt = localStorage.getItem('jwt');
