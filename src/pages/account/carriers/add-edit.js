@@ -143,6 +143,7 @@ const CarriersAddEdit = () => {
           setName(carrier.name || '');
           setDescription(carrier.description || '');
           setE164(carrier.e164_leading_plus === 1);
+          setAuthenticate(carrier.register_username ? true : false);
           setRegister(carrier.requires_register === 1);
           setUsername(carrier.register_username || '');
           setPassword(carrier.register_password || '');
@@ -468,8 +469,8 @@ const CarriersAddEdit = () => {
           description: description.trim() || null,
           e164_leading_plus: e164 ? 1 : 0,
           requires_register: register ? 1 : 0,
-          register_username: register ? username.trim() : null,
-          register_password: register ? password : null,
+          register_username: username ? username.trim() : null,
+          register_password: password ? password : null,
           register_sip_realm: register ? realm.trim() : null,
         },
       });
