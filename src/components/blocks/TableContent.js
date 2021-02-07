@@ -400,7 +400,7 @@ const TableContent = props => {
                         {i === 0 && props.urlParam
                           ? <span>
                               <Link
-                                to={`/internal/${props.urlParam}/${a.sid}/edit`}
+                                to={`/account/${props.urlParam}/${a.sid}/edit`}
                                 tabIndex={modalOpen ? '-1' : ''}
                               >
                                 <span tabIndex="-1" title={columnTitle}>
@@ -431,7 +431,7 @@ const TableContent = props => {
                           {
                             name: 'Edit',
                             type: 'link',
-                            url: `/internal/${props.urlParam}/${a.sid}/edit`,
+                            url: `/account/${props.urlParam}/${a.sid}/edit`,
                           },
                           {
                             name: 'Delete',
