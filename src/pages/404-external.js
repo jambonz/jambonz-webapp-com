@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro';
-import SetupTemplate from '../components/templates/SetupTemplate';
+import ExternalTemplate from '../components/templates/ExternalTemplate';
 import Link from '../components/elements/Link';
 
 const Container = styled.div`
@@ -9,12 +9,12 @@ const Container = styled.div`
 
 const InvalidRoute = () => {
   return (
-    <SetupTemplate title="Invalid Route">
+    <ExternalTemplate title="Invalid Route">
       <Container>
         <p>That page doesn't exist.</p>
         <p><Link to="/">Log In</Link></p>
       </Container>
-    </SetupTemplate>
+    </ExternalTemplate>
   );
 };
 

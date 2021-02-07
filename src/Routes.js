@@ -51,7 +51,7 @@ import Notification from './components/blocks/Notification';
 import Nav from './components/blocks/Nav';
 import SideMenu from './components/blocks/SideMenu';
 
-function App() {
+function Routes() {
   const notifications = useContext(NotificationStateContext);
   return (
     <Router>
@@ -177,4 +177,4 @@ function App() {
   );
 }
 
-export default App;
+export default Routes;

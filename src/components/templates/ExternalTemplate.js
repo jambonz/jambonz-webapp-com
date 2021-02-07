@@ -45,7 +45,7 @@ const ContentContainer = styled.div`
   }
 `;
 
-const SetupTemplate = props => (
+const ExternalTemplate = props => (
   <PageContainer>
     <StyledH1>{props.title}</StyledH1>
     {props.subtitle
@@ -58,4 +58,4 @@ const SetupTemplate = props => (
   </PageContainer>
 );
 
-export default SetupTemplate;
+export default ExternalTemplate;

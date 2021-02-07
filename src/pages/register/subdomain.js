@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import SetupTemplate from '../../components/templates/SetupTemplate';
+import ExternalTemplate from '../../components/templates/ExternalTemplate';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Input from '../../components/elements/Input';
@@ -148,7 +148,7 @@ const RegisterChooseSubdomain = () => {
   };
 
   return (
-    <SetupTemplate title="Choose a Subdomain">
+    <ExternalTemplate title="Choose a Subdomain">
       <Form left onSubmit={handleSubmit}>
         {showLoader ? (
           <Loader height="161px" />
@@ -184,7 +184,7 @@ const RegisterChooseSubdomain = () => {
           </>
         )}
       </Form>
-    </SetupTemplate>
+    </ExternalTemplate>
   );
 };
 

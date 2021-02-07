@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import SetupTemplate from '../../components/templates/SetupTemplate';
+import ExternalTemplate from '../../components/templates/ExternalTemplate';
 
 const AccountHome = () => {
   const jwt = localStorage.getItem('jwt');
@@ -26,11 +26,11 @@ const AccountHome = () => {
   }, [jwt]);
 
   return (
-    <SetupTemplate title="Account Home">
+    <ExternalTemplate title="Account Home">
       <code style={{whiteSpace:'pre'}}>
         {JSON.stringify(data, null, 2)}
       </code>
-    </SetupTemplate>
+    </ExternalTemplate>
   );
 };
 

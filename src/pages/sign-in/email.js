@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import SetupTemplate from '../../components/templates/SetupTemplate';
+import ExternalTemplate from '../../components/templates/ExternalTemplate';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Link from '../../components/elements/Link';
@@ -80,7 +80,7 @@ const SignIn = props => {
   };
 
   return (
-    <SetupTemplate title="Sign In With Email">
+    <ExternalTemplate title="Sign In With Email">
       <Form left onSubmit={handleSubmit}>
         <Input
           large
@@ -118,7 +118,7 @@ const SignIn = props => {
         </Button>
         <Link to="/">Sign in another way</Link>
       </Form>
-    </SetupTemplate>
+    </ExternalTemplate>
   );
 };
 

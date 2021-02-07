@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import SetupTemplate from '../../components/templates/SetupTemplate';
+import ExternalTemplate from '../../components/templates/ExternalTemplate';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Link from '../../components/elements/Link';
@@ -86,7 +86,7 @@ const RegisterMobileNumberVerify = () => {
   };
 
   return (
-    <SetupTemplate title="Verify Your Mobile">
+    <ExternalTemplate title="Verify Your Mobile">
       <Form left onSubmit={handleSubmit}>
         {showLoader ? (
           <Loader height="142px" />
@@ -115,7 +115,7 @@ const RegisterMobileNumberVerify = () => {
           </>
         )}
       </Form>
-    </SetupTemplate>
+    </ExternalTemplate>
   );
 };
 

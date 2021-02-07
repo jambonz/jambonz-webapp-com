@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import SetupTemplate from '../../components/templates/SetupTemplate';
+import ExternalTemplate from '../../components/templates/ExternalTemplate';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import FormParagraph from '../../components/elements/FormParagraph';
@@ -18,12 +18,12 @@ const RegisterComplete = () => {
   };
 
   return (
-    <SetupTemplate title="Registration Complete">
+    <ExternalTemplate title="Registration Complete">
       <Form left onSubmit={handleSubmit}>
         <FormParagraph>Thanks for registering!</FormParagraph>
         <Button fullWidth>Continue to Account →</Button>
       </Form>
-    </SetupTemplate>
+    </ExternalTemplate>
   );
 };
 
