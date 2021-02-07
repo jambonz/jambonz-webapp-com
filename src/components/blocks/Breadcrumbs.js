@@ -12,14 +12,19 @@ const BreadcrumbsContainer = styled.div`
 const Breadcrumbs = props => {
   return (
     <BreadcrumbsContainer>
-      {props.breadcrumbs.map((b, i) => (
-        b.url
-          ? <React.Fragment key={i}>
+      {props.breadcrumbs.length === 1 ? (
+        <Link to={props.breadcrumbs[0].url}>← {props.breadcrumbs[0].name}</Link>
+      ) : (
+        props.breadcrumbs.map((b, i) => (
+          b.url ? (
+            <React.Fragment key={i}>
               <Link to={b.url}>{b.name}</Link>
               <Chevron style={{ margin: '0 0.75rem' }} />
             </React.Fragment>
-          : <span key={i}>{b.name}</span>
-      ))}
+          ) : (
+            <span key={i}>{b.name}</span>
+          )
+      )))}
     </BreadcrumbsContainer>
   );
 };
