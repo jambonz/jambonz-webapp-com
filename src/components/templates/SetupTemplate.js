@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import ProgressVisualization from '../blocks/ProgressVisualization';
 import H1 from '../elements/H1';
 
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 1rem 8rem;
+  margin: 8rem 1rem;
 `;
 
 const StyledH1 = styled(H1)`
@@ -48,7 +47,6 @@ const ContentContainer = styled.div`
 
 const SetupTemplate = props => (
   <PageContainer>
-    <ProgressVisualization progress={props.progress} />
     <StyledH1>{props.title}</StyledH1>
     {props.subtitle
       ? <Subtitle>{props.subtitle}</Subtitle>
