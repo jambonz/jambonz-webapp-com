@@ -10,6 +10,8 @@ import InputGroup from '../../../components/elements/InputGroup';
 import PasswordInput from '../../../components/elements/PasswordInput';
 import Radio from '../../../components/elements/Radio';
 import Checkbox from '../../../components/elements/Checkbox';
+import FileUpload from '../../../components/elements/FileUpload';
+import Code from '../../../components/elements/Code';
 import FormError from '../../../components/blocks/FormError';
 import Button from '../../../components/elements/Button';
 import Loader from '../../../components/blocks/Loader';
@@ -30,28 +32,29 @@ const SpeechServicesAddEdit = () => {
   // Refs
   const refVendorGoogle = useRef(null);
   const refVendorAws = useRef(null);
-  const refServiceKey = useRef(null);
   const refAccessKeyId = useRef(null);
   const refSecretAccessKey = useRef(null);
   const refUseForTts = useRef(null);
   const refUseForStt = useRef(null);
 
   // Form inputs
-  const [ vendor,          setVendor          ] = useState('');
-  const [ serviceKey,      setServiceKey      ] = useState('');
-  const [ accessKeyId,     setAccessKeyId     ] = useState('');
-  const [ secretAccessKey, setSecretAccessKey ] = useState('');
-  const [ useForTts,       setUseForTts       ] = useState(false);
-  const [ useForStt,       setUseForStt       ] = useState(false);
+  const [ vendor,              setVendor              ] = useState('');
+  const [ serviceKey,          setServiceKey          ] = useState('');
+  const [ displayedServiceKey, setDisplayedServiceKey ] = useState('');
+  const [ accessKeyId,         setAccessKeyId         ] = useState('');
+  const [ secretAccessKey,     setSecretAccessKey     ] = useState('');
+  const [ useForTts,           setUseForTts           ] = useState(false);
+  const [ useForStt,           setUseForStt           ] = useState(false);
 
   // Invalid form inputs
   const [ invalidVendorGoogle,    setInvalidVendorGoogle    ] = useState(false);
   const [ invalidVendorAws,       setInvalidVendorAws       ] = useState(false);
-  const [ invalidServiceKey,      setInvalidServiceKey      ] = useState(false);
   const [ invalidAccessKeyId,     setInvalidAccessKeyId     ] = useState(false);
   const [ invalidSecretAccessKey, setInvalidSecretAccessKey ] = useState(false);
   const [ invalidUseForTts,       setInvalidUseForTts       ] = useState(false);
   const [ invalidUseForStt,       setInvalidUseForStt       ] = useState(false);
+
+  const [ validServiceKey,        setValidServiceKey        ] = useState(false);
 
   const [ showLoader, setShowLoader ] = useState(true);
   const [ errorMessage, setErrorMessage ] = useState('');
@@ -70,12 +73,21 @@ const SpeechServicesAddEdit = () => {
             },
           });
 
-          setVendor(          speechCredential.data.vendor            || undefined);
-          setServiceKey(      speechCredential.data.service_key       || '');
-          setAccessKeyId(     speechCredential.data.access_key_id     || '');
-          setSecretAccessKey( speechCredential.data.secret_access_key || '');
-          setUseForTts(       speechCredential.data.use_for_tts       || false);
-          setUseForStt(       speechCredential.data.use_for_stt       || false);
+          let serviceKeyJson = '';
+
+          try {
+            const parsedJson = JSON.parse(speechCredential.data.service_key);
+            serviceKeyJson = JSON.stringify(parsedJson, null, 2);
+          } catch (err) {
+          }
+
+          setVendor(              speechCredential.data.vendor            || undefined);
+          setServiceKey(          speechCredential.data.service_key       || '');
+          setDisplayedServiceKey( serviceKeyJson                          || '');
+          setAccessKeyId(         speechCredential.data.access_key_id     || '');
+          setSecretAccessKey(     speechCredential.data.secret_access_key || '');
+          setUseForTts(           speechCredential.data.use_for_tts       || false);
+          setUseForStt(           speechCredential.data.use_for_stt       || false);
         }
         setShowLoader(false);
       } catch (err) {
@@ -109,6 +121,38 @@ const SpeechServicesAddEdit = () => {
     // eslint-disable-next-line
   }, []);
 
+  const handleFileUpload = async (e) => {
+    setErrorMessage('');
+    setServiceKey('');
+    setDisplayedServiceKey('');
+
+    const file = e.target.files[0];
+
+    if (!file) {
+      setValidServiceKey(false);
+      return;
+    }
+
+    const fileAsText = await file.text();
+
+    try {
+      const fileJson = JSON.parse(fileAsText);
+
+      if (!fileJson.client_email || !fileJson.private_key) {
+        setValidServiceKey(false);
+        setErrorMessage('Invalid service key file, missing data.');
+        return;
+      }
+
+      setValidServiceKey(true);
+      setServiceKey(fileJson);
+      setDisplayedServiceKey(JSON.stringify(fileJson, null, 2));
+
+    } catch (err) {
+      setValidServiceKey(false);
+      setErrorMessage('Invalid service key file, could not parse as JSON.');
+    }
+  };
 
   const handleSubmit = async (e) => {
     let isMounted = true;
@@ -118,7 +162,6 @@ const SpeechServicesAddEdit = () => {
       setErrorMessage('');
       setInvalidVendorGoogle(false);
       setInvalidVendorAws(false);
-      setInvalidServiceKey(false);
       setInvalidAccessKeyId(false);
       setInvalidSecretAccessKey(false);
       setInvalidUseForTts(false);
@@ -137,12 +180,7 @@ const SpeechServicesAddEdit = () => {
       }
 
       if (vendor === 'google' && !serviceKey) {
-        errorMessages.push('Please provide a service key.');
-        setInvalidServiceKey(true);
-        if (!focusHasBeenSet) {
-          refServiceKey.current.focus();
-          focusHasBeenSet = true;
-        }
+        errorMessages.push('Please upload a service key file.');
       }
 
       if (vendor === 'aws' && !accessKeyId) {
@@ -218,7 +256,7 @@ const SpeechServicesAddEdit = () => {
         },
         data: {
           vendor,
-          service_key: vendor === 'google' ? serviceKey : null,
+          service_key: vendor === 'google' ? JSON.stringify(serviceKey) : null,
           access_key_id: vendor === 'aws' ? accessKeyId : null,
           secret_access_key: vendor === 'aws' ? secretAccessKey : null,
           use_for_tts: useForTts,
@@ -309,16 +347,21 @@ const SpeechServicesAddEdit = () => {
           {vendor === 'google' ? (
             <>
               <Label htmlFor="serviceKey">Service Key</Label>
-              <Input
-                name="serviceKey"
-                id="serviceKey"
-                value={serviceKey}
-                onChange={e => setServiceKey(e.target.value)}
-                placeholder=""
-                invalid={invalidServiceKey}
-                ref={refServiceKey}
-                disabled={type === 'edit'}
-              />
+              {type === 'add' && (
+                <FileUpload
+                  id="serviceKey"
+                  onChange={handleFileUpload}
+                  validFile={validServiceKey}
+                />
+              )}
+              {displayedServiceKey && (
+                <>
+                  {type === 'add' && (
+                    <span></span>
+                  )}
+                  <Code>{displayedServiceKey}</Code>
+                </>
+              )}
             </>
           ) : vendor === 'aws' ? (
             <>
