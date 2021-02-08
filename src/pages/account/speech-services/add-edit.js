@@ -291,6 +291,7 @@ const SpeechServicesAddEdit = () => {
               onChange={() => setVendor('google')}
               invalid={invalidVendorGoogle}
               ref={refVendorGoogle}
+              disabled={type === 'edit'}
             />
 
             <Radio
@@ -301,6 +302,7 @@ const SpeechServicesAddEdit = () => {
               onChange={() => setVendor('aws')}
               invalid={invalidVendorAws}
               ref={refVendorAws}
+              disabled={type === 'edit'}
             />
           </InputGroup>
 
@@ -315,6 +317,7 @@ const SpeechServicesAddEdit = () => {
                 placeholder=""
                 invalid={invalidServiceKey}
                 ref={refServiceKey}
+                disabled={type === 'edit'}
               />
             </>
           ) : vendor === 'aws' ? (
@@ -328,6 +331,7 @@ const SpeechServicesAddEdit = () => {
                 placeholder=""
                 invalid={invalidAccessKeyId}
                 ref={refAccessKeyId}
+                disabled={type === 'edit'}
               />
 
               <Label htmlFor="secretAccessKey">Secret Access Key</Label>
@@ -340,6 +344,7 @@ const SpeechServicesAddEdit = () => {
                 setErrorMessage={setErrorMessage}
                 invalid={invalidSecretAccessKey}
                 ref={refSecretAccessKey}
+                disabled={type === 'edit'}
               />
             </>
           ) : (

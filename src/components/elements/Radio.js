@@ -30,7 +30,10 @@ const StyledRadio = styled.input`
 
 const StyledLabel = styled(Label)`
   padding-left: 0.5rem;
-  cursor: pointer;
+  cursor: ${props => props.disabled
+    ? 'not-allowed'
+    : 'pointer'
+  };
   ${props => props.tooltip && `
     & > span {
       border-bottom: 1px dotted;
@@ -64,7 +67,10 @@ const StyledLabel = styled(Label)`
     height: 1rem;
     width: 1rem;
     border-radius: 50%;
-    background: #707070;
+    background: ${props => props.disabled
+      ? '#959595'
+      : '#707070'
+    };
   }
 `;
 
@@ -88,11 +94,13 @@ const Radio = (props, ref) => {
         checked={props.checked}
         onChange={props.onChange}
         ref={inputRef}
+        disabled={props.disabled}
       />
       <StyledLabel
         htmlFor={props.id}
         tooltip={props.tooltip}
         invalid={props.invalid}
+        disabled={props.disabled}
       >
         <span>
           {props.label}
