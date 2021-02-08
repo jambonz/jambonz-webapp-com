@@ -6,22 +6,17 @@ import Tooltip from './Tooltip';
 const CheckboxContainer = styled.div`
   margin-left: ${props => props.noLeftMargin
     ? '0'
-    : props.invalid
-      ? '0.5rem'
-      : '1rem'
+    : '0.5rem'
   };
   position: relative;
   display: flex;
   align-items: center;
-  height: ${props => props.large
-    ? '3rem'
-    : '2.25rem'
-  };
+  height: 2.25rem;
+  padding: 0 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.125rem;
   ${props => props.invalid && `
-    margin-right: -0.5rem;
-    padding: 0 0.5rem;
-    border: 1px solid #D91C5C;
-    border-radius: 0.125rem;
+    border-color: #D91C5C;
     background: RGBA(217,28,92,0.2);
   `}
 `;
@@ -33,7 +28,7 @@ const StyledCheckbox = styled.input`
 `;
 
 const StyledLabel = styled(Label)`
-  margin-left: 0.5rem;
+  padding-left: 0.5rem;
   cursor: pointer;
   ${props => props.tooltip && `
     & > span {
@@ -46,14 +41,8 @@ const StyledLabel = styled(Label)`
   &::before {
     content: '';
     position: absolute;
-    top: ${props => props.large
-      ? '0.75rem'
-      : '0.375rem'
-    };
-    left: ${props => props.invalid
-      ? '0.5rem'
-      : '0'
-    };
+    top: 0.375rem;
+    left: 0.5rem;
     width: 1.5rem;
     height: 1.5rem;
     border: 1px solid #A5A5A5;
@@ -78,14 +67,8 @@ const StyledLabel = styled(Label)`
   input:checked + &::after {
     content: '';
     position: absolute;
-    top: ${props => props.large
-      ? '1.1rem'
-      : '0.725rem'
-    };
-    left: ${props => props.invalid
-      ? '0.75rem'
-      : '0.25rem'
-    };
+    top: 0.725rem;
+    left: 0.75rem;
     height: 8px;
     width: 15px;
     border-left: 2px solid #FFF;
