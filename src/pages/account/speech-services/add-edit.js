@@ -181,7 +181,7 @@ const SpeechServicesAddEdit = () => {
         },
       });
 
-      if (speechServices.data.some(speech => speech.vendor === vendor)) {
+      if (type === 'add' && speechServices.data.some(speech => speech.vendor === vendor)) {
         setErrorMessage('You can only have one speech credential per vendor.');
         setShowLoader(false);
         if (vendor === 'google') {
