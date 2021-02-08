@@ -29,8 +29,6 @@ const SpeechServicesIndex = () => {
         },
       });
 
-      console.log('speechServices:', speechServices);
-
       const cleanedUpSpeechServices = speechServices.data.map(s => {
         return {
           sid: s.speech_credentials_sid,
