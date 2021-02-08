@@ -308,9 +308,9 @@ const SpeechServicesAddEdit = () => {
       {showLoader ? (
         <Loader
           height={
-            type === 'edit'
-              ? '646px'
-              : '611px'
+            type === 'add' && !vendor
+              ? '152px'
+              : '364px'
           }
         />
       ) : (
