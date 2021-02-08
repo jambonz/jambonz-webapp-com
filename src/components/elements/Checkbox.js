@@ -5,7 +5,7 @@ import Tooltip from './Tooltip';
 
 const CheckboxContainer = styled.div`
   margin-left: ${props => props.noLeftMargin
-    ? '0'
+    ? '-0.5rem'
     : '0.5rem'
   };
   position: relative;
