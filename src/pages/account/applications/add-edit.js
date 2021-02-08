@@ -87,7 +87,6 @@ const ApplicationsAddEdit = () => {
 
   const [ applicationSid, setApplicationSid ] = useState([]);
 
-  // See if user logged in
   useEffect(() => {
     const getAPIData = async () => {
       let isMounted = true;
@@ -361,7 +360,7 @@ const ApplicationsAddEdit = () => {
       type="form"
       title={pageTitle}
       breadcrumbs={[
-        { name: 'Back to Application', url: '/account/applications' },
+        { name: 'Back to Applications', url: '/account/applications' },
       ]}
     >
       {showLoader ? (
@@ -384,23 +383,19 @@ const ApplicationsAddEdit = () => {
             </React.Fragment>
           )}
 
-          {(type === 'add' || type === 'edit') && (
-            <React.Fragment>
-              <Label htmlFor="name">Name</Label>
-              <Input
-                name="name"
-                id="name"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="Application name"
-                invalid={invalidName}
-                autoFocus
-                ref={refName}
-              />
+          <Label htmlFor="name">Name</Label>
+          <Input
+            name="name"
+            id="name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Application name"
+            invalid={invalidName}
+            autoFocus
+            ref={refName}
+          />
 
-              <hr />
-            </React.Fragment>
-          )}
+          <hr />
 
           <Label htmlFor="callWebhook">Calling Webhook</Label>
           <InputGroup>

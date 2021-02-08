@@ -361,7 +361,7 @@ const PhoneNumbersAddEdit = () => {
                 dispatch({
                   type: 'ADD',
                   level: 'info',
-                  message: 'Changes canceled',
+                  message: type === 'add' ? 'New phone number canceled' :'Changes canceled',
                 });
               }}
             >

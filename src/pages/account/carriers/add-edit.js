@@ -811,7 +811,7 @@ const CarriersAddEdit = () => {
                 dispatch({
                   type: 'ADD',
                   level: 'info',
-                  message: 'Changes canceled',
+                  message: type === 'add' ? 'New carrier canceled' :'Changes canceled',
                 });
               }}
             >
