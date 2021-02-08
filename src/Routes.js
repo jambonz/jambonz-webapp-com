@@ -136,7 +136,7 @@ function Routes() {
               <Route exact path="/account/speech-services"><SpeechServicesIndex /></Route>
               <Route exact path={[
                 "/account/speech-services/add",
-                "/account/speech-services/:id/edit",
+                "/account/speech-services/:speech_credential_sid/edit",
               ]}>
                 <SpeechServicesAddEdit />
               </Route>
