@@ -247,7 +247,7 @@ const SpeechServicesAddEdit = () => {
         ? `/Accounts/${account_sid}/SpeechCredentials`
         : `/Accounts/${account_sid}/SpeechCredentials/${speech_credential_sid}`;
 
-      await axios({
+      const postResults = await axios({
         method,
         baseURL: process.env.REACT_APP_API_BASE_URL,
         url,
@@ -263,6 +263,65 @@ const SpeechServicesAddEdit = () => {
           use_for_stt: useForStt,
         }
       });
+
+      if (!postResults.data || !postResults.data.sid) {
+        throw new Error('Error retrieving response data');
+      }
+
+      const newSid = postResults.data.sid;
+
+      //===============================================
+      // Test speech credentials
+      //===============================================
+      const testResults = await axios({
+        method: 'get',
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: `/Accounts/${account_sid}/SpeechCredentials/${newSid}/test`,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      if (useForTts && testResults.data.tts.status === 'not tested') {
+        errorMessages.push('text-to-speech was not tested, please try again.');
+      }
+
+      if (useForStt && testResults.data.stt.status === 'not tested') {
+        errorMessages.push('speech-to-text was not tested, please try again.');
+      }
+
+      let ttsReason = '';
+      if (useForTts && testResults.data.tts.status === 'fail') {
+        ttsReason = testResults.data.tts.reason;
+        errorMessages.push(`Text-to-speech error: ${ttsReason}` || 'Text-to-speech test failed');
+      }
+
+      if (
+        useForStt &&
+        testResults.data.stt.status === 'fail' &&
+        testResults.data.stt.reason !== ttsReason
+      ) {
+        const ttsReason = testResults.data.stt.reason;
+        errorMessages.push(`Speech-to-text error: ${ttsReason}` || 'Speech-to-text test failed');
+      }
+
+      if (errorMessages.length > 1) {
+        setErrorMessage(errorMessages);
+      } else if (errorMessages.length === 1) {
+        setErrorMessage(errorMessages[0]);
+      }
+
+      if (errorMessages.length) {
+        await axios({
+          method: 'delete',
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: `/Accounts/${account_sid}/SpeechCredentials/${newSid}`,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        return;
+      }
 
       isMounted = false;
       history.push('/account/speech-services');
@@ -287,7 +346,7 @@ const SpeechServicesAddEdit = () => {
           message: 'Your session has expired. Please log in and try again.',
         });
       } else {
-        setErrorMessage((err.response && err.response.data && err.response.data.msg) || 'Something went wrong, please try again.');
+        setErrorMessage((err.response && err.response.data && err.response.data.msg) || err.message || 'Something went wrong, please try again.');
         console.error(err.response || err);
       }
     } finally {
