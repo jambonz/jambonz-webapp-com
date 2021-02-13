@@ -74,16 +74,17 @@ const SpeechServicesAddEdit = () => {
           });
 
           let serviceKeyJson = '';
+          let displayedServiceKeyJson = '';
 
           try {
-            const parsedJson = JSON.parse(speechCredential.data.service_key);
-            serviceKeyJson = JSON.stringify(parsedJson, null, 2);
+            serviceKeyJson = JSON.parse(speechCredential.data.service_key);
+            displayedServiceKeyJson = JSON.stringify(serviceKeyJson, null, 2);
           } catch (err) {
           }
 
           setVendor(              speechCredential.data.vendor            || undefined);
-          setServiceKey(          speechCredential.data.service_key       || '');
-          setDisplayedServiceKey( serviceKeyJson                          || '');
+          setServiceKey(          serviceKeyJson                          || '');
+          setDisplayedServiceKey( displayedServiceKeyJson                 || '');
           setAccessKeyId(         speechCredential.data.access_key_id     || '');
           setSecretAccessKey(     speechCredential.data.secret_access_key || '');
           setUseForTts(           speechCredential.data.use_for_tts       || false);
