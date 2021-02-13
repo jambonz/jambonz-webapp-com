@@ -22,7 +22,7 @@ const SpeechServicesAddEdit = () => {
   const jwt = localStorage.getItem('jwt');
   const account_sid = localStorage.getItem('account_sid');
 
-  const { speech_credential_sid } = useParams();
+  let { speech_credential_sid } = useParams();
   const type = speech_credential_sid ? 'edit' : 'add';
   const pageTitle = type === 'edit' ? 'Edit Speech Service' : 'Add Speech Service';
   useEffect(() => {
@@ -53,6 +53,9 @@ const SpeechServicesAddEdit = () => {
   const [ invalidSecretAccessKey, setInvalidSecretAccessKey ] = useState(false);
   const [ invalidUseForTts,       setInvalidUseForTts       ] = useState(false);
   const [ invalidUseForStt,       setInvalidUseForStt       ] = useState(false);
+
+  const [ originalTtsValue,       setOriginalTtsValue       ] = useState(null);
+  const [ originalSttValue,       setOriginalSttValue       ] = useState(null);
 
   const [ validServiceKey,        setValidServiceKey        ] = useState(false);
 
@@ -89,6 +92,8 @@ const SpeechServicesAddEdit = () => {
           setSecretAccessKey(     speechCredential.data.secret_access_key || '');
           setUseForTts(           speechCredential.data.use_for_tts       || false);
           setUseForStt(           speechCredential.data.use_for_stt       || false);
+          setOriginalTtsValue(    speechCredential.data.use_for_tts       || false);
+          setOriginalSttValue(    speechCredential.data.use_for_stt       || false);
         }
         setShowLoader(false);
       } catch (err) {
@@ -265,65 +270,95 @@ const SpeechServicesAddEdit = () => {
         }
       });
 
-      if (!postResults.data || !postResults.data.sid) {
-        throw new Error('Error retrieving response data');
-      }
+      if (type === 'add') {
+        if (!postResults.data || !postResults.data.sid) {
+          throw new Error('Error retrieving response data');
+        }
 
-      const newSid = postResults.data.sid;
+        speech_credential_sid = postResults.data.sid;
+      }
 
       //===============================================
       // Test speech credentials
       //===============================================
-      const testResults = await axios({
-        method: 'get',
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: `/Accounts/${account_sid}/SpeechCredentials/${newSid}/test`,
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-
-      if (useForTts && testResults.data.tts.status === 'not tested') {
-        errorMessages.push('text-to-speech was not tested, please try again.');
-      }
-
-      if (useForStt && testResults.data.stt.status === 'not tested') {
-        errorMessages.push('speech-to-text was not tested, please try again.');
-      }
-
-      let ttsReason = '';
-      if (useForTts && testResults.data.tts.status === 'fail') {
-        ttsReason = testResults.data.tts.reason;
-        errorMessages.push(`Text-to-speech error: ${ttsReason}` || 'Text-to-speech test failed');
-      }
-
-      if (
-        useForStt &&
-        testResults.data.stt.status === 'fail' &&
-        testResults.data.stt.reason !== ttsReason
-      ) {
-        const ttsReason = testResults.data.stt.reason;
-        errorMessages.push(`Speech-to-text error: ${ttsReason}` || 'Speech-to-text test failed');
-      }
-
-      if (errorMessages.length > 1) {
-        setErrorMessage(errorMessages);
-      } else if (errorMessages.length === 1) {
-        setErrorMessage(errorMessages[0]);
-      }
-
-      if (errorMessages.length) {
-        await axios({
-          method: 'delete',
+      if (useForTts || useForStt) {
+        const testResults = await axios({
+          method: 'get',
           baseURL: process.env.REACT_APP_API_BASE_URL,
-          url: `/Accounts/${account_sid}/SpeechCredentials/${newSid}`,
+          url: `/Accounts/${account_sid}/SpeechCredentials/${speech_credential_sid}/test`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
         });
-        return;
+
+        if (useForTts && testResults.data.tts.status === 'not tested') {
+          errorMessages.push('text-to-speech was not tested, please try again.');
+        }
+
+        if (useForStt && testResults.data.stt.status === 'not tested') {
+          errorMessages.push('speech-to-text was not tested, please try again.');
+        }
+
+        const ttsReason = (useForTts && testResults.data.tts.status === 'fail')
+          ? testResults.data.tts.reason
+          : null;
+
+        const sttReason = (useForStt && testResults.data.stt.status === 'fail')
+          ? testResults.data.stt.reason
+          : null;
+
+        if (ttsReason && (ttsReason === sttReason)) {
+          errorMessages.push(ttsReason);
+        } else {
+          if (ttsReason) {
+            errorMessages.push(`Text-to-speech error: ${ttsReason}`);
+          }
+
+          if (sttReason) {
+            errorMessages.push(`Speech-to-text error: ${sttReason}`);
+          }
+        }
+
+        if (errorMessages.length > 1) {
+          setErrorMessage(errorMessages);
+        } else if (errorMessages.length === 1) {
+          setErrorMessage(errorMessages[0]);
+        }
+
+        if (errorMessages.length) {
+          if (type === 'add') {
+            await axios({
+              method: 'delete',
+              baseURL: process.env.REACT_APP_API_BASE_URL,
+              url: `/Accounts/${account_sid}/SpeechCredentials/${speech_credential_sid}`,
+              headers: {
+                Authorization: `Bearer ${jwt}`,
+              },
+            });
+          }
+
+          if (type === 'edit') {
+            await axios({
+              method,
+              baseURL: process.env.REACT_APP_API_BASE_URL,
+              url,
+              headers: {
+                Authorization: `Bearer ${jwt}`,
+              },
+              data: {
+                use_for_tts: originalTtsValue,
+                use_for_stt: originalSttValue,
+              }
+            });
+          }
+
+          return;
+        }
       }
 
+      //===============================================
+      // If successful, go to speech services
+      //===============================================
       isMounted = false;
       history.push('/account/speech-services');
       const dispatchMessage = type === 'add'
