@@ -29,16 +29,81 @@ const SpeechServicesIndex = () => {
         },
       });
 
-      const cleanedUpSpeechServices = speechServices.data.map(s => {
+      const credentialTestPromises = speechServices.data.map(s => {
+        if (s.use_for_stt || s.use_for_tts) {
+          return axios({
+            method: 'get',
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url: `/Accounts/${account_sid}/SpeechCredentials/${s.speech_credentials_sid}/test`,
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+        }
+        return null;
+      });
+
+      const testResposes = await Promise.all(credentialTestPromises);
+
+      const cleanedUpSpeechServices = speechServices.data.map((s, i) => {
+        const testResults = testResposes[i] && testResposes[i].data;
+
+        let content = null;
+        let title = null;
+
+        if (s.use_for_tts && s.use_for_stt) {
+
+          if (testResults.tts.status === 'ok' && testResults.stt.status === 'ok') {
+            content = 'ok';
+            title = 'Connection test successful';
+          } else {
+            content = 'fail';
+
+            if (testResults.tts.reason && testResults.stt.reason) {
+
+              if (testResults.tts.reason === testResults.stt.reason) {
+                title = testResults.tts.reason;
+              } else {
+                title = `TTS: ${testResults.tts.reason}. STT: ${testResults.stt.reason}`;
+              }
+
+            } else if (testResults.tts.reason) {
+              title = `TTS: ${testResults.tts.reason}`;
+
+            } else if (testResults.stt.reason) {
+              title = `STT: ${testResults.stt.reason}`;
+            }
+          }
+
+        } else if (s.use_for_tts) {
+
+          content = testResults.tts.status;
+          title = testResults.tts.status === 'ok'
+            ? 'Connection test successful'
+            : testResults.tts.reason;
+
+        } else if (s.use_for_stt) {
+
+          content = testResults.stt.status;
+          title = testResults.stt.status === 'ok'
+            ? 'Connection test successful'
+            : testResults.stt.reason;
+
+        }
+
         return {
           sid: s.speech_credentials_sid,
           vendor: s.vendor,
           usage: (s.use_for_tts && s.use_for_stt) ? 'TTS/STT'
                 : s.use_for_tts ? 'TTS'
                 : s.use_for_stt ? 'STT'
-                : 'None',
+                : 'Not in use',
           last_used: s.last_used || 'Never used',
-          status: (s.tts_tested_ok && s.stt_tested_ok) ? 'Pass' : 'Fail',
+          status: {
+            type: 'status',
+            content,
+            title,
+          },
         };
       });
       return(cleanedUpSpeechServices);
@@ -71,7 +136,6 @@ const SpeechServicesIndex = () => {
       { name: 'Vendor',    content: s.vendor    || '[none]' },
       { name: 'Usage',     content: s.usage     || '[none]' },
       { name: 'Last Used', content: s.last_used || 'Never' },
-      { name: 'Status',    content: s.status    || '[none]' },
     ];
   };
   const deleteSpeechService = async speechServiceToDelete => {
