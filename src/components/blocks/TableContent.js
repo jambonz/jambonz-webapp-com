@@ -266,7 +266,6 @@ const TableContent = props => {
       )}
       <Table
         withCheckboxes={props.withCheckboxes}
-        rowsHaveDeleteButtons={props.rowsHaveDeleteButtons}
         fullWidth={props.fullWidth}
         condensed={props.condensed}
       >
@@ -274,7 +273,7 @@ const TableContent = props => {
         last two <th> are combined in a colSpan="2", preventing the columns from
         being given an expicit width (`table-layout: fixed;` requires setting
         column width in the first row) */}
-        {!props.rowsHaveDeleteButtons && !props.noRowMenu && (
+        {!props.noRowMenu && (
           <colgroup>
             <col
               span={
@@ -431,33 +430,24 @@ const TableContent = props => {
                   })}
                   {props.noRowMenu ? null : (
                     <td>
-                      {props.rowsHaveDeleteButtons ? (
-                        <Button
-                          gray
-                          onClick={() => setContentToDelete(a)}
-                        >
-                          Delete
-                        </Button>
-                      ) : (
-                        <TableMenu
-                          sid={a.sid}
-                          open={menuOpen === a.sid}
-                          handleMenuOpen={handleMenuOpen}
-                          disabled={modalOpen}
-                          menuItems={[
-                            {
-                              name: 'Edit',
-                              type: 'link',
-                              url: `/account/${props.urlParam}/${a.sid}/edit`,
-                            },
-                            {
-                              name: 'Delete',
-                              type: 'button',
-                              action: () => setContentToDelete(a),
-                            },
-                          ]}
-                        />
-                      )}
+                      <TableMenu
+                        sid={a.sid}
+                        open={menuOpen === a.sid}
+                        handleMenuOpen={handleMenuOpen}
+                        disabled={modalOpen}
+                        menuItems={[
+                          {
+                            name: 'Edit',
+                            type: 'link',
+                            url: `/account/${props.urlParam}/${a.sid}/edit`,
+                          },
+                          {
+                            name: 'Delete',
+                            type: 'button',
+                            action: () => setContentToDelete(a),
+                          },
+                        ]}
+                      />
                     </td>
                   )}
                 </tr>
