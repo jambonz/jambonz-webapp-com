@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
+import Section from '../../components/blocks/Section';
 import Link from '../../components/elements/Link.js';
 
 const Register = props => {
@@ -16,14 +17,12 @@ const Register = props => {
 
   return (
     <ExternalTemplate title="Register">
-      <p>Register with:</p>
-      <div>
-        <a href={gitHubUrl}>GitHub</a>
-      </div>
-      <div>
-        <a href={googleUrl}>Google</a>
-      </div>
-      <div><Link to="/register/email">Email</Link></div>
+      <Section>
+        <p>Register with:</p>
+        <p><a href={gitHubUrl}>GitHub</a></p>
+        <p><a href={googleUrl}>Google</a></p>
+        <p><Link to="/register/email">Email</Link></p>
+      </Section>
     </ExternalTemplate>
   );
 };

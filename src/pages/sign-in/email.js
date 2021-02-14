@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
+import Section from '../../components/blocks/Section';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Link from '../../components/elements/Link';
@@ -81,43 +82,47 @@ const SignIn = props => {
 
   return (
     <ExternalTemplate title="Sign In With Email">
-      <Form left onSubmit={handleSubmit}>
-        <Input
-          large
-          fullWidth
-          type="email"
-          name="email"
-          id="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          ref={refEmail}
-          invalid={invalidEmail}
-          autoFocus
-        />
-        <PasswordInput
-          large
-          allowShowPassword
-          name="password"
-          id="password"
-          placeholder="Password"
-          password={password}
-          setPassword={setPassword}
-          setErrorMessage={setErrorMessage}
-          ref={refPassword}
-          invalid={invalidPassword}
-        />
-        {errorMessage && (
-          <FormError message={errorMessage} />
-        )}
-        <Button
-          large
-          fullWidth
-        >
-          Sign In
-        </Button>
-        <Link to="/">Sign in another way</Link>
-      </Form>
+      <Section>
+        <Form left onSubmit={handleSubmit}>
+          <Input
+            large
+            fullWidth
+            type="email"
+            name="email"
+            id="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            ref={refEmail}
+            invalid={invalidEmail}
+            autoFocus
+          />
+          <PasswordInput
+            large
+            allowShowPassword
+            name="password"
+            id="password"
+            placeholder="Password"
+            password={password}
+            setPassword={setPassword}
+            setErrorMessage={setErrorMessage}
+            ref={refPassword}
+            invalid={invalidPassword}
+          />
+          {errorMessage && (
+            <FormError message={errorMessage} />
+          )}
+          <Button
+            large
+            fullWidth
+          >
+            Sign In
+          </Button>
+          <p>
+            <Link to="/">Sign in another way</Link>
+          </p>
+        </Form>
+      </Section>
     </ExternalTemplate>
   );
 };

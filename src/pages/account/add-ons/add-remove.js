@@ -1,10 +1,13 @@
 import InternalTemplate from '../../../components/templates/InternalTemplate';
 import Link from '../../../components/elements/Link.js';
+import Section from '../../../components/blocks/Section';
 
 const AddOnsAddRemove = () => {
   return (
     <InternalTemplate title="Add/Remove Add-On">
-      <Link to="/account/add-ons">← Back to Add-Ons</Link>
+      <Section>
+        <Link to="/account/add-ons">← Back to Add-Ons</Link>
+      </Section>
     </InternalTemplate>
   );
 };

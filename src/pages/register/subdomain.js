@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
+import Section from '../../components/blocks/Section';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Input from '../../components/elements/Input';
 import FormError from '../../components/blocks/FormError';
-import FormParagraph from '../../components/elements/FormParagraph';
 import Loader from '../../components/blocks/Loader';
 
 const RegisterChooseSubdomain = () => {
@@ -149,41 +149,43 @@ const RegisterChooseSubdomain = () => {
 
   return (
     <ExternalTemplate title="Choose a Subdomain">
-      <Form left onSubmit={handleSubmit}>
-        {showLoader ? (
-          <Loader height="161px" />
-        ) : (
-          <>
-            <FormParagraph>
-              This will be the FQDN where your carrier will
-              send calls, and where you can register devices
-              to. This can be changed at any time.
-            </FormParagraph>
-            <Input
-              fullWidth
-              type="text"
-              name="subdomain"
-              id="subdomain"
-              placeholder="your-name-here"
-              value={subdomain}
-              onChange={handleChange}
-              ref={refSubdomain}
-              invalid={invalidSubdomain}
-              quickValid={quickValid}
-              autoFocus
-            />
-            {subdomain &&
-              <FormParagraph>
-                FQDN: {subdomain}.{root_domain}
-              </FormParagraph>
-            }
-            {errorMessage && (
-              <FormError message={errorMessage} />
-            )}
-            <Button fullWidth>Continue →</Button>
-          </>
-        )}
-      </Form>
+      <Section>
+        <Form left onSubmit={handleSubmit}>
+          {showLoader ? (
+            <Loader height="161px" />
+          ) : (
+            <>
+              <p>
+                This will be the FQDN where your carrier will
+                send calls, and where you can register devices
+                to. This can be changed at any time.
+              </p>
+              <Input
+                fullWidth
+                type="text"
+                name="subdomain"
+                id="subdomain"
+                placeholder="your-name-here"
+                value={subdomain}
+                onChange={handleChange}
+                ref={refSubdomain}
+                invalid={invalidSubdomain}
+                quickValid={quickValid}
+                autoFocus
+              />
+              {subdomain &&
+                <p>
+                  FQDN: {subdomain}.{root_domain}
+                </p>
+              }
+              {errorMessage && (
+                <FormError message={errorMessage} />
+              )}
+              <Button fullWidth>Continue →</Button>
+            </>
+          )}
+        </Form>
+      </Section>
     </ExternalTemplate>
   );
 };

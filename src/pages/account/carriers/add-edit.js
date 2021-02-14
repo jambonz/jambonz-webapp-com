@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalTemplate from '../../../components/templates/InternalTemplate';
+import Section from '../../../components/blocks/Section';
 import Form from '../../../components/elements/Form';
 import Input from '../../../components/elements/Input';
 import PasswordInput from '../../../components/elements/PasswordInput';
@@ -617,216 +618,218 @@ const CarriersAddEdit = () => {
         { name: 'Back to Carriers', url: '/account/carriers' },
       ]}
     >
-      {showLoader ? (
-        <Loader height="376px" />
-      ) : (
-        <Form
-          large
-          onSubmit={handleSubmit}
-        >
-          <Label htmlFor="name">Name</Label>
-          <Input
-            name="name"
-            id="name"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder="Carrier name"
-            invalid={nameInvalid}
-            autoFocus
-            ref={refName}
-          />
-
-          <Label htmlFor="description">Description</Label>
-          <Input
-            name="description"
-            id="description"
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            placeholder="Optional"
-          />
-
-          <Label htmlFor="e164">E.164 Syntax</Label>
-          <Checkbox
-            noLeftMargin
-            name="e164"
-            id="e164"
-            label="prepend a leading + on origination attempts"
-            checked={e164}
-            onChange={e => setE164(e.target.checked)}
-          />
-
-          <hr style={{ margin: '0.5rem -2rem' }} />
-
-          {
-            !authenticate ? (
-              <React.Fragment>
-                <div></div>
-                <Button
-                  text
-                  formLink
-                  type="button"
-                  onClick={e => setAuthenticate(!authenticate)}
-                >
-                  Does your carrier require authentication?
-                </Button>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  name="username"
-                  id="username"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
-                  placeholder="SIP username for authentication"
-                  invalid={usernameInvalid}
-                  ref={refUsername}
-                />
-                <Label htmlFor="password">Password</Label>
-                <PasswordInput
-                  allowShowPassword
-                  name="password"
-                  id="password"
-                  password={password}
-                  setPassword={setPassword}
-                  setErrorMessage={setErrorMessage}
-                  placeholder="SIP password for authentication"
-                  invalid={passwordInvalid}
-                  ref={refPassword}
-                />
-                <div></div>
-                <Checkbox
-                  noLeftMargin
-                  name="register"
-                  id="register"
-                  label="Requires registration"
-                  checked={register}
-                  onChange={e => setRegister(e.target.checked)}
-                />
-                {
-                  register ? (
-                    <React.Fragment>
-                      <Label htmlFor="realm">SIP Realm</Label>
-                      <Input
-                        name="realm"
-                        id="realm"
-                        value={realm}
-                        onChange={e => setRealm(e.target.value)}
-                        placeholder="SIP realm for registration"
-                        invalid={realmInvalid}
-                        ref={refRealm}
-                      />
-                    </React.Fragment>
-                  ) : (
-                    null
-                  )
-                }
-              </React.Fragment>
-            )
-          }
-
-          <hr style={{ margin: '0.5rem -2rem' }} />
-
-          <div
-            style={{ whiteSpace: 'nowrap' }}
-          >SIP Gateways</div>
-          {
-            sipGateways.length
-            ? <div>{/* for CSS grid layout */}</div>
-            : null
-          }
-          {sipGateways.map((g, i) => (
-            <React.Fragment key={i}>
-              <Label htmlFor={`sipGatewaysIp[${i}]`}>IP Address</Label>
-              <InputGroup>
-                <Input
-                  name={`sipGatewaysIp[${i}]`}
-                  id={`sipGatewaysIp[${i}]`}
-                  value={sipGateways[i].ip}
-                  onChange={e => updateSipGateways(e, i, 'ip')}
-                  placeholder={'1.2.3.4'}
-                  invalid={sipGateways[i].invalidIp}
-                  ref={ref => refIp.current[i] = ref}
-                />
-                <Label
-                  middle
-                  htmlFor={`sipGatewaysPort[${i}]`}
-                >
-                  Port
-                </Label>
-                <Input
-                  width="5rem"
-                  name={`sipGatewaysPort[${i}]`}
-                  id={`sipGatewaysPort[${i}]`}
-                  value={sipGateways[i].port}
-                  onChange={e => updateSipGateways(e, i, 'port')}
-                  placeholder="5060"
-                  invalid={sipGateways[i].invalidPort}
-                  ref={ref => refPort.current[i] = ref}
-                />
-                <Checkbox
-                  id={`inbound[${i}]`}
-                  label="Inbound"
-                  tooltip="Sends us calls"
-                  checked={sipGateways[i].inbound}
-                  onChange={e => updateSipGateways(e, i, 'inbound')}
-                  invalid={sipGateways[i].invalidInbound}
-                  ref={ref => refInbound.current[i] = ref}
-                />
-                <Checkbox
-                  id={`outbound[${i}]`}
-                  label="Outbound"
-                  tooltip="Accepts calls from us"
-                  checked={sipGateways[i].outbound}
-                  onChange={e => updateSipGateways(e, i, 'outbound')}
-                  invalid={sipGateways[i].invalidOutbound}
-                  ref={ref => refOutbound.current[i] = ref}
-                />
-                <TrashButton
-                  onClick={() => removeSipGateway(i)}
-                  ref={ref => refTrash.current[i] = ref}
-                />
-              </InputGroup>
-            </React.Fragment>
-          ))}
-          <Button
-            square
-            type="button"
-            onClick={addSipGateway}
-            ref={refAdd}
+      <Section>
+        {showLoader ? (
+          <Loader height="376px" />
+        ) : (
+          <Form
+            large
+            onSubmit={handleSubmit}
           >
-            +
-          </Button>
-          {errorMessage && (
-            <FormError grid message={errorMessage} />
-          )}
+            <Label htmlFor="name">Name</Label>
+            <Input
+              name="name"
+              id="name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Carrier name"
+              invalid={nameInvalid}
+              autoFocus
+              ref={refName}
+            />
 
-          <InputGroup flexEnd spaced>
+            <Label htmlFor="description">Description</Label>
+            <Input
+              name="description"
+              id="description"
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="Optional"
+            />
+
+            <Label htmlFor="e164">E.164 Syntax</Label>
+            <Checkbox
+              noLeftMargin
+              name="e164"
+              id="e164"
+              label="prepend a leading + on origination attempts"
+              checked={e164}
+              onChange={e => setE164(e.target.checked)}
+            />
+
+            <hr style={{ margin: '0.5rem -2rem' }} />
+
+            {
+              !authenticate ? (
+                <React.Fragment>
+                  <div></div>
+                  <Button
+                    text
+                    formLink
+                    type="button"
+                    onClick={e => setAuthenticate(!authenticate)}
+                  >
+                    Does your carrier require authentication?
+                  </Button>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <Label htmlFor="username">Username</Label>
+                  <Input
+                    name="username"
+                    id="username"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    placeholder="SIP username for authentication"
+                    invalid={usernameInvalid}
+                    ref={refUsername}
+                  />
+                  <Label htmlFor="password">Password</Label>
+                  <PasswordInput
+                    allowShowPassword
+                    name="password"
+                    id="password"
+                    password={password}
+                    setPassword={setPassword}
+                    setErrorMessage={setErrorMessage}
+                    placeholder="SIP password for authentication"
+                    invalid={passwordInvalid}
+                    ref={refPassword}
+                  />
+                  <div></div>
+                  <Checkbox
+                    noLeftMargin
+                    name="register"
+                    id="register"
+                    label="Requires registration"
+                    checked={register}
+                    onChange={e => setRegister(e.target.checked)}
+                  />
+                  {
+                    register ? (
+                      <React.Fragment>
+                        <Label htmlFor="realm">SIP Realm</Label>
+                        <Input
+                          name="realm"
+                          id="realm"
+                          value={realm}
+                          onChange={e => setRealm(e.target.value)}
+                          placeholder="SIP realm for registration"
+                          invalid={realmInvalid}
+                          ref={refRealm}
+                        />
+                      </React.Fragment>
+                    ) : (
+                      null
+                    )
+                  }
+                </React.Fragment>
+              )
+            }
+
+            <hr style={{ margin: '0.5rem -2rem' }} />
+
+            <div
+              style={{ whiteSpace: 'nowrap' }}
+            >SIP Gateways</div>
+            {
+              sipGateways.length
+              ? <div>{/* for CSS grid layout */}</div>
+              : null
+            }
+            {sipGateways.map((g, i) => (
+              <React.Fragment key={i}>
+                <Label htmlFor={`sipGatewaysIp[${i}]`}>IP Address</Label>
+                <InputGroup>
+                  <Input
+                    name={`sipGatewaysIp[${i}]`}
+                    id={`sipGatewaysIp[${i}]`}
+                    value={sipGateways[i].ip}
+                    onChange={e => updateSipGateways(e, i, 'ip')}
+                    placeholder={'1.2.3.4'}
+                    invalid={sipGateways[i].invalidIp}
+                    ref={ref => refIp.current[i] = ref}
+                  />
+                  <Label
+                    middle
+                    htmlFor={`sipGatewaysPort[${i}]`}
+                  >
+                    Port
+                  </Label>
+                  <Input
+                    width="5rem"
+                    name={`sipGatewaysPort[${i}]`}
+                    id={`sipGatewaysPort[${i}]`}
+                    value={sipGateways[i].port}
+                    onChange={e => updateSipGateways(e, i, 'port')}
+                    placeholder="5060"
+                    invalid={sipGateways[i].invalidPort}
+                    ref={ref => refPort.current[i] = ref}
+                  />
+                  <Checkbox
+                    id={`inbound[${i}]`}
+                    label="Inbound"
+                    tooltip="Sends us calls"
+                    checked={sipGateways[i].inbound}
+                    onChange={e => updateSipGateways(e, i, 'inbound')}
+                    invalid={sipGateways[i].invalidInbound}
+                    ref={ref => refInbound.current[i] = ref}
+                  />
+                  <Checkbox
+                    id={`outbound[${i}]`}
+                    label="Outbound"
+                    tooltip="Accepts calls from us"
+                    checked={sipGateways[i].outbound}
+                    onChange={e => updateSipGateways(e, i, 'outbound')}
+                    invalid={sipGateways[i].invalidOutbound}
+                    ref={ref => refOutbound.current[i] = ref}
+                  />
+                  <TrashButton
+                    onClick={() => removeSipGateway(i)}
+                    ref={ref => refTrash.current[i] = ref}
+                  />
+                </InputGroup>
+              </React.Fragment>
+            ))}
             <Button
-              grid
-              gray
+              square
               type="button"
-              onClick={() => {
-                history.push('/account/carriers');
-                dispatch({
-                  type: 'ADD',
-                  level: 'info',
-                  message: type === 'add' ? 'New carrier canceled' :'Changes canceled',
-                });
-              }}
+              onClick={addSipGateway}
+              ref={refAdd}
             >
-              Cancel
+              +
             </Button>
+            {errorMessage && (
+              <FormError grid message={errorMessage} />
+            )}
 
-            <Button grid>
-              {type === 'add'
-                ? 'Add Carrier'
-                : 'Save'
-              }
-            </Button>
-          </InputGroup>
-        </Form>
-      )}
+            <InputGroup flexEnd spaced>
+              <Button
+                grid
+                gray
+                type="button"
+                onClick={() => {
+                  history.push('/account/carriers');
+                  dispatch({
+                    type: 'ADD',
+                    level: 'info',
+                    message: type === 'add' ? 'New carrier canceled' :'Changes canceled',
+                  });
+                }}
+              >
+                Cancel
+              </Button>
+
+              <Button grid>
+                {type === 'add'
+                  ? 'Add Carrier'
+                  : 'Save'
+                }
+              </Button>
+            </InputGroup>
+          </Form>
+        )}
+      </Section>
     </InternalTemplate>
   );
 };

@@ -1,10 +1,13 @@
 import InternalTemplate from '../../../components/templates/InternalTemplate';
 import Link from '../../../components/elements/Link.js';
+import Section from '../../../components/blocks/Section';
 
 const GettingStartedDetails = () => {
   return (
     <InternalTemplate title="Getting Started Details">
-      <Link to="/account/getting-started">← Back to Getting Started</Link>
+      <Section>
+        <Link to="/account/getting-started">← Back to Getting Started</Link>
+      </Section>
     </InternalTemplate>
   );
 };

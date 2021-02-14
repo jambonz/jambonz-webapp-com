@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
+import Section from '../../components/blocks/Section';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Link from '../../components/elements/Link';
@@ -157,53 +158,57 @@ const RegisterWithEmail = props => {
 
   return (
     <ExternalTemplate title="Register With Email">
-      <Form left onSubmit={handleSubmit}>
-        {showLoader ? (
-          <Loader height="211px" />
-        ) : (
-          <>
-            <Input
-              fullWidth
-              type="text"
-              name="name"
-              id="name"
-              placeholder="Your Name"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              ref={refName}
-              invalid={invalidName}
-              autoFocus
-            />
-            <Input
-              fullWidth
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              ref={refEmail}
-              invalid={invalidEmail}
-            />
-            <PasswordInput
-              allowShowPassword
-              name="password"
-              id="password"
-              placeholder="Password"
-              password={password}
-              setPassword={setPassword}
-              setErrorMessage={setErrorMessage}
-              ref={refPassword}
-              invalid={invalidPassword}
-            />
-            {errorMessage && (
-              <FormError message={errorMessage} />
-            )}
-            <Button fullWidth>Continue →</Button>
-            <Link to="/register">Go back</Link>
-          </>
-        )}
-      </Form>
+      <Section>
+        <Form left onSubmit={handleSubmit}>
+          {showLoader ? (
+            <Loader height="211px" />
+          ) : (
+            <>
+              <Input
+                fullWidth
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Your Name"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                ref={refName}
+                invalid={invalidName}
+                autoFocus
+              />
+              <Input
+                fullWidth
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                ref={refEmail}
+                invalid={invalidEmail}
+              />
+              <PasswordInput
+                allowShowPassword
+                name="password"
+                id="password"
+                placeholder="Password"
+                password={password}
+                setPassword={setPassword}
+                setErrorMessage={setErrorMessage}
+                ref={refPassword}
+                invalid={invalidPassword}
+              />
+              {errorMessage && (
+                <FormError message={errorMessage} />
+              )}
+              <Button fullWidth>Continue →</Button>
+              <p>
+                <Link to="/register">Go back</Link>
+              </p>
+            </>
+          )}
+        </Form>
+      </Section>
     </ExternalTemplate>
   );
 };

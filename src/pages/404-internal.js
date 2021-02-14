@@ -8,7 +8,10 @@ const Container = styled.div`
 
 const InvalidRoute = () => {
   return (
-      <InternalTemplate title="Invalid Route">
+      <InternalTemplate
+        type="simple"
+        title="Invalid Route"
+      >
         <Container>
           That page doesn't exist.
         </Container>

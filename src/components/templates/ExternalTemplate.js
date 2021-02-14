@@ -30,10 +30,6 @@ const ContentContainer = styled.div`
     width: 100%;
   }
   margin-top: 1.25rem;
-  background: #FFF;
-  border-radius: 0.5rem;
-  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1),
-  0px 0px 0.25rem rgba(0, 0, 0, 0.1);
   ${props => props.wide && `
     min-width: 58rem;
   `}

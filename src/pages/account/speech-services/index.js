@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalTemplate from '../../../components/templates/InternalTemplate';
+import Section from '../../../components/blocks/Section';
 import TableContent from '../../../components/blocks/TableContent.js';
 
 const SpeechServicesIndex = () => {
@@ -182,23 +183,26 @@ const SpeechServicesIndex = () => {
   //=============================================================================
   return (
     <InternalTemplate
+      type="singleTable"
       title="Speech Services"
       addButtonText="Add Speech Service"
       addButtonLink="/account/speech-services/add"
     >
-      <TableContent
-        name="speech service"
-        urlParam="speech-services"
-        getContent={getSpeechServices}
-        columns={[
-          { header: 'Vendor',    key: 'vendor'    },
-          { header: 'Usage',     key: 'usage'     },
-          { header: 'Last Used', key: 'last_used' },
-          { header: 'Status',    key: 'status'    },
-        ]}
-        formatContentToDelete={formatSpeechServiceToDelete}
-        deleteContent={deleteSpeechService}
-      />
+      <Section>
+        <TableContent
+          name="speech service"
+          urlParam="speech-services"
+          getContent={getSpeechServices}
+          columns={[
+            { header: 'Vendor',    key: 'vendor'    },
+            { header: 'Usage',     key: 'usage'     },
+            { header: 'Last Used', key: 'last_used' },
+            { header: 'Status',    key: 'status'    },
+          ]}
+          formatContentToDelete={formatSpeechServiceToDelete}
+          deleteContent={deleteSpeechService}
+        />
+      </Section>
     </InternalTemplate>
   );
 };

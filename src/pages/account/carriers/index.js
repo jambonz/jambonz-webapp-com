@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalTemplate from '../../../components/templates/InternalTemplate';
+import Section from '../../../components/blocks/Section';
 import TableContent from '../../../components/blocks/TableContent.js';
 import sortSipGateways from '../../../helpers/sortSipGateways';
 
@@ -180,23 +181,26 @@ const CarriersIndex = () => {
   //=============================================================================
   return (
     <InternalTemplate
+      type="singleTable"
       title="Carriers"
       addButtonText="Add a Carriers"
       addButtonLink="/account/carriers/add"
       subtitle={sipRealm ? `Have your carrier${carriers.length > 1 ? 's' : ''} send calls to ${sipRealm}` : <>&nbsp;</>}
     >
-      <TableContent
-        name="Carrier"
-        urlParam="carriers"
-        getContent={getCarriers}
-        columns={[
-          { header: 'Name',         key: 'name'           },
-          { header: 'Description',  key: 'description'    },
-          { header: 'SIP Gateways', key: 'gatewaysConcat' },
-        ]}
-        formatContentToDelete={formatCarrierToDelete}
-        deleteContent={deleteCarrier}
-      />
+      <Section>
+        <TableContent
+          name="Carrier"
+          urlParam="carriers"
+          getContent={getCarriers}
+          columns={[
+            { header: 'Name',         key: 'name'           },
+            { header: 'Description',  key: 'description'    },
+            { header: 'SIP Gateways', key: 'gatewaysConcat' },
+          ]}
+          formatContentToDelete={formatCarrierToDelete}
+          deleteContent={deleteCarrier}
+        />
+      </Section>
     </InternalTemplate>
   );
 };

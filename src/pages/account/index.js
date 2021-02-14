@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ExternalTemplate from '../../components/templates/ExternalTemplate';
+import InternalTemplate from '../../components/templates/InternalTemplate';
+import Section from '../../components/blocks/Section';
 
 const AccountHome = () => {
   const jwt = localStorage.getItem('jwt');
@@ -26,11 +27,13 @@ const AccountHome = () => {
   }, [jwt]);
 
   return (
-    <ExternalTemplate title="Account Home">
-      <code style={{whiteSpace:'pre'}}>
-        {JSON.stringify(data, null, 2)}
-      </code>
-    </ExternalTemplate>
+    <InternalTemplate title="Home">
+      <Section>
+        <code style={{whiteSpace:'pre'}}>
+          {JSON.stringify(data, null, 2)}
+        </code>
+      </Section>
+    </InternalTemplate>
   );
 };
 

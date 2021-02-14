@@ -5,6 +5,7 @@ import { NotificationDispatchContext } from '../../../contexts/NotificationConte
 import InternalTemplate from '../../../components/templates/InternalTemplate';
 import TableContent from '../../../components/blocks/TableContent.js';
 import phoneNumberFormat from '../../../helpers/phoneNumberFormat';
+import Section from '../../../components/blocks/Section';
 
 const PhoneNumbersIndex = () => {
   let history = useHistory();
@@ -207,25 +208,28 @@ const PhoneNumbersIndex = () => {
   //=============================================================================
   return (
     <InternalTemplate
+      type="singleTable"
       title="Phone Numbers"
       addButtonText="Add a Phone Number"
       addButtonLink="/account/phone-numbers/add"
     >
-      <TableContent
-        withCheckboxes
-        name="phone number"
-        urlParam="phone-numbers"
-        getContent={getPhoneNumbers}
-        columns={[
-          { header: 'Number',      key: 'number'      },
-          { header: 'Carrier',     key: 'carrier'     },
-          { header: 'Application', key: 'application' },
-        ]}
-        formatContentToDelete={formatPhoneNumberToDelete}
-        deleteContent={deletePhoneNumber}
-        bulkMenuItems={applications}
-        bulkAction={handleBulkEditApplications}
-      />
+      <Section>
+        <TableContent
+          withCheckboxes
+          name="phone number"
+          urlParam="phone-numbers"
+          getContent={getPhoneNumbers}
+          columns={[
+            { header: 'Number',      key: 'number'      },
+            { header: 'Carrier',     key: 'carrier'     },
+            { header: 'Application', key: 'application' },
+          ]}
+          formatContentToDelete={formatPhoneNumberToDelete}
+          deleteContent={deletePhoneNumber}
+          bulkMenuItems={applications}
+          bulkAction={handleBulkEditApplications}
+        />
+      </Section>
     </InternalTemplate>
   );
 };

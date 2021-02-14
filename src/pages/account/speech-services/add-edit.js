@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalTemplate from '../../../components/templates/InternalTemplate';
+import Section from '../../../components/blocks/Section';
 import Form from '../../../components/elements/Form';
 import Input from '../../../components/elements/Input';
 import Label from '../../../components/elements/Label';
@@ -400,157 +401,159 @@ const SpeechServicesAddEdit = () => {
         { name: 'Back to Speech Services', url: '/account/speech-services' },
       ]}
     >
-      {showLoader ? (
-        <Loader
-          height={
-            type === 'add' && !vendor
-              ? '152px'
-              : '364px'
-          }
-        />
-      ) : (
-        <Form
-          large
-          onSubmit={handleSubmit}
-        >
-          <span>Vendor</span>
-          <InputGroup>
-            <Radio
-              noLeftMargin
-              name="vendor"
-              id="google"
-              label="Google"
-              checked={vendor === 'google'}
-              onChange={() => setVendor('google')}
-              invalid={invalidVendorGoogle}
-              ref={refVendorGoogle}
-              disabled={type === 'edit'}
-            />
+      <Section>
+        {showLoader ? (
+          <Loader
+            height={
+              type === 'add' && !vendor
+                ? '152px'
+                : '364px'
+            }
+          />
+        ) : (
+          <Form
+            large
+            onSubmit={handleSubmit}
+          >
+            <span>Vendor</span>
+            <InputGroup>
+              <Radio
+                noLeftMargin
+                name="vendor"
+                id="google"
+                label="Google"
+                checked={vendor === 'google'}
+                onChange={() => setVendor('google')}
+                invalid={invalidVendorGoogle}
+                ref={refVendorGoogle}
+                disabled={type === 'edit'}
+              />
 
-            <Radio
-              name="vendor"
-              id="aws"
-              label="Amazon Web Services"
-              checked={vendor === 'aws'}
-              onChange={() => setVendor('aws')}
-              invalid={invalidVendorAws}
-              ref={refVendorAws}
-              disabled={type === 'edit'}
-            />
-          </InputGroup>
+              <Radio
+                name="vendor"
+                id="aws"
+                label="Amazon Web Services"
+                checked={vendor === 'aws'}
+                onChange={() => setVendor('aws')}
+                invalid={invalidVendorAws}
+                ref={refVendorAws}
+                disabled={type === 'edit'}
+              />
+            </InputGroup>
 
-          {vendor === 'google' ? (
-            <>
-              <Label htmlFor="serviceKey">Service Key</Label>
-              {type === 'add' && (
-                <FileUpload
-                  id="serviceKey"
-                  onChange={handleFileUpload}
-                  validFile={validServiceKey}
+            {vendor === 'google' ? (
+              <>
+                <Label htmlFor="serviceKey">Service Key</Label>
+                {type === 'add' && (
+                  <FileUpload
+                    id="serviceKey"
+                    onChange={handleFileUpload}
+                    validFile={validServiceKey}
+                  />
+                )}
+                {displayedServiceKey && (
+                  <>
+                    {type === 'add' && (
+                      <span></span>
+                    )}
+                    <Code>{displayedServiceKey}</Code>
+                  </>
+                )}
+              </>
+            ) : vendor === 'aws' ? (
+              <>
+                <Label htmlFor="accessKeyId">Access Key ID</Label>
+                <Input
+                  name="accessKeyId"
+                  id="accessKeyId"
+                  value={accessKeyId}
+                  onChange={e => setAccessKeyId(e.target.value)}
+                  placeholder=""
+                  invalid={invalidAccessKeyId}
+                  ref={refAccessKeyId}
+                  disabled={type === 'edit'}
                 />
-              )}
-              {displayedServiceKey && (
-                <>
-                  {type === 'add' && (
-                    <span></span>
-                  )}
-                  <Code>{displayedServiceKey}</Code>
-                </>
-              )}
-            </>
-          ) : vendor === 'aws' ? (
-            <>
-              <Label htmlFor="accessKeyId">Access Key ID</Label>
-              <Input
-                name="accessKeyId"
-                id="accessKeyId"
-                value={accessKeyId}
-                onChange={e => setAccessKeyId(e.target.value)}
-                placeholder=""
-                invalid={invalidAccessKeyId}
-                ref={refAccessKeyId}
-                disabled={type === 'edit'}
-              />
 
-              <Label htmlFor="secretAccessKey">Secret Access Key</Label>
-              <PasswordInput
-                allowShowPassword
-                name="secretAccessKey"
-                id="secretAccessKey"
-                password={secretAccessKey}
-                setPassword={setSecretAccessKey}
-                setErrorMessage={setErrorMessage}
-                invalid={invalidSecretAccessKey}
-                ref={refSecretAccessKey}
-                disabled={type === 'edit'}
-              />
-            </>
-          ) : (
-            null
-          )}
+                <Label htmlFor="secretAccessKey">Secret Access Key</Label>
+                <PasswordInput
+                  allowShowPassword
+                  name="secretAccessKey"
+                  id="secretAccessKey"
+                  password={secretAccessKey}
+                  setPassword={setSecretAccessKey}
+                  setErrorMessage={setErrorMessage}
+                  invalid={invalidSecretAccessKey}
+                  ref={refSecretAccessKey}
+                  disabled={type === 'edit'}
+                />
+              </>
+            ) : (
+              null
+            )}
 
-          {vendor === 'google' || vendor === 'aws' ? (
-            <>
-              <div></div>
+            {vendor === 'google' || vendor === 'aws' ? (
+              <>
+                <div></div>
 
-              <Checkbox
-                noLeftMargin
-                name="useForTts"
-                id="useForTts"
-                label="Use for text-to-speech"
-                checked={useForTts}
-                onChange={e => setUseForTts(e.target.checked)}
-                invalid={invalidUseForTts}
-                ref={refUseForTts}
-              />
+                <Checkbox
+                  noLeftMargin
+                  name="useForTts"
+                  id="useForTts"
+                  label="Use for text-to-speech"
+                  checked={useForTts}
+                  onChange={e => setUseForTts(e.target.checked)}
+                  invalid={invalidUseForTts}
+                  ref={refUseForTts}
+                />
 
-              <div></div>
+                <div></div>
 
-              <Checkbox
-                noLeftMargin
-                name="useForStt"
-                id="useForStt"
-                label="Use for speech-to-text"
-                checked={useForStt}
-                onChange={e => setUseForStt(e.target.checked)}
-                invalid={invalidUseForStt}
-                ref={refUseForStt}
-              />
-            </>
-          ) : (
-            null
-          )}
+                <Checkbox
+                  noLeftMargin
+                  name="useForStt"
+                  id="useForStt"
+                  label="Use for speech-to-text"
+                  checked={useForStt}
+                  onChange={e => setUseForStt(e.target.checked)}
+                  invalid={invalidUseForStt}
+                  ref={refUseForStt}
+                />
+              </>
+            ) : (
+              null
+            )}
 
-          {errorMessage && (
-            <FormError grid message={errorMessage} />
-          )}
+            {errorMessage && (
+              <FormError grid message={errorMessage} />
+            )}
 
-          <InputGroup flexEnd spaced>
-            <Button
-              grid
-              gray
-              type="button"
-              onClick={() => {
-                history.push('/account/speech-services');
-                dispatch({
-                  type: 'ADD',
-                  level: 'info',
-                  message: type === 'add' ? 'New speech service canceled' :'Changes canceled',
-                });
-              }}
-            >
-              Cancel
-            </Button>
+            <InputGroup flexEnd spaced>
+              <Button
+                grid
+                gray
+                type="button"
+                onClick={() => {
+                  history.push('/account/speech-services');
+                  dispatch({
+                    type: 'ADD',
+                    level: 'info',
+                    message: type === 'add' ? 'New speech service canceled' :'Changes canceled',
+                  });
+                }}
+              >
+                Cancel
+              </Button>
 
-            <Button grid>
-              {type === 'add'
-                ? 'Add Speech Service'
-                : 'Save'
-              }
-            </Button>
-          </InputGroup>
-        </Form>
-      )}
+              <Button grid>
+                {type === 'add'
+                  ? 'Add Speech Service'
+                  : 'Save'
+                }
+              </Button>
+            </InputGroup>
+          </Form>
+        )}
+      </Section>
     </InternalTemplate>
   );
 };

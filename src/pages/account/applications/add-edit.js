@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalTemplate from '../../../components/templates/InternalTemplate';
+import Section from '../../../components/blocks/Section';
 import Form from '../../../components/elements/Form';
 import Input from '../../../components/elements/Input';
 import Label from '../../../components/elements/Label';
@@ -363,427 +364,429 @@ const ApplicationsAddEdit = () => {
         { name: 'Back to Applications', url: '/account/applications' },
       ]}
     >
-      {showLoader ? (
-        <Loader
-          height={
-            type === 'edit'
-              ? '646px'
-              : '611px'
-          }
-        />
-      ) : (
-        <Form
-          large
-          onSubmit={handleSubmit}
-        >
-          {type === 'edit' && (
-            <React.Fragment>
-              <Label>ApplicationSid</Label>
-              <CopyableText text={applicationSid} textType="ApplicationSid" />
-            </React.Fragment>
-          )}
-
-          <Label htmlFor="name">Name</Label>
-          <Input
-            name="name"
-            id="name"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder="Application name"
-            invalid={invalidName}
-            autoFocus
-            ref={refName}
+      <Section>
+        {showLoader ? (
+          <Loader
+            height={
+              type === 'edit'
+                ? '646px'
+                : '611px'
+            }
           />
+        ) : (
+          <Form
+            large
+            onSubmit={handleSubmit}
+          >
+            {type === 'edit' && (
+              <React.Fragment>
+                <Label>ApplicationSid</Label>
+                <CopyableText text={applicationSid} textType="ApplicationSid" />
+              </React.Fragment>
+            )}
 
-          <hr />
-
-          <Label htmlFor="callWebhook">Calling Webhook</Label>
-          <InputGroup>
+            <Label htmlFor="name">Name</Label>
             <Input
-              name="callWebhook"
-              id="callWebhook"
-              value={callWebhook}
-              onChange={e => setCallWebhook(e.target.value)}
-              placeholder="URL that will handle calls"
-              invalid={invalidCallWebhook}
-              ref={refCallWebhook}
+              name="name"
+              id="name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Application name"
+              invalid={invalidName}
+              autoFocus
+              ref={refName}
             />
 
-            <Label
-              middle
-              htmlFor="callWebhookMethod"
-            >
-              Method
-            </Label>
-            <Select
-              name="callWebhookMethod"
-              id="callWebhookMethod"
-              value={callWebhookMethod}
-              onChange={e => setCallWebhookMethod(e.target.value)}
-            >
-              <option value="POST">POST</option>
-              <option value="GET">GET</option>
-            </Select>
-          </InputGroup>
+            <hr />
 
-          {showCallAuth ? (
+            <Label htmlFor="callWebhook">Calling Webhook</Label>
             <InputGroup>
-              <Label indented htmlFor="callWebhookUser">User</Label>
               <Input
-                name="callWebhookUser"
-                id="callWebhookUser"
-                value={callWebhookUser}
-                onChange={e => setCallWebhookUser(e.target.value)}
-                placeholder="Optional"
-                invalid={invalidCallWebhookUser}
-                ref={refCallWebhookUser}
+                name="callWebhook"
+                id="callWebhook"
+                value={callWebhook}
+                onChange={e => setCallWebhook(e.target.value)}
+                placeholder="URL that will handle calls"
+                invalid={invalidCallWebhook}
+                ref={refCallWebhook}
               />
-              <Label htmlFor="callWebhookPass" middle>Password</Label>
-              <PasswordInput
-                allowShowPassword
-                name="callWebhookPass"
-                id="callWebhookPass"
-                password={callWebhookPass}
-                setPassword={setCallWebhookPass}
-                setErrorMessage={setErrorMessage}
-                placeholder="Optional"
-                invalid={invalidCallWebhookPass}
-                ref={refCallWebhookPass}
-              />
+
+              <Label
+                middle
+                htmlFor="callWebhookMethod"
+              >
+                Method
+              </Label>
+              <Select
+                name="callWebhookMethod"
+                id="callWebhookMethod"
+                value={callWebhookMethod}
+                onChange={e => setCallWebhookMethod(e.target.value)}
+              >
+                <option value="POST">POST</option>
+                <option value="GET">GET</option>
+              </Select>
             </InputGroup>
-          ) : (
-            <Button
-              text
-              formLink
-              type="button"
-              onClick={toggleCallAuth}
-            >
-              Use HTTP Basic Authentication
-            </Button>
-          )}
 
-          <hr />
+            {showCallAuth ? (
+              <InputGroup>
+                <Label indented htmlFor="callWebhookUser">User</Label>
+                <Input
+                  name="callWebhookUser"
+                  id="callWebhookUser"
+                  value={callWebhookUser}
+                  onChange={e => setCallWebhookUser(e.target.value)}
+                  placeholder="Optional"
+                  invalid={invalidCallWebhookUser}
+                  ref={refCallWebhookUser}
+                />
+                <Label htmlFor="callWebhookPass" middle>Password</Label>
+                <PasswordInput
+                  allowShowPassword
+                  name="callWebhookPass"
+                  id="callWebhookPass"
+                  password={callWebhookPass}
+                  setPassword={setCallWebhookPass}
+                  setErrorMessage={setErrorMessage}
+                  placeholder="Optional"
+                  invalid={invalidCallWebhookPass}
+                  ref={refCallWebhookPass}
+                />
+              </InputGroup>
+            ) : (
+              <Button
+                text
+                formLink
+                type="button"
+                onClick={toggleCallAuth}
+              >
+                Use HTTP Basic Authentication
+              </Button>
+            )}
 
-          <Label htmlFor="statusWebhook">Call Status Webhook</Label>
-          <InputGroup>
-            <Input
-              name="statusWebhook"
-              id="statusWebhook"
-              value={statusWebhook}
-              onChange={e => setStatusWebhook(e.target.value)}
-              placeholder="URL that will receive call status"
-              invalid={invalidStatusWebhook}
-              ref={refStatusWebhook}
-            />
+            <hr />
 
-            <Label
-              middle
-              htmlFor="statusWebhookMethod"
-            >
-              Method
-            </Label>
-            <Select
-              name="statusWebhookMethod"
-              id="statusWebhookMethod"
-              value={statusWebhookMethod}
-              onChange={e => setStatusWebhookMethod(e.target.value)}
-            >
-              <option value="POST">POST</option>
-              <option value="GET">GET</option>
-            </Select>
-          </InputGroup>
-
-          {showStatusAuth ? (
+            <Label htmlFor="statusWebhook">Call Status Webhook</Label>
             <InputGroup>
-              <Label indented htmlFor="statusWebhookUser">User</Label>
               <Input
-                name="statusWebhookUser"
-                id="statusWebhookUser"
-                value={statusWebhookUser}
-                onChange={e => setStatusWebhookUser(e.target.value)}
-                placeholder="Optional"
-                invalid={invalidStatusWebhookUser}
-                ref={refStatusWebhookUser}
+                name="statusWebhook"
+                id="statusWebhook"
+                value={statusWebhook}
+                onChange={e => setStatusWebhook(e.target.value)}
+                placeholder="URL that will receive call status"
+                invalid={invalidStatusWebhook}
+                ref={refStatusWebhook}
               />
-              <Label htmlFor="statusWebhookPass" middle>Password</Label>
-              <PasswordInput
-                allowShowPassword
-                name="statusWebhookPass"
-                id="statusWebhookPass"
-                password={statusWebhookPass}
-                setPassword={setStatusWebhookPass}
-                setErrorMessage={setErrorMessage}
-                placeholder="Optional"
-                invalid={invalidStatusWebhookPass}
-                ref={refStatusWebhookPass}
-              />
+
+              <Label
+                middle
+                htmlFor="statusWebhookMethod"
+              >
+                Method
+              </Label>
+              <Select
+                name="statusWebhookMethod"
+                id="statusWebhookMethod"
+                value={statusWebhookMethod}
+                onChange={e => setStatusWebhookMethod(e.target.value)}
+              >
+                <option value="POST">POST</option>
+                <option value="GET">GET</option>
+              </Select>
             </InputGroup>
-          ) : (
-            <Button
-              text
-              formLink
-              type="button"
-              onClick={toggleStatusAuth}
-            >
-              Use HTTP Basic Authentication
-            </Button>
-          )}
 
-          <hr />
+            {showStatusAuth ? (
+              <InputGroup>
+                <Label indented htmlFor="statusWebhookUser">User</Label>
+                <Input
+                  name="statusWebhookUser"
+                  id="statusWebhookUser"
+                  value={statusWebhookUser}
+                  onChange={e => setStatusWebhookUser(e.target.value)}
+                  placeholder="Optional"
+                  invalid={invalidStatusWebhookUser}
+                  ref={refStatusWebhookUser}
+                />
+                <Label htmlFor="statusWebhookPass" middle>Password</Label>
+                <PasswordInput
+                  allowShowPassword
+                  name="statusWebhookPass"
+                  id="statusWebhookPass"
+                  password={statusWebhookPass}
+                  setPassword={setStatusWebhookPass}
+                  setErrorMessage={setErrorMessage}
+                  placeholder="Optional"
+                  invalid={invalidStatusWebhookPass}
+                  ref={refStatusWebhookPass}
+                />
+              </InputGroup>
+            ) : (
+              <Button
+                text
+                formLink
+                type="button"
+                onClick={toggleStatusAuth}
+              >
+                Use HTTP Basic Authentication
+              </Button>
+            )}
 
-          <Label htmlFor="messagingWebhook">Messaging Webhook</Label>
-          <InputGroup>
-            <Input
-              name="messagingWebhook"
-              id="messagingWebhook"
-              value={messagingWebhook}
-              onChange={e => setMessagingWebhook(e.target.value)}
-              placeholder="URL that will receive SMS (optional)"
-            />
+            <hr />
 
-            <Label
-              middle
-              htmlFor="messagingWebhookMethod"
-            >
-              Method
-            </Label>
-            <Select
-              name="messagingWebhookMethod"
-              id="messagingWebhookMethod"
-              value={messagingWebhookMethod}
-              onChange={e => setMessagingWebhookMethod(e.target.value)}
-            >
-              <option value="POST">POST</option>
-              <option value="GET">GET</option>
-            </Select>
-          </InputGroup>
-
-          {showMessagingAuth ? (
+            <Label htmlFor="messagingWebhook">Messaging Webhook</Label>
             <InputGroup>
-              <Label indented htmlFor="messagingWebhookUser">User</Label>
               <Input
-                name="messagingWebhookUser"
-                id="messagingWebhookUser"
-                value={messagingWebhookUser}
-                onChange={e => setMessagingWebhookUser(e.target.value)}
-                placeholder="Optional"
-                invalid={invalidMessagingWebhookUser}
-                ref={refMessagingWebhookUser}
+                name="messagingWebhook"
+                id="messagingWebhook"
+                value={messagingWebhook}
+                onChange={e => setMessagingWebhook(e.target.value)}
+                placeholder="URL that will receive SMS (optional)"
               />
-              <Label htmlFor="messagingWebhookPass" middle>Password</Label>
-              <PasswordInput
-                allowShowPassword
-                name="messagingWebhookPass"
-                id="messagingWebhookPass"
-                password={messagingWebhookPass}
-                setPassword={setMessagingWebhookPass}
-                setErrorMessage={setErrorMessage}
-                placeholder="Optional"
-                invalid={invalidMessagingWebhookPass}
-                ref={refMessagingWebhookPass}
-              />
+
+              <Label
+                middle
+                htmlFor="messagingWebhookMethod"
+              >
+                Method
+              </Label>
+              <Select
+                name="messagingWebhookMethod"
+                id="messagingWebhookMethod"
+                value={messagingWebhookMethod}
+                onChange={e => setMessagingWebhookMethod(e.target.value)}
+              >
+                <option value="POST">POST</option>
+                <option value="GET">GET</option>
+              </Select>
             </InputGroup>
-          ) : (
-            <Button
-              text
-              formLink
-              type="button"
-              onClick={toggleMessagingAuth}
-            >
-              Use HTTP Basic Authentication
-            </Button>
-          )}
 
-          <hr />
+            {showMessagingAuth ? (
+              <InputGroup>
+                <Label indented htmlFor="messagingWebhookUser">User</Label>
+                <Input
+                  name="messagingWebhookUser"
+                  id="messagingWebhookUser"
+                  value={messagingWebhookUser}
+                  onChange={e => setMessagingWebhookUser(e.target.value)}
+                  placeholder="Optional"
+                  invalid={invalidMessagingWebhookUser}
+                  ref={refMessagingWebhookUser}
+                />
+                <Label htmlFor="messagingWebhookPass" middle>Password</Label>
+                <PasswordInput
+                  allowShowPassword
+                  name="messagingWebhookPass"
+                  id="messagingWebhookPass"
+                  password={messagingWebhookPass}
+                  setPassword={setMessagingWebhookPass}
+                  setErrorMessage={setErrorMessage}
+                  placeholder="Optional"
+                  invalid={invalidMessagingWebhookPass}
+                  ref={refMessagingWebhookPass}
+                />
+              </InputGroup>
+            ) : (
+              <Button
+                text
+                formLink
+                type="button"
+                onClick={toggleMessagingAuth}
+              >
+                Use HTTP Basic Authentication
+              </Button>
+            )}
 
-          <Label htmlFor="speechSynthesisVendor">Speech Synthesis Vendor</Label>
-          <InputGroup>
-            <Select
-              name="speechSynthesisVendor"
-              id="speechSynthesisVendor"
-              value={speechSynthesisVendor}
-              onChange={e => {
-                setSpeechSynthesisVendor(e.target.value);
+            <hr />
 
-                // When using Google and en-US, ensure "Standard-C" is used as default
-                if (
-                  e.target.value === 'google' &&
-                  speechSynthesisLanguage === 'en-US'
-                ) {
-                  setSpeechSynthesisVoice('en-US-Standard-C');
-                  return;
-                }
+            <Label htmlFor="speechSynthesisVendor">Speech Synthesis Vendor</Label>
+            <InputGroup>
+              <Select
+                name="speechSynthesisVendor"
+                id="speechSynthesisVendor"
+                value={speechSynthesisVendor}
+                onChange={e => {
+                  setSpeechSynthesisVendor(e.target.value);
 
-                // Google and AWS have different voice lists. See if the newly
-                // chosen vendor has the same language as what was already in use.
-                let newLang = e.target.value === 'google'
-                  ? SpeechSynthesisLanguageGoogle.find(l => (
-                      l.code === speechSynthesisLanguage
-                    ))
-                  : SpeechSynthesisLanguageAws.find(l => (
-                      l.code === speechSynthesisLanguage
-                    ));
-
-                // if not, use en-US as fallback.
-                if (!newLang) {
-                  setSpeechSynthesisLanguage('en-US');
-
-                  if (e.target.value === 'google') {
+                  // When using Google and en-US, ensure "Standard-C" is used as default
+                  if (
+                    e.target.value === 'google' &&
+                    speechSynthesisLanguage === 'en-US'
+                  ) {
                     setSpeechSynthesisVoice('en-US-Standard-C');
                     return;
                   }
 
-                  newLang = SpeechSynthesisLanguageAws.find(l => (
-                    l.code === 'en-US'
-                  ));
-                }
+                  // Google and AWS have different voice lists. See if the newly
+                  // chosen vendor has the same language as what was already in use.
+                  let newLang = e.target.value === 'google'
+                    ? SpeechSynthesisLanguageGoogle.find(l => (
+                        l.code === speechSynthesisLanguage
+                      ))
+                    : SpeechSynthesisLanguageAws.find(l => (
+                        l.code === speechSynthesisLanguage
+                      ));
 
-                // Update state to reflect first voice option for language
-                setSpeechSynthesisVoice(newLang.voices[0].value);
-              }}
-            >
-              <option value="google">Google</option>
-              <option value="aws">AWS</option>
-            </Select>
-            <Label middle htmlFor="speechSynthesisLanguage">Language</Label>
-            <Select
-              name="speechSynthesisLanguage"
-              id="speechSynthesisLanguage"
-              value={speechSynthesisLanguage}
-              onChange={e => {
-                setSpeechSynthesisLanguage(e.target.value);
+                  // if not, use en-US as fallback.
+                  if (!newLang) {
+                    setSpeechSynthesisLanguage('en-US');
 
-                // When using Google and en-US, ensure "Standard-C" is used as default
-                if (
-                  (speechSynthesisVendor === 'google')
-                  && (e.target.value === 'en-US')
-                ) {
-                  setSpeechSynthesisVoice('en-US-Standard-C');
-                  return;
-                }
+                    if (e.target.value === 'google') {
+                      setSpeechSynthesisVoice('en-US-Standard-C');
+                      return;
+                    }
 
-                const newLang = speechSynthesisVendor === 'google'
-                  ? SpeechSynthesisLanguageGoogle.find(l => (
-                      l.code === e.target.value
-                    ))
-                  : SpeechSynthesisLanguageAws.find(l => (
-                      l.code === e.target.value
+                    newLang = SpeechSynthesisLanguageAws.find(l => (
+                      l.code === 'en-US'
                     ));
+                  }
 
-                setSpeechSynthesisVoice(newLang.voices[0].value);
+                  // Update state to reflect first voice option for language
+                  setSpeechSynthesisVoice(newLang.voices[0].value);
+                }}
+              >
+                <option value="google">Google</option>
+                <option value="aws">AWS</option>
+              </Select>
+              <Label middle htmlFor="speechSynthesisLanguage">Language</Label>
+              <Select
+                name="speechSynthesisLanguage"
+                id="speechSynthesisLanguage"
+                value={speechSynthesisLanguage}
+                onChange={e => {
+                  setSpeechSynthesisLanguage(e.target.value);
 
-              }}
-            >
-              {speechSynthesisVendor === 'google' ? (
-                SpeechSynthesisLanguageGoogle.map(l => (
-                  <option key={l.code} value={l.code}>{l.name}</option>
-                ))
-              ) : (
-                SpeechSynthesisLanguageAws.map(l => (
-                  <option key={l.code} value={l.code}>{l.name}</option>
-                ))
-              )}
-            </Select>
-            <Label middle htmlFor="speechSynthesisVoice">Voice</Label>
-            <Select
-              name="speechSynthesisVoice"
-              id="speechSynthesisVoice"
-              value={speechSynthesisVoice}
-              onChange={e => setSpeechSynthesisVoice(e.target.value)}
-            >
-              {speechSynthesisVendor === 'google' ? (
-                SpeechSynthesisLanguageGoogle
-                  .filter(l => l.code === speechSynthesisLanguage)
-                  .map(m => m.voices.map(v => (
-                      <option key={v.value} value={v.value}>{v.name}</option>
-                  )))
-              ) : (
-                SpeechSynthesisLanguageAws
+                  // When using Google and en-US, ensure "Standard-C" is used as default
+                  if (
+                    (speechSynthesisVendor === 'google')
+                    && (e.target.value === 'en-US')
+                  ) {
+                    setSpeechSynthesisVoice('en-US-Standard-C');
+                    return;
+                  }
+
+                  const newLang = speechSynthesisVendor === 'google'
+                    ? SpeechSynthesisLanguageGoogle.find(l => (
+                        l.code === e.target.value
+                      ))
+                    : SpeechSynthesisLanguageAws.find(l => (
+                        l.code === e.target.value
+                      ));
+
+                  setSpeechSynthesisVoice(newLang.voices[0].value);
+
+                }}
+              >
+                {speechSynthesisVendor === 'google' ? (
+                  SpeechSynthesisLanguageGoogle.map(l => (
+                    <option key={l.code} value={l.code}>{l.name}</option>
+                  ))
+                ) : (
+                  SpeechSynthesisLanguageAws.map(l => (
+                    <option key={l.code} value={l.code}>{l.name}</option>
+                  ))
+                )}
+              </Select>
+              <Label middle htmlFor="speechSynthesisVoice">Voice</Label>
+              <Select
+                name="speechSynthesisVoice"
+                id="speechSynthesisVoice"
+                value={speechSynthesisVoice}
+                onChange={e => setSpeechSynthesisVoice(e.target.value)}
+              >
+                {speechSynthesisVendor === 'google' ? (
+                  SpeechSynthesisLanguageGoogle
                     .filter(l => l.code === speechSynthesisLanguage)
                     .map(m => m.voices.map(v => (
                         <option key={v.value} value={v.value}>{v.name}</option>
                     )))
-              )}
-            </Select>
-          </InputGroup>
+                ) : (
+                  SpeechSynthesisLanguageAws
+                      .filter(l => l.code === speechSynthesisLanguage)
+                      .map(m => m.voices.map(v => (
+                          <option key={v.value} value={v.value}>{v.name}</option>
+                      )))
+                )}
+              </Select>
+            </InputGroup>
 
-          <hr />
+            <hr />
 
-          <Label htmlFor="speechRecognizerVendor">Speech Recognizer Vendor</Label>
-          <InputGroup>
-            <Select
-              name="speechRecognizerVendor"
-              id="speechRecognizerVendor"
-              value={speechRecognizerVendor}
-              onChange={e => {
-                setSpeechRecognizerVendor(e.target.value);
+            <Label htmlFor="speechRecognizerVendor">Speech Recognizer Vendor</Label>
+            <InputGroup>
+              <Select
+                name="speechRecognizerVendor"
+                id="speechRecognizerVendor"
+                value={speechRecognizerVendor}
+                onChange={e => {
+                  setSpeechRecognizerVendor(e.target.value);
 
-                // Google and AWS have different language lists. If the newly chosen
-                // vendor doesn't have the same language that was already in use,
-                // select US English
-                if ((
-                  e.target.value === 'google' &&
-                  !SpeechRecognizerLanguageGoogle.some(l => l.code === speechRecognizerLanguage)
-                ) || (
-                  e.target.value === 'aws' &&
-                  !SpeechRecognizerLanguageAws.some(l => l.code === speechRecognizerLanguage)
-                )) {
-                  setSpeechRecognizerLanguage('en-US');
+                  // Google and AWS have different language lists. If the newly chosen
+                  // vendor doesn't have the same language that was already in use,
+                  // select US English
+                  if ((
+                    e.target.value === 'google' &&
+                    !SpeechRecognizerLanguageGoogle.some(l => l.code === speechRecognizerLanguage)
+                  ) || (
+                    e.target.value === 'aws' &&
+                    !SpeechRecognizerLanguageAws.some(l => l.code === speechRecognizerLanguage)
+                  )) {
+                    setSpeechRecognizerLanguage('en-US');
+                  }
+                }}
+              >
+                <option value="google">Google</option>
+                <option value="aws">AWS</option>
+              </Select>
+              <Label middle htmlFor="speechRecognizerLanguage">Language</Label>
+              <Select
+                name="speechRecognizerLanguage"
+                id="speechRecognizerLanguage"
+                value={speechRecognizerLanguage}
+                onChange={e => setSpeechRecognizerLanguage(e.target.value)}
+              >
+                {speechRecognizerVendor === 'google' ? (
+                  SpeechRecognizerLanguageGoogle.map(l => (
+                    <option key={l.code} value={l.code}>{l.name}</option>
+                  ))
+                ) : (
+                  SpeechRecognizerLanguageAws.map(l => (
+                    <option key={l.code} value={l.code}>{l.name}</option>
+                  ))
+                )}
+              </Select>
+            </InputGroup>
+
+            {errorMessage && (
+              <FormError grid message={errorMessage} />
+            )}
+
+            <InputGroup flexEnd spaced>
+              <Button
+                grid
+                gray
+                type="button"
+                onClick={() => {
+                  history.push('/account/applications');
+                  dispatch({
+                    type: 'ADD',
+                    level: 'info',
+                    message: type === 'add' ? 'New application canceled' :'Changes canceled',
+                  });
+                }}
+              >
+                Cancel
+              </Button>
+
+              <Button grid>
+                {type === 'add'
+                  ? 'Add Application'
+                  : 'Save'
                 }
-              }}
-            >
-              <option value="google">Google</option>
-              <option value="aws">AWS</option>
-            </Select>
-            <Label middle htmlFor="speechRecognizerLanguage">Language</Label>
-            <Select
-              name="speechRecognizerLanguage"
-              id="speechRecognizerLanguage"
-              value={speechRecognizerLanguage}
-              onChange={e => setSpeechRecognizerLanguage(e.target.value)}
-            >
-              {speechRecognizerVendor === 'google' ? (
-                SpeechRecognizerLanguageGoogle.map(l => (
-                  <option key={l.code} value={l.code}>{l.name}</option>
-                ))
-              ) : (
-                SpeechRecognizerLanguageAws.map(l => (
-                  <option key={l.code} value={l.code}>{l.name}</option>
-                ))
-              )}
-            </Select>
-          </InputGroup>
-
-          {errorMessage && (
-            <FormError grid message={errorMessage} />
-          )}
-
-          <InputGroup flexEnd spaced>
-            <Button
-              grid
-              gray
-              type="button"
-              onClick={() => {
-                history.push('/account/applications');
-                dispatch({
-                  type: 'ADD',
-                  level: 'info',
-                  message: type === 'add' ? 'New application canceled' :'Changes canceled',
-                });
-              }}
-            >
-              Cancel
-            </Button>
-
-            <Button grid>
-              {type === 'add'
-                ? 'Add Application'
-                : 'Save'
-              }
-            </Button>
-          </InputGroup>
-        </Form>
-      )}
+              </Button>
+            </InputGroup>
+          </Form>
+        )}
+      </Section>
     </InternalTemplate>
   );
 };

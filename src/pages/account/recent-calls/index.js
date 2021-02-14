@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalTemplate from '../../../components/templates/InternalTemplate';
+import Section from '../../../components/blocks/Section';
 import TableContent from '../../../components/blocks/TableContent';
 import phoneNumberFormat from '../../../helpers/phoneNumberFormat';
 import timeFormat from '../../../helpers/timeFormat';
@@ -73,23 +74,28 @@ const RecentCallsIndex = () => {
   // Render
   //=============================================================================
   return (
-    <InternalTemplate title="Recent Calls" fullWidthTable>
-      <TableContent
-        fullWidth
-        noRowMenu
-        condensed
-        name="recent call"
-        getContent={getRecentCalls}
-        columns={[
-          { header: 'Date',           key: 'date',           fontWeight: 'normal' },
-          { header: 'Direction',      key: 'direction'                            },
-          { header: 'From',           key: 'from'                                 },
-          { header: 'To',             key: 'to'                                   },
-          { header: 'Status',         key: 'status'                               },
-          { header: 'Duration',       key: 'duration',       textAlign: 'right'   },
-          { header: 'Amount Charged', key: 'amount_charged', textAlign: 'right'   },
-        ]}
-      />
+    <InternalTemplate
+      type="fullWidthTable"
+      title="Recent Calls"
+    >
+      <Section fullPage>
+        <TableContent
+          fullWidth
+          noRowMenu
+          condensed
+          name="recent call"
+          getContent={getRecentCalls}
+          columns={[
+            { header: 'Date',           key: 'date',           fontWeight: 'normal' },
+            { header: 'Direction',      key: 'direction'                            },
+            { header: 'From',           key: 'from'                                 },
+            { header: 'To',             key: 'to'                                   },
+            { header: 'Status',         key: 'status'                               },
+            { header: 'Duration',       key: 'duration',       textAlign: 'right'   },
+            { header: 'Amount Charged', key: 'amount_charged', textAlign: 'right'   },
+          ]}
+        />
+      </Section>
     </InternalTemplate>
   );
 };

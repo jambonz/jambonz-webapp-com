@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalTemplate from '../../../components/templates/InternalTemplate';
+import Section from '../../../components/blocks/Section.js';
 import TableContent from '../../../components/blocks/TableContent.js';
 
 const ApplicationsIndex = () => {
@@ -148,22 +149,25 @@ const ApplicationsIndex = () => {
   //=============================================================================
   return (
     <InternalTemplate
+      type="singleTable"
       title="Applications"
       addButtonText="Add an Application"
       addButtonLink="/account/applications/add"
     >
-      <TableContent
-        name="application"
-        urlParam="applications"
-        getContent={getApplications}
-        columns={[
-          { header: 'Name',                key: 'name'            },
-          { header: 'Calling Webhook',     key: 'call_hook_url'   },
-          { header: 'Call Status Webhook', key: 'status_hook_url' },
-        ]}
-        formatContentToDelete={formatApplicationToDelete}
-        deleteContent={deleteApplication}
-      />
+      <Section>
+        <TableContent
+          name="application"
+          urlParam="applications"
+          getContent={getApplications}
+          columns={[
+            { header: 'Name',                key: 'name'            },
+            { header: 'Calling Webhook',     key: 'call_hook_url'   },
+            { header: 'Call Status Webhook', key: 'status_hook_url' },
+          ]}
+          formatContentToDelete={formatApplicationToDelete}
+          deleteContent={deleteApplication}
+        />
+      </Section>
     </InternalTemplate>
   );
 };

@@ -2,12 +2,20 @@ import styled from 'styled-components/macro';
 
 const Form = styled.form`
   text-align: ${props => props.left ? 'left' : 'right'};
-  padding: 2rem;
   ${props => !props.large && `
     & input {
       margin-bottom: 1rem;
     }
   `}
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+
   & hr {
     margin: 0 -2rem;
     background: none;

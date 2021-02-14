@@ -4,12 +4,17 @@ const Table = styled.table`
   table-layout: fixed;
   border-collapse: collapse;
   white-space: nowrap;
-  ${props => props.fullWidth ? `
-    min-width: 100%;
-  ` : `
-    width: 38rem;
-    min-width: 100%;
-  `}
+  min-width: calc(100% + 4rem);
+  margin-left: -2rem;
+  margin-right: -2rem;
+
+  &:first-child {
+    margin-top: -2rem;
+  }
+
+  &:last-child {
+    margin-bottom: -2rem;
+  }
 
   & > thead {
     background: #F7F7F7;

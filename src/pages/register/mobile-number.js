@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
+import Section from '../../components/blocks/Section';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Link from '../../components/elements/Link';
 import Input from '../../components/elements/Input';
 import FormError from '../../components/blocks/FormError';
-import FormParagraph from '../../components/elements/FormParagraph';
 import Loader from '../../components/blocks/Loader';
 import generateActivationCode from '../../helpers/generateActivationCode';
 
@@ -142,37 +142,41 @@ const RegisterMobileNumber = () => {
 
   return (
     <ExternalTemplate title="Mobile Number">
-      <Form left onSubmit={handleSubmit}>
-        {showLoader ? (
-          <Loader height="199px" />
-        ) : (
-          <>
-            <FormParagraph>
-              Adding your mobile number will allow you to make test callsfrom
-              your mobile without a paid plan. If you provide your number, we
-              will send you a verification text message.
-            </FormParagraph>
-            <Input
-              fullWidth
-              type="text"
-              name="mobile"
-              id="mobile"
-              placeholder="US Mobile Number (Optional)"
-              value={mobile}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              ref={refMobile}
-              invalid={invalidMobile}
-              autoFocus
-            />
-            {errorMessage && (
-              <FormError message={errorMessage} />
-            )}
-            <Button fullWidth>Continue →</Button>
-            <Link to="/register/complete">Maybe Later</Link>
-          </>
-        )}
-      </Form>
+      <Section>
+        <Form left onSubmit={handleSubmit}>
+          {showLoader ? (
+            <Loader height="199px" />
+          ) : (
+            <>
+              <p>
+                Adding your mobile number will allow you to make test callsfrom
+                your mobile without a paid plan. If you provide your number, we
+                will send you a verification text message.
+              </p>
+              <Input
+                fullWidth
+                type="text"
+                name="mobile"
+                id="mobile"
+                placeholder="US Mobile Number (Optional)"
+                value={mobile}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                ref={refMobile}
+                invalid={invalidMobile}
+                autoFocus
+              />
+              {errorMessage && (
+                <FormError message={errorMessage} />
+              )}
+              <Button fullWidth>Continue →</Button>
+              <p>
+                <Link to="/register/complete">Maybe Later</Link>
+              </p>
+            </>
+          )}
+        </Form>
+      </Section>
     </ExternalTemplate>
   );
 };
