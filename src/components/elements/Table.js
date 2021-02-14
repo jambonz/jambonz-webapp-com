@@ -4,8 +4,12 @@ const Table = styled.table`
   table-layout: fixed;
   border-collapse: collapse;
   white-space: nowrap;
-  width: 100%;
-  min-width: 38rem;
+  ${props => props.fullWidth ? `
+    min-width: 100%;
+  ` : `
+    width: 38rem;
+    min-width: 100%;
+  `}
 
   & > thead {
     background: #F7F7F7;
@@ -20,12 +24,17 @@ const Table = styled.table`
   }
 
   & tbody tr {
-    height: 5.5rem;
+    height: ${props => props.condensed
+      ? '2.5rem'
+      : '5.5rem'
+    };
   }
 
-  & tbody tr:last-child {
-    border-bottom: 0;
-  }
+  ${props => props.fullWidth ? '' : `
+    & tbody tr:last-child {
+      border-bottom: 0;
+    }
+  `}
 
   & th {
     text-align: left;
@@ -51,12 +60,14 @@ const Table = styled.table`
     text-decoration: none;
   }
 
-  & td > span > a > span {
+  & td:first-child > span > a > span,
+  & td:nth-child(2) > span > a > span {
     outline: 0;
     color: #565656;
   }
 
-  & td > span > a:hover > span {
+  & td:first-child > span > a:hover > span,
+  & td:nth-child(2) > span > a:hover > span {
     box-shadow: 0 0.125rem 0 #565656;
   }
 
@@ -71,11 +82,13 @@ const Table = styled.table`
     font-weight: bold;
   }
 
-  & td:last-child {
-    overflow: inherit;
-    position: relative;
-    padding: 0.5rem;
-  }
+  ${props => props.fullWidth ? '' : `
+    & td:last-child {
+      overflow: inherit;
+      position: relative;
+      padding: 0.5rem;
+    }
+  `}
 
   ${props => props.withCheckboxes && `
     & th:first-child,

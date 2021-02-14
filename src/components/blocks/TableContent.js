@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as PlainLink } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { ModalStateContext } from '../../contexts/ModalContext';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
 import Table from '../elements/Table.js';
 import Button from '../elements/Button.js';
 import Checkbox from '../elements/Checkbox.js';
+import Link from '../elements/Link.js';
 import TableMenu from '../blocks/TableMenu.js';
 import Loader from '../blocks/Loader.js';
 import Modal from '../blocks/Modal.js';
@@ -69,6 +70,9 @@ const TableContent = props => {
           valA = a[column].content;
           valB = b[column].content;
         }
+      } else if (typeof a[column] === 'number') {
+        valA = (a[column] && a[column]) || 0;
+        valB = (b[column] && b[column]) || 0;
       } else {
         valA = (a[column] && a[column].toLowerCase()) || '';
         valB = (b[column] && b[column].toLowerCase()) || '';
@@ -263,12 +267,14 @@ const TableContent = props => {
       <Table
         withCheckboxes={props.withCheckboxes}
         rowsHaveDeleteButtons={props.rowsHaveDeleteButtons}
+        fullWidth={props.fullWidth}
+        condensed={props.condensed}
       >
         {/* colgroup is used to set the width of the last column because the
         last two <th> are combined in a colSpan="2", preventing the columns from
         being given an expicit width (`table-layout: fixed;` requires setting
         column width in the first row) */}
-        {!props.rowsHaveDeleteButtons && (
+        {!props.rowsHaveDeleteButtons && !props.noRowMenu && (
           <colgroup>
             <col
               span={
@@ -299,8 +305,8 @@ const TableContent = props => {
             {props.columns.map((c, i) => (
               <th
                 key={c.key}
-                style={{ width: c.width }}
-                colSpan={!props.addContent && (i === props.columns.length - 1) ? '2' : null}
+                style={{ width: c.width, textAlign: c.textAlign }}
+                colSpan={!props.noRowMenu && !props.addContent && (i === props.columns.length - 1) ? '2' : null}
               >
                 {selected.length && i === props.columns.length - 1 ? (
                   <div
@@ -390,6 +396,8 @@ const TableContent = props => {
                         if (a[c.key].type === 'normal') {
                           columnContent = a[c.key].content;
                           columnTitle = columnContent;
+                        } else if (a[c.key].type === 'link') {
+                          columnContent = <Link to={a[c.key].url}>{a[c.key].content}</Link>;
                         } else if (a[c.key].type === 'masked') {
                           columnContent = <ToggleText masked={a[c.key].masked} revealed={a[c.key].revealed} />;
                         } else if (a[c.key].type === 'status') {
@@ -404,52 +412,54 @@ const TableContent = props => {
                       }
                     }
                     return (
-                      <td key={c.key} style={{ fontWeight: c.fontWeight }}>
+                      <td key={c.key} style={{ fontWeight: c.fontWeight, textAlign: c.textAlign }}>
                         {i === 0 && props.urlParam
                           ? <span>
-                              <Link
+                              <PlainLink
                                 to={`/account/${props.urlParam}/${a.sid}/edit`}
                                 tabIndex={modalOpen ? '-1' : ''}
                               >
                                 <span tabIndex="-1" title={columnTitle}>
                                   {columnContent}
                                 </span>
-                              </Link>
+                              </PlainLink>
                             </span>
                           : <span title={columnTitle}>{columnContent}</span>
                         }
                       </td>
                     );
                   })}
-                  <td>
-                    {props.rowsHaveDeleteButtons ? (
-                      <Button
-                        gray
-                        onClick={() => setContentToDelete(a)}
-                      >
-                        Delete
-                      </Button>
-                    ) : (
-                      <TableMenu
-                        sid={a.sid}
-                        open={menuOpen === a.sid}
-                        handleMenuOpen={handleMenuOpen}
-                        disabled={modalOpen}
-                        menuItems={[
-                          {
-                            name: 'Edit',
-                            type: 'link',
-                            url: `/account/${props.urlParam}/${a.sid}/edit`,
-                          },
-                          {
-                            name: 'Delete',
-                            type: 'button',
-                            action: () => setContentToDelete(a),
-                          },
-                        ]}
-                      />
-                    )}
-                  </td>
+                  {props.noRowMenu ? null : (
+                    <td>
+                      {props.rowsHaveDeleteButtons ? (
+                        <Button
+                          gray
+                          onClick={() => setContentToDelete(a)}
+                        >
+                          Delete
+                        </Button>
+                      ) : (
+                        <TableMenu
+                          sid={a.sid}
+                          open={menuOpen === a.sid}
+                          handleMenuOpen={handleMenuOpen}
+                          disabled={modalOpen}
+                          menuItems={[
+                            {
+                              name: 'Edit',
+                              type: 'link',
+                              url: `/account/${props.urlParam}/${a.sid}/edit`,
+                            },
+                            {
+                              name: 'Delete',
+                              type: 'button',
+                              action: () => setContentToDelete(a),
+                            },
+                          ]}
+                        />
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))
             )
