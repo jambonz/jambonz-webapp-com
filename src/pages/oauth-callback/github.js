@@ -2,6 +2,7 @@ import { useEffect, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
+import ExternalTemplate from '../../components/templates/ExternalTemplate';
 import Loader from '../../components/blocks/Loader.js';
 
 const OauthCallbackGithub = () => {
@@ -79,7 +80,9 @@ const OauthCallbackGithub = () => {
   }, [history, location, dispatch]);
 
   return (
-    <Loader />
+    <ExternalTemplate fullPage>
+      <Loader />
+    </ExternalTemplate>
   );
 };
 

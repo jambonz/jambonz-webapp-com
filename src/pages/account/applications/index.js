@@ -160,9 +160,9 @@ const ApplicationsIndex = () => {
           urlParam="applications"
           getContent={getApplications}
           columns={[
-            { header: 'Name',                key: 'name'            },
-            { header: 'Calling Webhook',     key: 'call_hook_url'   },
-            { header: 'Call Status Webhook', key: 'status_hook_url' },
+            { header: 'Name',                key: 'name',            bold: true },
+            { header: 'Calling Webhook',     key: 'call_hook_url',              },
+            { header: 'Call Status Webhook', key: 'status_hook_url',            },
           ]}
           formatContentToDelete={formatApplicationToDelete}
           deleteContent={deleteApplication}

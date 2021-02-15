@@ -81,12 +81,12 @@ const RecentCallsIndex = () => {
       <Section fullPage>
         <TableContent
           fullWidth
-          noRowMenu
+          noMenuOnRows
           condensed
           name="recent call"
           getContent={getRecentCalls}
           columns={[
-            { header: 'Date',           key: 'date',           fontWeight: 'normal' },
+            { header: 'Date',           key: 'date',                                },
             { header: 'Direction',      key: 'direction'                            },
             { header: 'From',           key: 'from'                                 },
             { header: 'To',             key: 'to'                                   },

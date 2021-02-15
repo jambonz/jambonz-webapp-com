@@ -16,8 +16,9 @@ const Table = styled.table`
     margin-bottom: -2rem;
   }
 
-  & > thead {
-    background: #F7F7F7;
+  &:not(:first-child) {
+    margin-top: 1.5rem;
+    border-top: 1px solid #E0E0E0;
   }
 
   & tr {
@@ -25,7 +26,10 @@ const Table = styled.table`
   }
 
   & thead tr {
-    height: 4rem;
+    height: ${props => props.condensed
+      ? '2.5rem'
+      : '4rem'
+    };
   }
 
   & tbody tr {
@@ -41,15 +45,17 @@ const Table = styled.table`
     }
   `}
 
-  & th {
-    text-align: left;
-    font-weight: normal;
+  & thead th {
+    background: #F7F7F7;
     color: #717171;
-  }
 
-  & th,
-  & td {
-    padding: 0 1.5rem;
+    :first-child {
+      border-top-left-radius: 0.5rem;
+    }
+
+    :last-child {
+      border-top-right-radius: 0.5rem;
+    }
   }
 
   & td > span {
@@ -83,26 +89,11 @@ const Table = styled.table`
     box-shadow: inset 0 0 0 0.125rem #D91C5C;
   }
 
-  & td:first-child {
-    font-weight: bold;
-  }
-
-  ${props => props.fullWidth ? '' : `
-    & td:last-child {
-      overflow: inherit;
-      position: relative;
-      padding: 0.5rem;
-    }
-  `}
-
   ${props => props.withCheckboxes && `
     & th:first-child,
     & td:first-child {
       width: 3rem;
       padding: 1.25rem 0 1.25rem 1.25rem;
-    }
-    & td:nth-child(2) {
-      font-weight: bold;
     }
   `}
 `;

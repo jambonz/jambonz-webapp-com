@@ -7,6 +7,10 @@ const PageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 8rem 1rem;
+  ${props => props.fullPage && `
+    height: calc(100vh - 20rem);
+    justify-content: center;
+  `}
 `;
 
 const StyledH1 = styled(H1)`
@@ -42,8 +46,10 @@ const ContentContainer = styled.div`
 `;
 
 const ExternalTemplate = props => (
-  <PageContainer>
-    <StyledH1>{props.title}</StyledH1>
+  <PageContainer fullPage={props.fullPage}>
+    {props.title && (
+      <StyledH1>{props.title}</StyledH1>
+    )}
     {props.subtitle
       ? <Subtitle>{props.subtitle}</Subtitle>
       : null

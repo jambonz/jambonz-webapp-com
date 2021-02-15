@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link as PlainLink } from 'react-router-dom';
-import styled from 'styled-components/macro';
+import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
 import { ModalStateContext } from '../../contexts/ModalContext';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
 import Table from '../elements/Table.js';
+import Th from '../elements/Th.js';
+import Td from '../elements/Td.js';
 import Button from '../elements/Button.js';
 import Checkbox from '../elements/Checkbox.js';
 import Link from '../elements/Link.js';
@@ -16,22 +18,12 @@ import ToggleText from '../blocks/ToggleText.js';
 import { ReactComponent as CheckGreen } from '../../images/CheckGreen.svg';
 import { ReactComponent as ErrorIcon } from '../../images/ErrorIcon.svg';
 
-const Td = styled.td`
-  padding: 0.5rem 0;
-  &:first-child {
-    font-weight: 500;
-    padding-right: 1.5rem;
-    vertical-align: top;
-  }
-  & ul {
-    margin: 0;
-    padding-left: 1.25rem;
-  }
-`;
-
 const TableContent = props => {
 
   const dispatch = useContext(NotificationDispatchContext);
+
+  const currentMenu = useContext(CurrentMenuStateContext);
+  const setCurrentMenu = useContext(CurrentMenuDispatchContext);
 
   const modalOpen = useContext(ModalStateContext);
   const [ showTableLoader, setShowTableLoader ] = useState(true);
@@ -140,17 +132,11 @@ const TableContent = props => {
   //=============================================================================
   // Handle Open Menus (i.e. bulk action menu or 3 dots on right of each row)
   //=============================================================================
-  const [ menuOpen, setMenuOpen ] = useState(null);
-  useEffect(() => {
-    const hideMenu = () => setMenuOpen(null);
-    window.addEventListener('click', hideMenu);
-    return () => window.removeEventListener('click', hideMenu);
-  }, []);
-  const handleMenuOpen = sid => {
-    if (menuOpen === sid) {
-      setMenuOpen(null);
+  const handleCurrentMenu = sid => {
+    if (currentMenu === sid) {
+      setCurrentMenu(null);
     } else {
-      setMenuOpen(sid);
+      setCurrentMenu(sid);
     }
   };
 
@@ -236,8 +222,8 @@ const TableContent = props => {
                 <tbody>
                   {props.formatContentToDelete(contentToDelete).map((d, i) => (
                     <tr key={i}>
-                      <Td>{d.name}</Td>
-                      <Td>
+                      <Td deleteModal>{d.name}</Td>
+                      <Td deleteModal>
                         {typeof d.content === 'string'
                           ? d.content
                           : <ul>
@@ -269,26 +255,10 @@ const TableContent = props => {
         fullWidth={props.fullWidth}
         condensed={props.condensed}
       >
-        {/* colgroup is used to set the width of the last column because the
-        last two <th> are combined in a colSpan="2", preventing the columns from
-        being given an expicit width (`table-layout: fixed;` requires setting
-        column width in the first row) */}
-        {!props.noRowMenu && (
-          <colgroup>
-            <col
-              span={
-                props.withCheckboxes
-                  ? props.columns.length + 1
-                  : props.columns.length
-              }
-            />
-            <col style={{ width: '4rem' }}></col>
-          </colgroup>
-        )}
         <thead>
           <tr>
             {props.withCheckboxes && (
-              <th>
+              <Th>
                 <Button
                   checkbox={
                     !selected.length
@@ -299,13 +269,13 @@ const TableContent = props => {
                   }
                   onClick={checkboxesToggleAll}
                 />
-              </th>
+              </Th>
             )}
             {props.columns.map((c, i) => (
-              <th
+              <Th
                 key={c.key}
-                style={{ width: c.width, textAlign: c.textAlign }}
-                colSpan={!props.noRowMenu && !props.addContent && (i === props.columns.length - 1) ? '2' : null}
+                style={{ width: c.width }}
+                textAlign={c.textAlign}
               >
                 {selected.length && i === props.columns.length - 1 ? (
                   <div
@@ -319,8 +289,8 @@ const TableContent = props => {
                       bulkEditMenu
                       buttonText="Choose Application"
                       sid="bulk-menu"
-                      open={menuOpen === 'bulk-menu'}
-                      handleMenuOpen={handleMenuOpen}
+                      open={currentMenu === 'bulk-menu'}
+                      handleCurrentMenu={handleCurrentMenu}
                       disabled={modalOpen}
                       menuItems={
                         props.bulkMenuItems.map(i => ({
@@ -347,37 +317,41 @@ const TableContent = props => {
                     }
                   </Button>
                 )}
-              </th>
+              </Th>
             ))}
-            {props.addContent && (
+            {props.addContent ? (
               <th>
                 <Button onClick={addContent}>+</Button>
               </th>
+            ) : props.noMenuOnRows ? (
+              null
+            ) : (
+              <Th buttonColumn></Th>
             )}
           </tr>
         </thead>
         <tbody>
           {showTableLoader ? (
             <tr>
-              <td colSpan={props.withCheckboxes ? props.columns.length + 1 : props.columns.length}>
+              <Td colSpan={props.withCheckboxes ? props.columns.length + 1 : props.columns.length}>
                 <Loader height={'71px'} />
-              </td>
+              </Td>
             </tr>
           ) : (
             !content || !content.length ? (
               <tr>
-                <td
+                <Td
                   colSpan={props.withCheckboxes ? props.columns.length + 1 : props.columns.length}
-                  style={{ textAlign: 'center' }}
+                  textAlign="center"
                 >
                   No {props.name}s
-                </td>
+                </Td>
               </tr>
             ) : (
               content.map(a => (
                 <tr key={a.sid}>
                   {props.withCheckboxes && (
-                    <td>
+                    <Td>
                       <Checkbox
                         noLeftMargin
                         id={a.sid}
@@ -385,7 +359,7 @@ const TableContent = props => {
                         onChange={checkboxesToggleOne}
                         checked={selected.includes(a.sid)}
                       />
-                    </td>
+                    </Td>
                   )}
                   {props.columns.map((c, i) => {
                     let columnContent = '';
@@ -411,7 +385,11 @@ const TableContent = props => {
                       }
                     }
                     return (
-                      <td key={c.key} style={{ fontWeight: c.fontWeight, textAlign: c.textAlign }}>
+                      <Td
+                        key={c.key}
+                        bold={c.bold}
+                        textAlign={c.textAlign}
+                      >
                         {i === 0 && props.urlParam
                           ? <span>
                               <PlainLink
@@ -425,15 +403,15 @@ const TableContent = props => {
                             </span>
                           : <span title={columnTitle}>{columnContent}</span>
                         }
-                      </td>
+                      </Td>
                     );
                   })}
-                  {props.noRowMenu ? null : (
-                    <td>
+                  {!props.noMenuOnRows && (
+                    <Td containsMenuButton>
                       <TableMenu
                         sid={a.sid}
-                        open={menuOpen === a.sid}
-                        handleMenuOpen={handleMenuOpen}
+                        open={currentMenu === a.sid}
+                        handleCurrentMenu={handleCurrentMenu}
                         disabled={modalOpen}
                         menuItems={[
                           {
@@ -448,7 +426,7 @@ const TableContent = props => {
                           },
                         ]}
                       />
-                    </td>
+                    </Td>
                   )}
                 </tr>
               ))

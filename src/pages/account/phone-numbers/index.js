@@ -220,9 +220,9 @@ const PhoneNumbersIndex = () => {
           urlParam="phone-numbers"
           getContent={getPhoneNumbers}
           columns={[
-            { header: 'Number',      key: 'number'      },
-            { header: 'Carrier',     key: 'carrier'     },
-            { header: 'Application', key: 'application' },
+            { header: 'Number',      key: 'number',      bold: true },
+            { header: 'Carrier',     key: 'carrier',                },
+            { header: 'Application', key: 'application',            },
           ]}
           formatContentToDelete={formatPhoneNumberToDelete}
           deleteContent={deletePhoneNumber}

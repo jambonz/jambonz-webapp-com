@@ -71,7 +71,7 @@ const TableMenu = props => (
       disabled={props.disabled}
       onClick={e => {
         e.stopPropagation();
-        props.handleMenuOpen(props.sid);
+        props.handleCurrentMenu(props.sid);
       }}
     >
       {props.buttonText || <MenuDots />}

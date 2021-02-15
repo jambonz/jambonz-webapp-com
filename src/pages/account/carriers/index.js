@@ -189,13 +189,13 @@ const CarriersIndex = () => {
     >
       <Section>
         <TableContent
-          name="Carrier"
+          name="carrier"
           urlParam="carriers"
           getContent={getCarriers}
           columns={[
-            { header: 'Name',         key: 'name'           },
-            { header: 'Description',  key: 'description'    },
-            { header: 'SIP Gateways', key: 'gatewaysConcat' },
+            { header: 'Name',         key: 'name',           bold: true },
+            { header: 'Description',  key: 'description',               },
+            { header: 'SIP Gateways', key: 'gatewaysConcat',            },
           ]}
           formatContentToDelete={formatCarrierToDelete}
           deleteContent={deleteCarrier}

@@ -194,10 +194,10 @@ const SpeechServicesIndex = () => {
           urlParam="speech-services"
           getContent={getSpeechServices}
           columns={[
-            { header: 'Vendor',    key: 'vendor'    },
-            { header: 'Usage',     key: 'usage'     },
-            { header: 'Last Used', key: 'last_used' },
-            { header: 'Status',    key: 'status'    },
+            { header: 'Vendor',    key: 'vendor',    bold: true          },
+            { header: 'Usage',     key: 'usage',                         },
+            { header: 'Last Used', key: 'last_used',                     },
+            { header: 'Status',    key: 'status',    textAlign: 'center' },
           ]}
           formatContentToDelete={formatSpeechServiceToDelete}
           deleteContent={deleteSpeechService}
