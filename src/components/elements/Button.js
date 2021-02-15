@@ -11,6 +11,8 @@ const StyledButton = styled.button`
   cursor: pointer;
   border-radius: 0.25rem;
   grid-column: 2;
+  text-decoration: none;
+
   ${props => props.fullWidth
     ? `width: 100%;`
     : `justify-self: start;`
@@ -139,6 +141,7 @@ const StyledButton = styled.button`
   `}
 
   &:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
 
   }

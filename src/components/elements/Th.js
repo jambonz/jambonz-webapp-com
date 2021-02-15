@@ -13,9 +13,14 @@ const Th = styled.th`
     width: 4rem;
   `}
 
+  ${props => props.sectionTableWithHeader && `
+    padding: 2rem 2rem 1.5rem;
+    background: #fff;
+  `}
+
   ${props => props.containsSquareButton && `
-    padding-top: 0;
-    padding-bottom: 0;
+    width: 4rem;
+    padding: 1.5rem;
     text-align: right;
   `}
 `;

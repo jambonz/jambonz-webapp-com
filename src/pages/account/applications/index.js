@@ -10,6 +10,7 @@ const ApplicationsIndex = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem('jwt');
+  const account_sid = localStorage.getItem('account_sid');
 
   useEffect(() => {
     document.title = `Applications | jambonz`;
@@ -81,6 +82,35 @@ const ApplicationsIndex = () => {
           message: 'You must log in to view that page.',
         });
         return;
+      }
+
+      // If application is being used as the test app, set the test app to null
+      const userData = await axios({
+        method: 'get',
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: '/Users/me',
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      if (
+        userData.data &&
+        userData.data.testapp &&
+        userData.data.testapp.application_sid &&
+        userData.data.testapp.application_sid === applicationToDelete.sid
+      ) {
+        await axios({
+          method: 'put',
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: `/Accounts/${account_sid}`,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+          data: {
+            test_call_application_sid: null,
+          },
+        });
       }
 
       // Check if any Microsoft Teams Tenants use this application

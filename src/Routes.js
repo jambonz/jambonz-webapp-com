@@ -17,10 +17,11 @@ import AccountHome from './pages/account/index.js';
 import ApiKeysDetails from './pages/account/api-keys/details.js';
 import ApiKeysNew from './pages/account/api-keys/new.js';
 import ApiKeysDelete from './pages/account/api-keys/delete.js';
-import MobileNumberEdit from './pages/account/mobile-number/edit.js';
+import MobileNumberAddEdit from './pages/account/mobile-number/add-edit.js';
 import MobileNumberVerify from './pages/account/mobile-number/verify.js';
 import MobileNumberRemove from './pages/account/mobile-number/remove.js';
-import RegistrationWebhookEdit from './pages/account/registration-webhook/edit.js';
+import RegistrationWebhookAddEdit from './pages/account/registration-webhook/add-edit.js';
+import RegistrationWebhookDelete from './pages/account/registration-webhook/delete.js';
 import SipRealmEdit from './pages/account/sip-realm/edit.js';
 import ApplicationsIndex from './pages/account/applications/index.js';
 import ApplicationsAddEdit from './pages/account/applications/add-edit.js';
@@ -97,11 +98,14 @@ function Routes() {
               <Route exact path="/account/api-keys/:id/new"><ApiKeysNew /></Route>
               <Route exact path="/account/api-keys/:id/delete"><ApiKeysDelete /></Route>
 
-              <Route exact path="/account/mobile-number/edit"><MobileNumberEdit /></Route>
+              <Route exact path="/account/mobile-number/add"><MobileNumberAddEdit /></Route>
+              <Route exact path="/account/mobile-number/edit"><MobileNumberAddEdit /></Route>
               <Route exact path="/account/mobile-number/verify"><MobileNumberVerify /></Route>
               <Route exact path="/account/mobile-number/remove"><MobileNumberRemove /></Route>
 
-              <Route exact path="/account/registration-webhook/edit"><RegistrationWebhookEdit /></Route>
+              <Route exact path="/account/registration-webhook/add"><RegistrationWebhookAddEdit /></Route>
+              <Route exact path="/account/registration-webhook/edit"><RegistrationWebhookAddEdit /></Route>
+              <Route exact path="/account/registration-webhook/delete"><RegistrationWebhookDelete /></Route>
 
               <Route exact path="/account/sip-realm/edit"><SipRealmEdit /></Route>
 
