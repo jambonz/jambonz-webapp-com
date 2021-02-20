@@ -29,6 +29,7 @@ const AccountHome = () => {
 
   const [ data,                         setData                         ] = useState({});
   const [ testApplication,              setTestApplication              ] = useState('');
+  const [ registrationWebhookUrl,       setRegistrationWebhookUrl       ] = useState('');
   const [ applications,                 setApplications                 ] = useState([]);
   const [ mobileNumberMenuItems,        setMobileNumberMenuItems        ] = useState([]);
   const [ registrationWebhookMenuItems, setRegistrationWebhookMenuItems ] = useState([]);
@@ -143,16 +144,30 @@ const AccountHome = () => {
       }
 
       if (userResponse.data.account && userResponse.data.account.registration_hook_sid) {
+        const webhook_sid = userResponse.data.account.registration_hook_sid;
+        const regWebhookResponse = await axios({
+          method: 'get',
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: `/Webhooks/${webhook_sid}`,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+
+        if (regWebhookResponse.data && regWebhookResponse.data.url) {
+          setRegistrationWebhookUrl(regWebhookResponse.data.url);
+        }
+
         setRegistrationWebhookMenuItems([
           {
             name: 'Edit',
             type: 'link',
-            url: `/account/registration-webhook/edit`,
+            url: `/account/registration-webhook/${webhook_sid}/edit`,
           },
           {
-            name: 'Remove',
+            name: 'Delete',
             type: 'link',
-            url: `/account/registration-webhook/remove`,
+            url: `/account/registration-webhook/${webhook_sid}/delete`,
           },
         ]);
       } else {
@@ -343,7 +358,7 @@ const AccountHome = () => {
               </tr>
               <tr>
                 <Th scope="row">Registration Webhook</Th>
-                <Td>{data.account.registration_hook_sid || 'None'}</Td>
+                <Td>{registrationWebhookUrl || 'None'}</Td>
                 <Td containsMenuButton>
                   <TableMenu
                     open={currentMenu === 'account-home-registration-webhook'}

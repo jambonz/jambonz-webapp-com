@@ -104,8 +104,8 @@ function Routes() {
               <Route exact path="/account/mobile-number/remove"><MobileNumberRemove /></Route>
 
               <Route exact path="/account/registration-webhook/add"><RegistrationWebhookAddEdit /></Route>
-              <Route exact path="/account/registration-webhook/edit"><RegistrationWebhookAddEdit /></Route>
-              <Route exact path="/account/registration-webhook/delete"><RegistrationWebhookDelete /></Route>
+              <Route exact path="/account/registration-webhook/:webhook_sid/edit"><RegistrationWebhookAddEdit /></Route>
+              <Route exact path="/account/registration-webhook/:webhook_sid/delete"><RegistrationWebhookDelete /></Route>
 
               <Route exact path="/account/sip-realm/edit"><SipRealmEdit /></Route>
 
