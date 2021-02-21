@@ -67,6 +67,7 @@ const SignIn = props => {
 
       localStorage.setItem('jwt', response.data.jwt);
       localStorage.setItem('user_sid', response.data.user_sid);
+      localStorage.setItem('account_sid', response.data.account_sid);
       localStorage.setItem('provider', response.data.provider);
 
       history.push('/account');
