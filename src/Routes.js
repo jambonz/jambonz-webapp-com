@@ -51,15 +51,12 @@ import InvalidRouteInternal from './pages/404-internal';
 import InvalidRouteExternal from './pages/404-external';
 
 import Notification from './components/blocks/Notification';
-import Nav from './components/blocks/Nav';
-import SideMenu from './components/blocks/SideMenu';
 
 function Routes() {
   const notifications = useContext(NotificationStateContext);
   return (
     <Router>
       <Notification notifications={notifications} />
-      <Nav />
       <Switch>
 
         {/***********/}
@@ -90,8 +87,6 @@ function Routes() {
         {/* INTERNAL ROUTES */}
         {/*******************/}
         <Route path="/account">
-          <div style={{ display: "flex" }}>
-            <SideMenu />
             <Switch>
               <Route exact path="/account"><AccountHome /></Route>
 
@@ -173,7 +168,6 @@ function Routes() {
               {/****************/}
               <Route path="/account"><InvalidRouteInternal /></Route>
             </Switch>
-          </div>
         </Route>
 
         {/****************/}

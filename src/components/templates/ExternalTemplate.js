@@ -1,4 +1,5 @@
 import React from 'react';
+import Nav from '../blocks/Nav';
 import styled from 'styled-components/macro';
 import H1 from '../elements/H1';
 
@@ -46,18 +47,31 @@ const ContentContainer = styled.div`
 `;
 
 const ExternalTemplate = props => (
-  <PageContainer fullPage={props.fullPage}>
-    {props.title && (
-      <StyledH1>{props.title}</StyledH1>
-    )}
-    {props.subtitle
-      ? <Subtitle>{props.subtitle}</Subtitle>
-      : null
-    }
-    <ContentContainer wide={props.wide}>
-      {props.children}
-    </ContentContainer>
-  </PageContainer>
+  <>
+    <Nav
+      topLeft={[
+        { type: 'linkExternal', text: 'jambonz', url: 'https://www.jambonz.org' },
+      ]}
+      topRight={[
+        { type: 'linkExternal', text: 'Pricing',  url: 'https://www.jambonz.org/pricing' },
+        { type: 'linkExternal', text: 'Docs',     url: 'https://www.jambonz.org/docs'    },
+        { type: 'link',         text: 'Register', url: '/register'                       },
+        { type: 'link',         text: 'Sign In',  url: '/sign-in'                        },
+      ]}
+    />
+    <PageContainer fullPage={props.fullPage}>
+      {props.title && (
+        <StyledH1>{props.title}</StyledH1>
+      )}
+      {props.subtitle
+        ? <Subtitle>{props.subtitle}</Subtitle>
+        : null
+      }
+      <ContentContainer wide={props.wide}>
+        {props.children}
+      </ContentContainer>
+    </PageContainer>
+  </>
 );
 
 export default ExternalTemplate;

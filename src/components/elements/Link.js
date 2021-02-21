@@ -3,7 +3,7 @@ import { Link as ReactRouterLink } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { ModalStateContext } from '../../contexts/ModalContext';
 
-const FilteredLink = ({ formLink, right, inModal, ...props }) => (
+const FilteredLink = ({ formLink, right, inModal, nav, navMain, ...props }) => (
   <ReactRouterLink {...props}>{props.children}</ReactRouterLink>
 );
 
@@ -30,11 +30,11 @@ const StyledReactRouterLink = styled(FilteredLink)`
     padding: 0.25rem;
     margin: -0.25rem;
     border-radius: 0.25rem;
-    box-shadow: 0 0 0 0.125rem #D91C5C;
+    box-shadow: 0 0 0 0.125rem;
   }
 
   &:hover > span {
-    box-shadow: 0 0.125rem 0 #D91C5C;
+    box-shadow: 0 0.125rem 0;
     border-radius: 0;
   }
 
@@ -47,6 +47,37 @@ const StyledReactRouterLink = styled(FilteredLink)`
 
   ${props => props.right && `
     justify-self: end;
+  `}
+
+  ${props => props.nav && `
+    margin: 0.25rem;
+    color: #565656;
+
+    & > span {
+      padding: 0.75rem;
+      line-height: 1em;
+    }
+
+    &:hover > span {
+      background: #E3E3E3;
+      box-shadow: none;
+      border-radius: 0.25rem;
+    }
+
+    &:focus > span {
+      margin: 0;
+      padding: 0.75rem;
+      box-shadow: inset 0 0 0 0.125rem #767676;
+    }
+
+    &:active > span  {
+      background: #D5D5D5;
+    }
+  `}
+
+  ${props => props.navMain && `
+    margin: 0;
+    font-size: 1.5rem;
   `}
 `;
 
