@@ -25,7 +25,6 @@ const PhoneNumbersAddEdit = () => {
 
   // Refs
   const refPhoneNumber = useRef(null);
-  const refCarrier    = useRef(null);
 
   // Form inputs
   const [ phoneNumber, setPhoneNumber ] = useState('');
@@ -38,7 +37,6 @@ const PhoneNumbersAddEdit = () => {
 
   // Invalid form inputs
   const [ invalidPhoneNumber, setInvalidPhoneNumber ] = useState(false);
-  const [ invalidCarrier,     setInvalidCarrier     ] = useState(false);
 
   const [ phoneNumbers, setPhoneNumbers ] = useState('');
   const [ showLoader,   setShowLoader   ] = useState(true);
@@ -93,17 +91,6 @@ const PhoneNumbersAddEdit = () => {
         setApplicationValues(applications);
         setPhoneNumbers(phoneNumbers);
 
-        if (!carriers.length) {
-          isMounted = false;
-          history.push('/account/carriers');
-          dispatch({
-            type: 'ADD',
-            level: 'error',
-            message: 'You must create a carrier before you can create a phone number.',
-          });
-          return;
-        }
-
         if (type === 'edit') {
           const phoneNumberData = phoneNumbers.filter(p => {
             return p.phone_number_sid === phone_number_sid;
@@ -123,10 +110,6 @@ const PhoneNumbersAddEdit = () => {
           setPhoneNumber (( phoneNumberData[0] && phoneNumberFormat(phoneNumberData[0].number)) || '');
           setCarrier     (( phoneNumberData[0] && phoneNumberData[0].voip_carrier_sid         ) || '');
           setApplication (( phoneNumberData[0] && phoneNumberData[0].application_sid          ) || '');
-        }
-
-        if (type === 'add') {
-          if (carriers.length === 1) { setCarrier(carriers[0].voip_carrier_sid); }
         }
 
         setShowLoader(false);
@@ -166,7 +149,6 @@ const PhoneNumbersAddEdit = () => {
       e.preventDefault();
       setErrorMessage('');
       setInvalidPhoneNumber(false);
-      setInvalidCarrier(false);
       let errorMessages = [];
       let focusHasBeenSet = false;
 
@@ -197,15 +179,6 @@ const PhoneNumbersAddEdit = () => {
         }
       };
 
-      if (!carrier) {
-        errorMessages.push('Please select a carrier');
-        setInvalidCarrier(true);
-        if (!focusHasBeenSet) {
-          refCarrier.current.focus();
-          focusHasBeenSet = true;
-        }
-      }
-
       if (errorMessages.length > 1) {
         setErrorMessage(errorMessages);
         return;
@@ -233,7 +206,7 @@ const PhoneNumbersAddEdit = () => {
 
       if (type === 'add') {
         data.number = cleanedUpNumber;
-        data.voip_carrier_sid = carrier;
+        data.voip_carrier_sid = carrier || null;
       }
 
       await axios({
@@ -306,16 +279,14 @@ const PhoneNumbersAddEdit = () => {
               id="carrier"
               value={carrier}
               onChange={e => setCarrier(e.target.value)}
-              invalid={invalidCarrier}
-              ref={refCarrier}
               disabled={type === 'edit'}
             >
-              {(
-                (carrierValues.length > 1) ||
-                (type === 'edit' && carrier !== carrierValues[0].voip_carrier_sid)
-              ) && (
-                <option value="">-- Carrier this number belongs to --</option>
-              )}
+              <option value="">
+                {type === 'add'
+                  ? '-- OPTIONAL: Carrier this number belongs to --'
+                  : '-- NONE --'
+                }
+              </option>
               {carrierValues.map(s => (
                 <option
                   key={s.voip_carrier_sid}
@@ -335,7 +306,7 @@ const PhoneNumbersAddEdit = () => {
             >
               <option value="">
                 {type === 'add'
-                  ? '-- OPTIONAL: Choose the application that will receive calls from this number --'
+                  ? '-- OPTIONAL: Application to invoke --'
                   : '-- NONE --'
                 }
               </option>
