@@ -1,18 +1,20 @@
 import { useEffect, useContext } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
+import ExternalTemplate from '../../components/templates/ExternalTemplate';
 import Loader from '../../components/blocks/Loader.js';
 
-const OauthCallbackGoogle = () => {
+const OauthCallback = () => {
   const history = useHistory();
   const location = useLocation();
   const dispatch = useContext(NotificationDispatchContext);
+  const { provider } = useParams();
 
   useEffect(() => {
     document.title = `Authenticating... | jambonz`;
 
-    const authenticateWithGoogle = async () => {
+    const authenticate = async () => {
       const queryParams = new URLSearchParams(location.search);
       const code = queryParams.get('code');
       const newState = queryParams.get('state');
@@ -20,13 +22,29 @@ const OauthCallbackGoogle = () => {
       const previousLocation = localStorage.getItem('location-before-oauth');
 
       try {
-        if (!originalState) {
-          history.push(previousLocation || '/');
+        if (provider !== 'github' && provider !== 'google') {
+          dispatch({
+            type: 'ADD',
+            level: 'error',
+            message: `${provider} is not a valid OAuth provider`,
+          });
+          history.replace(previousLocation || '/');
           return;
         }
 
-        if (!code || !newState || (newState !== originalState)) {
+        if (!code || !originalState || !newState || (newState !== originalState)) {
           throw Error('Invalid state');
+        }
+
+        let oauth2_client_id;
+        let oauth2_redirect_uri;
+
+        if (provider === 'github') {
+          oauth2_client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
+          oauth2_redirect_uri = process.env.REACT_APP_GITHUB_REDIRECT_URI;
+        } else if (provider === 'google') {
+          oauth2_client_id = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+          oauth2_redirect_uri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
         }
 
         const response = await axios({
@@ -35,15 +53,13 @@ const OauthCallbackGoogle = () => {
           url: '/register',
           data: {
             service_provider_sid: process.env.REACT_APP_SERVICE_PROVIDER_SID,
-            provider: 'google',
+            provider,
             oauth2_code: code,
             oauth2_state: originalState,
-            oauth2_client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-            oauth2_redirect_uri: process.env.REACT_APP_GOOGLE_REDIRECT_URI,
+            oauth2_client_id,
+            oauth2_redirect_uri,
           },
         });
-
-        console.log(response.data);
 
         localStorage.removeItem('oauth-state');
 
@@ -63,24 +79,27 @@ const OauthCallbackGoogle = () => {
           throw Error('Non-200 response');
         }
 
-      } catch(err) {
-        console.error(err);
-        history.push(previousLocation);
+      } catch (err) {
+        history.replace(previousLocation);
         dispatch({
           type: 'ADD',
           level: 'error',
-          message: 'Something went wrong, please try again.',
+          message: (err.response && err.response.data && err.response.data.msg) ||
+          err.message || 'Something went wrong, please try again',
         });
+        console.error(err.response || err);
       }
     };
 
-    authenticateWithGoogle();
+    authenticate();
 
-  }, [history, location, dispatch]);
+  }, [history, location, dispatch, provider]);
 
   return (
-    <Loader />
+    <ExternalTemplate fullPage>
+      <Loader />
+    </ExternalTemplate>
   );
 };
 
-export default OauthCallbackGoogle;
+export default OauthCallback;

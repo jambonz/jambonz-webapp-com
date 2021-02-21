@@ -11,8 +11,7 @@ import RegisterChooseSubdomain from './pages/register/subdomain.js';
 import RegisterMobileNumber from './pages/register/mobile-number.js';
 import RegisterMobileNumberVerify from './pages/register/mobile-number-verify.js';
 import RegisterComplete from './pages/register/complete.js';
-import OauthCallbackGitHub from './pages/oauth-callback/github.js';
-import OauthCallbackGoogle from './pages/oauth-callback/google.js';
+import OauthCallback from './pages/oauth-callback/index.js';
 import AccountHome from './pages/account/index.js';
 import ApiKeysDetails from './pages/account/api-keys/details.js';
 import ApiKeysNew from './pages/account/api-keys/new.js';
@@ -80,8 +79,7 @@ function Routes() {
         {/******************/}
         {/* OAuth Callback */}
         {/******************/}
-        <Route exact path="/oauth-callback/github"><OauthCallbackGitHub /></Route>
-        <Route exact path="/oauth-callback/google"><OauthCallbackGoogle /></Route>
+        <Route exact path="/oauth-callback/:provider"><OauthCallback /></Route>
 
         {/*******************/}
         {/* INTERNAL ROUTES */}
