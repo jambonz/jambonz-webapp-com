@@ -383,7 +383,10 @@ const SpeechServicesAddEdit = () => {
           message: 'Your session has expired. Please log in and try again.',
         });
       } else {
-        setErrorMessage((err.response && err.response.data && err.response.data.msg) || err.message || 'Something went wrong, please try again.');
+        setErrorMessage(
+          (err.response && err.response.data && err.response.data.msg) ||
+          err.message || 'Something went wrong, please try again.'
+        );
         console.error(err.response || err);
       }
     } finally {

@@ -3,6 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components/macro';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
+import Link from '../elements/Link';
 import Button from '../elements/Button';
 
 const StyledNav = styled.nav`
@@ -63,6 +64,9 @@ const Nav = () => {
       <NavH1>jambonz</NavH1>
       {location.pathname !== '/' && (
         <SignOutContainer>
+          <Link to="/account/settings">
+            Settings
+          </Link>
           <Button
             large
             gray

@@ -23,6 +23,11 @@ const Th = styled.th`
     padding: 1.5rem;
     text-align: right;
   `}
+
+  ${props => props.simpleTable && `
+    color: #707070;
+    padding: 0 2rem 1rem 0;
+  `}
 `;
 
 export default Th;

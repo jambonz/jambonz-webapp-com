@@ -62,7 +62,10 @@ const RegistrationWebhookDelete = () => {
           dispatch({
             type: 'ADD',
             level: 'error',
-            message: (err.response && err.response.data && err.response.data.msg) || 'That registration webhook does not exist',
+            message: (
+              (err.response && err.response.data && err.response.data.msg) ||
+              err.message || 'That registration webhook does not exist'
+            ),
           });
           console.error(err.response || err);
         }

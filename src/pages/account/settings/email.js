@@ -2,9 +2,14 @@ import InternalTemplate from '../../../components/templates/InternalTemplate';
 import Link from '../../../components/elements/Link.js';
 import Section from '../../../components/blocks/Section';
 
-const SettingsChangeNameAndEmail = () => {
+const SettingsChangeEmail = () => {
   return (
-    <InternalTemplate title="Change Name and Email">
+    <InternalTemplate
+      title="Change Email"
+      breadcrumbs={[
+        { name: 'Back to Settings', url: '/account/settings' },
+      ]}
+    >
       <Section>
         <Link to="/account/settings">← Back to Settings</Link>
       </Section>
@@ -12,4 +17,4 @@ const SettingsChangeNameAndEmail = () => {
   );
 };
 
-export default SettingsChangeNameAndEmail;
+export default SettingsChangeEmail;

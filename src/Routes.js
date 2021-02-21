@@ -40,8 +40,9 @@ import AddOnsAddRemove from './pages/account/add-ons/add-remove.js';
 import GettingStartedIndex from './pages/account/getting-started/index.js';
 import GettingStartedDetails from './pages/account/getting-started/details.js';
 import SettingsIndex from './pages/account/settings/index.js';
-import SettingsChangeNameAndEmail from './pages/account/settings/change-name-and-email.js';
-import SettingsChangePassword from './pages/account/settings/change-password.js';
+import SettingsName from './pages/account/settings/name.js';
+import SettingsEmail from './pages/account/settings/email.js';
+import SettingsPassword from './pages/account/settings/password.js';
 import SettingsDeleteAccount from './pages/account/settings/delete-account.js';
 import SettingsVerifyYourEmail from './pages/account/settings/verify-your-email.js';
 import SettingsAuthIndex from './pages/account/settings/auth/index.js';
@@ -159,8 +160,9 @@ function Routes() {
               <Route exact path="/account/getting-started/:slug"><GettingStartedDetails /></Route>
 
               <Route exact path="/account/settings"><SettingsIndex /></Route>
-              <Route exact path="/account/settings/change-name-and-email"><SettingsChangeNameAndEmail /></Route>
-              <Route exact path="/account/settings/change-password"><SettingsChangePassword /></Route>
+              <Route exact path="/account/settings/name"><SettingsName /></Route>
+              <Route exact path="/account/settings/email"><SettingsEmail /></Route>
+              <Route exact path="/account/settings/password"><SettingsPassword /></Route>
               <Route exact path="/account/settings/delete-account"><SettingsDeleteAccount /></Route>
               <Route exact path="/account/settings/verify-your-email"><SettingsVerifyYourEmail /></Route>
               <Route exact path="/account/settings/auth"><SettingsAuthIndex /></Route>

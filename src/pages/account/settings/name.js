@@ -3,43 +3,31 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalTemplate from '../../../components/templates/InternalTemplate';
-import FormError from '../../../components/blocks/FormError';
-import Loader from '../../../components/blocks/Loader';
 import Section from '../../../components/blocks/Section';
 import Form from '../../../components/elements/Form';
 import Input from '../../../components/elements/Input';
-import InputGroup from '../../../components/elements/InputGroup';
 import Label from '../../../components/elements/Label';
-import Strong from '../../../components/elements/Strong';
+import InputGroup from '../../../components/elements/InputGroup';
+import FormError from '../../../components/blocks/FormError';
 import Button from '../../../components/elements/Button';
-import PasswordInput from '../../../components/elements/PasswordInput';
+import Loader from '../../../components/blocks/Loader';
 
-const SettingsDeleteAccount = () => {
-
+const SettingsChangeName = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem('jwt');
-  const account_sid = localStorage.getItem('account_sid');
+  const user_sid = localStorage.getItem('user_sid');
 
+  const pageTitle = `Edit Name`;
   useEffect(() => {
-    document.title = `Delete Account | jambonz`;
+    document.title = `${pageTitle} | jambonz`;
   });
 
-  // Refs
-  const refPassword = useRef(null);
-  const refDeleteMessage = useRef(null);
-
-  // Form inputs
-  const [ password,      setPassword      ] = useState('');
-  const [ deleteMessage, setDeleteMessage ] = useState('');
-
-  // Invalid form inputs
-  const [ invalidPassword,      setInvalidPassword      ] = useState(false);
-  const [ invalidDeleteMessage, setInvalidDeleteMessage ] = useState(false);
-
+  const refName = useRef(null);
+  const [ name, setName ] = useState('');
+  const [ invalidName, setInvalidName ] = useState(false);
   const [ showLoader, setShowLoader ] = useState(true);
   const [ errorMessage, setErrorMessage ] = useState('');
-  const [ requiresPassword, setRequiresPassword ] = useState(true);
 
   useEffect(() => {
     const getAPIData = async () => {
@@ -54,14 +42,15 @@ const SettingsDeleteAccount = () => {
           },
         });
 
-        if (!userResponse.data || !userResponse.data.user || !userResponse.data.user.provider) {
-          throw new Error('Unable to get user data');
+        if (!userResponse.data || !userResponse.data.user || !userResponse.data.user.name) {
+          throw new Error('Unable to get name');
         }
 
         if (userResponse.data.user.provider !== 'local') {
-          setRequiresPassword(false);
+          throw new Error('You cannot change your name on an OAuth account');
         }
 
+        setName(userResponse.data.user.name);
         setShowLoader(false);
       } catch (err) {
         if (err.response && err.response.status === 401) {
@@ -82,7 +71,7 @@ const SettingsDeleteAccount = () => {
             level: 'error',
             message: (
               (err.response && err.response.data && err.response.data.msg) ||
-              err.message || 'Unable to get account data'
+              err.message || 'That registration webhook does not exist'
             ),
           });
           console.error(err.response || err);
@@ -97,41 +86,21 @@ const SettingsDeleteAccount = () => {
     // eslint-disable-next-line
   }, []);
 
-
   const handleSubmit = async (e) => {
     let isMounted = true;
     try {
       setShowLoader(true);
       e.preventDefault();
       setErrorMessage('');
-      setInvalidPassword(false);
-      setInvalidDeleteMessage(false);
+      setInvalidName(false);
       let errorMessages = [];
       let focusHasBeenSet = false;
 
-      if (requiresPassword && !password) {
-        errorMessages.push('You must provide your password in order to delete your account.');
-        setInvalidPassword(true);
+      if (!name) {
+        errorMessages.push('Please provide your name.');
+        setInvalidName(true);
         if (!focusHasBeenSet) {
-          refPassword.current.focus();
-          focusHasBeenSet = true;
-        }
-      }
-
-      if (!deleteMessage) {
-        errorMessages.push('You must type the delete message in order to delete your account.');
-        setInvalidDeleteMessage(true);
-        if (!focusHasBeenSet) {
-          refDeleteMessage.current.focus();
-          focusHasBeenSet = true;
-        }
-      }
-
-      if (deleteMessage !== 'delete my account') {
-        errorMessages.push('You must type the delete message correctly in order to delete your account.');
-        setInvalidDeleteMessage(true);
-        if (!focusHasBeenSet) {
-          refDeleteMessage.current.focus();
+          refName.current.focus();
           focusHasBeenSet = true;
         }
       }
@@ -148,23 +117,23 @@ const SettingsDeleteAccount = () => {
       // Submit
       //=============================================================================
       await axios({
-        method: 'delete',
+        method: 'put',
         baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: `/Accounts/${account_sid}`,
+        url: `/Users/${user_sid}`,
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
         data: {
-          password,
-        }
+          name,
+        },
       });
 
       isMounted = false;
-      history.push('/');
+      history.push('/account/settings');
       dispatch({
         type: 'ADD',
         level: 'success',
-        message: `Thanks for trying out jambonz!`,
+        message: `Name updated successfully`,
       });
 
     } catch (err) {
@@ -191,47 +160,29 @@ const SettingsDeleteAccount = () => {
 
   return (
     <InternalTemplate
-      title="Delete Account"
+      type="form"
+      title="Edit Name"
       breadcrumbs={[
         { name: 'Back to Settings', url: '/account/settings' },
       ]}
     >
       <Section>
         {showLoader ? (
-          <Loader height="224px" />
+          <Loader height="611px" />
         ) : (
-          <Form large onSubmit={handleSubmit}>
-            <p style={{ gridColumn: '1/3', textAlign: 'left' }}>
-              <Strong>Warning!</Strong> This will permantly delete all of your
-              data from our database. You will not be able to restore your account. You
-              must {requiresPassword && 'provide your password and'} type “delete my
-              account” into the Delete Message field.
-            </p>
-
-            {requiresPassword && (
-              <>
-                <Label htmlFor="password">Password</Label>
-                <PasswordInput
-                  allowShowPassword
-                  name="password"
-                  id="password"
-                  password={password}
-                  setPassword={setPassword}
-                  setErrorMessage={setErrorMessage}
-                  invalid={invalidPassword}
-                  ref={refPassword}
-                />
-              </>
-            )}
-
-            <Label style={{ width: '8rem' }} htmlFor="deleteMessage">Delete Message</Label>
+          <Form
+            large
+            onSubmit={handleSubmit}
+          >
+            <Label htmlFor="name">Name</Label>
             <Input
-              name="deleteMessage"
-              id="deleteMessage"
-              value={deleteMessage}
-              onChange={e => setDeleteMessage(e.target.value)}
-              invalid={invalidDeleteMessage}
-              ref={refDeleteMessage}
+              name="name"
+              id="name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              invalid={invalidName}
+              autoFocus
+              ref={refName}
             />
 
             {errorMessage && (
@@ -248,14 +199,14 @@ const SettingsDeleteAccount = () => {
                   dispatch({
                     type: 'ADD',
                     level: 'info',
-                    message: 'Canceled',
+                    message: 'Changes canceled',
                   });
                 }}
               >
                 Cancel
               </Button>
 
-              <Button grid>PERMANENTLY DELETE MY ACCOUNT</Button>
+              <Button grid>Save</Button>
             </InputGroup>
           </Form>
         )}
@@ -264,4 +215,4 @@ const SettingsDeleteAccount = () => {
   );
 };
 
-export default SettingsDeleteAccount;
+export default SettingsChangeName;

@@ -33,6 +33,10 @@ const Td = styled.td`
       padding-left: 1.25rem;
     }
   `}
+
+  ${props => props.simpleTable && `
+    padding: 0 0 1rem 0;
+  `}
 `;
 
 export default Td;
