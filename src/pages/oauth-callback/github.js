@@ -64,14 +64,15 @@ const OauthCallbackGithub = () => {
           throw Error('Non-200 response');
         }
 
-      } catch(err) {
-        console.error(err);
+      } catch (err) {
         history.push(previousLocation);
         dispatch({
           type: 'ADD',
           level: 'error',
-          message: 'Something went wrong, please try again.',
+          message: (err.response && err.response.data && err.response.data.msg) ||
+          err.message || 'Something went wrong, please try again',
         });
+        console.error(err.response || err);
       }
     };
 
