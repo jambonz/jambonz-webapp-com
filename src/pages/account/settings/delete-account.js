@@ -125,9 +125,7 @@ const SettingsDeleteAccount = () => {
           refDeleteMessage.current.focus();
           focusHasBeenSet = true;
         }
-      }
-
-      if (deleteMessage !== 'delete my account') {
+      } else if (deleteMessage !== 'delete my account') {
         errorMessages.push('You must type the delete message correctly in order to delete your account.');
         setInvalidDeleteMessage(true);
         if (!focusHasBeenSet) {
