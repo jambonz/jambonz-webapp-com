@@ -1,56 +1,65 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { NotificationStateContext } from './contexts/NotificationContext';
 
-import SignIn from './pages/sign-in/index.js';
-import SignInEmail from './pages/sign-in/email.js';
-import Register from './pages/register/index.js';
-import RegisterWithEmail from './pages/register/email.js';
-import RegisterWithEmailVerify from './pages/register/email-verify.js';
-import RegisterChooseSubdomain from './pages/register/subdomain.js';
-import RegisterMobileNumber from './pages/register/mobile-number.js';
-import RegisterMobileNumberVerify from './pages/register/mobile-number-verify.js';
-import RegisterComplete from './pages/register/complete.js';
-import OauthCallback from './pages/oauth-callback/index.js';
-import AccountHome from './pages/account/index.js';
-import ApiKeysDetails from './pages/account/api-keys/details.js';
-import ApiKeysNew from './pages/account/api-keys/new.js';
-import ApiKeysDelete from './pages/account/api-keys/delete.js';
-import MobileNumberAddEdit from './pages/account/mobile-number/add-edit.js';
-import MobileNumberVerify from './pages/account/mobile-number/verify.js';
-import MobileNumberRemove from './pages/account/mobile-number/remove.js';
-import RegistrationWebhookAddEdit from './pages/account/registration-webhook/add-edit.js';
-import RegistrationWebhookDelete from './pages/account/registration-webhook/delete.js';
-import SipRealmEdit from './pages/account/sip-realm/edit.js';
-import ApplicationsIndex from './pages/account/applications/index.js';
-import ApplicationsAddEdit from './pages/account/applications/add-edit.js';
-import RecentCallsIndex from './pages/account/recent-calls/index.js';
-import RecentCallsDetails from './pages/account/recent-calls/details.js';
-import AlertsIndex from './pages/account/alerts/index.js';
-import AlertsDetails from './pages/account/alerts/details.js';
-import CarriersIndex from './pages/account/carriers/index.js';
-import CarriersAddEdit from './pages/account/carriers/add-edit.js';
-import PhoneNumbersIndex from './pages/account/phone-numbers/index.js';
-import PhoneNumbersAddEdit from './pages/account/phone-numbers/add-edit.js';
-import SpeechServicesIndex from './pages/account/speech-services/index.js';
-import SpeechServicesAddEdit from './pages/account/speech-services/add-edit.js';
-import AddOnsIndex from './pages/account/add-ons/index.js';
-import AddOnsAddRemove from './pages/account/add-ons/add-remove.js';
-import GettingStartedIndex from './pages/account/getting-started/index.js';
-import GettingStartedDetails from './pages/account/getting-started/details.js';
-import SettingsIndex from './pages/account/settings/index.js';
-import SettingsName from './pages/account/settings/name.js';
-import SettingsEmail from './pages/account/settings/email.js';
-import SettingsPassword from './pages/account/settings/password.js';
-import SettingsDeleteAccount from './pages/account/settings/delete-account.js';
-import SettingsVerifyYourEmail from './pages/account/settings/verify-your-email.js';
-import SettingsAuthIndex from './pages/account/settings/auth/index.js';
-import SettingsAuthEmail from './pages/account/settings/auth/email.js';
+//===============================================
+// Page Imports
+//===============================================
+import SignIn from './pages/sign-in/index';
+import SignInEmail from './pages/sign-in/email';
+import Register from './pages/register/index';
+import RegisterWithEmail from './pages/register/email';
+import RegisterWithEmailVerify from './pages/register/email-verify';
+import RegisterChooseSubdomain from './pages/register/subdomain';
+import RegisterMobileNumber from './pages/register/mobile-number';
+import RegisterMobileNumberVerify from './pages/register/mobile-number-verify';
+import RegisterComplete from './pages/register/complete';
+import OauthCallback from './pages/oauth-callback/index';
+import AccountHome from './pages/account/index';
+import ApiKeysDetails from './pages/account/api-keys/details';
+import ApiKeysNew from './pages/account/api-keys/new';
+import ApiKeysDelete from './pages/account/api-keys/delete';
+import MobileNumberAddEdit from './pages/account/mobile-number/add-edit';
+import MobileNumberVerify from './pages/account/mobile-number/verify';
+import MobileNumberRemove from './pages/account/mobile-number/remove';
+import RegistrationWebhookAddEdit from './pages/account/registration-webhook/add-edit';
+import RegistrationWebhookDelete from './pages/account/registration-webhook/delete';
+import SipRealmEdit from './pages/account/sip-realm/edit';
+import ApplicationsIndex from './pages/account/applications/index';
+import ApplicationsAddEdit from './pages/account/applications/add-edit';
+import RecentCallsIndex from './pages/account/recent-calls/index';
+import RecentCallsDetails from './pages/account/recent-calls/details';
+import AlertsIndex from './pages/account/alerts/index';
+import AlertsDetails from './pages/account/alerts/details';
+import CarriersIndex from './pages/account/carriers/index';
+import CarriersAddEdit from './pages/account/carriers/add-edit';
+import PhoneNumbersIndex from './pages/account/phone-numbers/index';
+import PhoneNumbersAddEdit from './pages/account/phone-numbers/add-edit';
+import SpeechServicesIndex from './pages/account/speech-services/index';
+import SpeechServicesAddEdit from './pages/account/speech-services/add-edit';
+import AddOnsIndex from './pages/account/add-ons/index';
+import AddOnsAddRemove from './pages/account/add-ons/add-remove';
+import GettingStartedIndex from './pages/account/getting-started/index';
+import GettingStartedDetails from './pages/account/getting-started/details';
+import SettingsIndex from './pages/account/settings/index';
+import SettingsName from './pages/account/settings/name';
+import SettingsEmail from './pages/account/settings/email';
+import SettingsPassword from './pages/account/settings/password';
+import SettingsDeleteAccount from './pages/account/settings/delete-account';
+import SettingsVerifyYourEmail from './pages/account/settings/verify-your-email';
+import SettingsAuthIndex from './pages/account/settings/auth/index';
+import SettingsAuthEmail from './pages/account/settings/auth/email';
 import InvalidRouteInternal from './pages/404-internal';
 import InvalidRouteExternal from './pages/404-external';
 
+//===============================================
+// Component Imports
+//===============================================
 import Notification from './components/blocks/Notification';
 
+//===============================================
+// Routes Component
+//===============================================
 function Routes() {
   const notifications = useContext(NotificationStateContext);
   return (
@@ -104,12 +113,8 @@ function Routes() {
               <Route exact path="/account/sip-realm/edit"><SipRealmEdit /></Route>
 
               <Route exact path="/account/applications"><ApplicationsIndex /></Route>
-              <Route exact path={[
-                "/account/applications/add",
-                "/account/applications/:application_sid/edit",
-              ]}>
-                <ApplicationsAddEdit />
-              </Route>
+              <Route exact path="/account/applications/add"><ApplicationsAddEdit /></Route>
+              <Route exact path="/account/applications/:application_sid/edit"><ApplicationsAddEdit /></Route>
 
               <Route exact path="/account/recent-calls"><RecentCallsIndex /></Route>
               <Route exact path="/account/recent-calls/:id"><RecentCallsDetails /></Route>
@@ -118,36 +123,22 @@ function Routes() {
               <Route exact path="/account/alerts/:id"><AlertsDetails /></Route>
 
               <Route exact path="/account/carriers"><CarriersIndex /></Route>
-              <Route exact path={[
-                "/account/carriers/add",
-                "/account/carriers/:voip_carrier_sid/edit",
-              ]}>
-                <CarriersAddEdit />
-              </Route>
+              <Route exact path="/account/carriers/add"><CarriersAddEdit /></Route>
+
+              <Route exact path="/account/carriers"><CarriersIndex /></Route>
+              <Route exact path="/account/carriers/:voip_carrier_sid/edit"><CarriersAddEdit /></Route>
 
               <Route exact path="/account/phone-numbers"><PhoneNumbersIndex /></Route>
-              <Route exact path={[
-                "/account/phone-numbers/add",
-                "/account/phone-numbers/:phone_number_sid/edit",
-              ]}>
-                <PhoneNumbersAddEdit />
-              </Route>
+              <Route exact path="/account/phone-numbers/add"><PhoneNumbersAddEdit /></Route>
+              <Route exact path="/account/phone-numbers/:phone_number_sid/edit"><PhoneNumbersAddEdit /></Route>
 
               <Route exact path="/account/speech-services"><SpeechServicesIndex /></Route>
-              <Route exact path={[
-                "/account/speech-services/add",
-                "/account/speech-services/:speech_credential_sid/edit",
-              ]}>
-                <SpeechServicesAddEdit />
-              </Route>
+              <Route exact path="/account/speech-services/add"><SpeechServicesAddEdit /></Route>
+              <Route exact path="/account/speech-services/:speech_credential_sid/edit"><SpeechServicesAddEdit /></Route>
 
               <Route exact path="/account/add-ons"><AddOnsIndex /></Route>
-              <Route exact path={[
-                "/account/add-ons/:slug/add",
-                "/account/add-ons/:slug/remove",
-              ]}>
-                <AddOnsAddRemove />
-              </Route>
+              <Route exact path="/account/add-ons/:slug/add"><AddOnsAddRemove /></Route>
+              <Route exact path="/account/add-ons/:slug/remove"><AddOnsAddRemove /></Route>
 
               <Route exact path="/account/getting-started"><GettingStartedIndex /></Route>
               <Route exact path="/account/getting-started/:slug"><GettingStartedDetails /></Route>

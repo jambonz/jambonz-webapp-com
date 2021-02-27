@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components/macro';
@@ -13,6 +13,7 @@ const PageMain = styled.main`
   height: calc(100vh - 4rem);
   width: calc(100% - 15rem);
   overflow: auto;
+
   ${props => props.type === 'fullWidthTable' ? `
     display: flex;
     flex-direction: column;

@@ -77,7 +77,6 @@ const AccountHome = () => {
 
   const addApiKey = async () => {
     try {
-
       const apiKeyResponse = await axios({
         method: 'post',
         baseURL: process.env.REACT_APP_API_BASE_URL,

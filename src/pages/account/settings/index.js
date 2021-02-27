@@ -10,7 +10,7 @@ import InputGroup from '../../../components/elements/InputGroup';
 import Loader from '../../../components/blocks/Loader';
 import Section from '../../../components/blocks/Section';
 import TableMenu from '../../../components/blocks/TableMenu';
-import Button from '../../../components/elements/Button.js';
+import Button from '../../../components/elements/Button';
 import H2 from '../../../components/elements/H2';
 import H3 from '../../../components/elements/H3';
 import Table from '../../../components/elements/Table';

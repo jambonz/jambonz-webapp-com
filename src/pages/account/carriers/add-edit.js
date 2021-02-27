@@ -661,7 +661,7 @@ const CarriersAddEdit = () => {
 
             {
               !authenticate ? (
-                <React.Fragment>
+                <>
                   <div></div>
                   <Button
                     text
@@ -671,9 +671,9 @@ const CarriersAddEdit = () => {
                   >
                     Does your carrier require authentication?
                   </Button>
-                </React.Fragment>
+                </>
               ) : (
-                <React.Fragment>
+                <>
                   <Label htmlFor="username">Username</Label>
                   <Input
                     name="username"
@@ -707,7 +707,7 @@ const CarriersAddEdit = () => {
                   />
                   {
                     register ? (
-                      <React.Fragment>
+                      <>
                         <Label htmlFor="realm">SIP Realm</Label>
                         <Input
                           name="realm"
@@ -718,12 +718,12 @@ const CarriersAddEdit = () => {
                           invalid={realmInvalid}
                           ref={refRealm}
                         />
-                      </React.Fragment>
+                      </>
                     ) : (
                       null
                     )
                   }
-                </React.Fragment>
+                </>
               )
             }
 
@@ -805,7 +805,6 @@ const CarriersAddEdit = () => {
 
             <InputGroup flexEnd spaced>
               <Button
-                grid
                 gray
                 type="button"
                 onClick={() => {
@@ -820,7 +819,7 @@ const CarriersAddEdit = () => {
                 Cancel
               </Button>
 
-              <Button grid>
+              <Button>
                 {type === 'add'
                   ? 'Add Carrier'
                   : 'Save'

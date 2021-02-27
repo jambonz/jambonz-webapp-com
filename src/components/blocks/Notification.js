@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components/macro';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
 import { ReactComponent as CheckGreen } from '../../images/CheckGreen.svg';

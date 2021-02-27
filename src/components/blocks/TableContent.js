@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link as PlainLink } from 'react-router-dom';
 import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
 import { ModalStateContext } from '../../contexts/ModalContext';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
-import Table from '../elements/Table.js';
-import Th from '../elements/Th.js';
-import Td from '../elements/Td.js';
-import Button from '../elements/Button.js';
-import Checkbox from '../elements/Checkbox.js';
-import Link from '../elements/Link.js';
-import TableMenu from '../blocks/TableMenu.js';
-import Loader from '../blocks/Loader.js';
-import Modal from '../blocks/Modal.js';
-import FormError from '../blocks/FormError.js';
+import Table from '../elements/Table';
+import Th from '../elements/Th';
+import Td from '../elements/Td';
+import Button from '../elements/Button';
+import Checkbox from '../elements/Checkbox';
+import Link from '../elements/Link';
+import TableMenu from '../blocks/TableMenu';
+import Loader from '../blocks/Loader';
+import Modal from '../blocks/Modal';
+import FormError from '../blocks/FormError';
 import CopyableText from '../elements/CopyableText';
-import ToggleText from '../blocks/ToggleText.js';
+import ToggleText from '../blocks/ToggleText';
 import { ReactComponent as CheckGreen } from '../../images/CheckGreen.svg';
 import { ReactComponent as ErrorIcon } from '../../images/ErrorIcon.svg';
 
@@ -187,7 +187,7 @@ const TableContent = props => {
   // Render
   //=============================================================================
   return (
-    <React.Fragment>
+    <>
       {showNewContentModal && (
         <Modal
           title={`Here is your new ${props.name}`}
@@ -434,7 +434,7 @@ const TableContent = props => {
           )}
         </tbody>
       </Table>
-    </React.Fragment>
+    </>
   );
 };
 

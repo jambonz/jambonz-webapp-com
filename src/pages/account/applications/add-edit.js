@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
@@ -204,8 +204,6 @@ const ApplicationsAddEdit = () => {
         }
       }
 
-      // check if name is already in use
-
       if (!callWebhook) {
         errorMessages.push('Please provide a Calling Webhook.');
         setInvalidCallWebhook(true);
@@ -379,10 +377,10 @@ const ApplicationsAddEdit = () => {
             onSubmit={handleSubmit}
           >
             {type === 'edit' && (
-              <React.Fragment>
+              <>
                 <Label>ApplicationSid</Label>
                 <CopyableText text={applicationSid} textType="ApplicationSid" />
-              </React.Fragment>
+              </>
             )}
 
             <Label htmlFor="name">Name</Label>
@@ -762,7 +760,6 @@ const ApplicationsAddEdit = () => {
 
             <InputGroup flexEnd spaced>
               <Button
-                grid
                 gray
                 type="button"
                 onClick={() => {
@@ -777,7 +774,7 @@ const ApplicationsAddEdit = () => {
                 Cancel
               </Button>
 
-              <Button grid>
+              <Button>
                 {type === 'add'
                   ? 'Add Application'
                   : 'Save'

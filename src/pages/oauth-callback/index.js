@@ -3,7 +3,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
-import Loader from '../../components/blocks/Loader.js';
+import Loader from '../../components/blocks/Loader';
 
 const OauthCallback = () => {
   const history = useHistory();

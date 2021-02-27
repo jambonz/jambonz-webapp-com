@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components/macro';
 import { ReactComponent as MenuDots } from '../../images/MenuDots.svg';
@@ -63,7 +62,7 @@ const MenuButton = styled.button`
 `;
 
 const TableMenu = props => (
-  <React.Fragment>
+  <>
     <Button
       bulkEditMenu={props.bulkEditMenu}
       tableMenu={!props.bulkEditMenu}
@@ -97,7 +96,7 @@ const TableMenu = props => (
         ))}
       </Container>
     )}
-  </React.Fragment>
+  </>
 );
 
 export default TableMenu;

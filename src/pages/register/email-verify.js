@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
@@ -94,7 +94,7 @@ const EmailVerify = () => {
           ) : (
             <>
               {email ? (
-                <p>Please enter the code we just sent to {email}</p>
+                <p style={{ overflowWrap: 'anywhere' }}>Please enter the code we just sent to {email}</p>
               ) : (
                 null
               )}

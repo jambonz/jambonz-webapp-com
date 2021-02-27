@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
@@ -326,7 +326,6 @@ const PhoneNumbersAddEdit = () => {
 
             <InputGroup flexEnd spaced>
               <Button
-                grid
                 gray
                 type="button"
                 onClick={() => {
@@ -341,7 +340,7 @@ const PhoneNumbersAddEdit = () => {
                 Cancel
               </Button>
 
-              <Button grid>
+              <Button>
                 {type === 'add'
                   ? 'Add Phone Number'
                   : 'Save'

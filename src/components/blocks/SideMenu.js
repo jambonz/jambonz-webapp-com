@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { ModalStateContext } from '../../contexts/ModalContext';
@@ -10,8 +10,6 @@ import { ReactComponent as CarriersIcon     } from '../../images/CarriersIcon.sv
 import { ReactComponent as PhoneNumbersIcon } from '../../images/PhoneNumbersIcon.svg';
 import { ReactComponent as SpeechIcon       } from '../../images/SpeechIcon.svg';
 import { ReactComponent as AddOnsIcon       } from '../../images/AddOnsIcon.svg';
-
-
 
 const StyledSideMenu = styled.div`
   width: 15rem;

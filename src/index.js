@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import './global-styles.css';
 import { CurrentMenuProvider } from './contexts/CurrentMenuContext';

@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
 import Section from '../../components/blocks/Section';
-import Link from '../../components/elements/Link.js';
+import Link from '../../components/elements/Link';
 
 const Register = props => {
   useEffect(() => {

@@ -7,7 +7,7 @@ export const CurrentMenuDispatchContext = createContext();
  * This context keeps track of which menu is currently open.
  * You can only have one menu open at a time, and different
  * menus are spread across the application (navigation,
- * bulk edit menus, and menus in table rows)
+ * table rows menus, bulk edit menus)
  */
 
 export function CurrentMenuProvider(props) {

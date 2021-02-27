@@ -9,6 +9,13 @@ const BreadcrumbsContainer = styled.div`
   align-items: center;
 `;
 
+/*
+ * Breadcrumbs can be used for either a series of links at the top of the page
+ * or as a single "Back" link with an arrow. Pass a prop called breadcrumbs as
+ * an array. If there is one item in the array it will be treated as a back
+ * button. If there are multiple items it will be treated as breadcrumbs.
+ */
+
 const Breadcrumbs = props => {
   return (
     <BreadcrumbsContainer>

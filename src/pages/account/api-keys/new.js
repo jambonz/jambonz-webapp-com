@@ -1,5 +1,5 @@
 import InternalTemplate from '../../../components/templates/InternalTemplate';
-import Link from '../../../components/elements/Link.js';
+import Link from '../../../components/elements/Link';
 import Section from '../../../components/blocks/Section';
 
 const ApiKeyNew = () => {

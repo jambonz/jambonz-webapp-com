@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalTemplate from '../../../components/templates/InternalTemplate';
-import TableContent from '../../../components/blocks/TableContent.js';
+import TableContent from '../../../components/blocks/TableContent';
 import phoneNumberFormat from '../../../helpers/phoneNumberFormat';
 import Section from '../../../components/blocks/Section';
 

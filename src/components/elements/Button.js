@@ -1,4 +1,4 @@
-import React, { useContext, useRef, forwardRef, useImperativeHandle } from 'react';
+import { useContext, useRef, forwardRef, useImperativeHandle } from 'react';
 import { ModalStateContext } from '../../contexts/ModalContext';
 import styled from 'styled-components/macro';
 
@@ -17,9 +17,6 @@ const StyledButton = styled.button`
     ? `width: 100%;`
     : `justify-self: start;`
   }
-  ${props => props.bottomGap && `
-    margin-bottom: 1rem;
-  `}
 
   & > span {
     display: flex;
@@ -27,11 +24,7 @@ const StyledButton = styled.button`
     align-items: center;
     position: relative;
     outline: 0;
-    height: ${
-      props => props.large
-        ? '3rem'
-        : '2.25rem'
-    };
+    height: 2.25rem;
     ${props => props.fullWidth && `
       width: 100%;
     `}

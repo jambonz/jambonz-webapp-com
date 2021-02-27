@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { ModalDispatchContext } from '../../contexts/ModalContext';
 import styled from 'styled-components/macro';
 import Button from '../elements/Button';

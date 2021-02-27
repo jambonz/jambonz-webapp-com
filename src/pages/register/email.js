@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
@@ -131,7 +131,10 @@ const RegisterWithEmail = props => {
           email_activation_code,
         },
       });
-      console.log('CODE: ', email_activation_code);
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('CODE: ', email_activation_code);
+      }
 
       localStorage.setItem('jwt', response.data.jwt);
       localStorage.setItem('user_sid', response.data.user_sid);

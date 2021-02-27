@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components/macro';
 import { ReactComponent as ViewPassword } from '../../images/ViewPassword.svg';
 import { ReactComponent as HidePassword } from '../../images/HidePassword.svg';

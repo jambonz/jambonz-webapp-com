@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
@@ -532,7 +532,6 @@ const SpeechServicesAddEdit = () => {
 
             <InputGroup flexEnd spaced>
               <Button
-                grid
                 gray
                 type="button"
                 onClick={() => {
@@ -547,7 +546,7 @@ const SpeechServicesAddEdit = () => {
                 Cancel
               </Button>
 
-              <Button grid>
+              <Button>
                 {type === 'add'
                   ? 'Add Speech Service'
                   : 'Save'

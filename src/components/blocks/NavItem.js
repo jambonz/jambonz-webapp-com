@@ -92,7 +92,6 @@ const NavItem = ({ navMain, item }) => {
 
     ) : item.type === 'button' ? (
       <Button
-        large
         gray
         text
         onClick={item.onClick}
@@ -103,7 +102,6 @@ const NavItem = ({ navMain, item }) => {
     ) : item.type === 'submenu' ? (
       <SubmenuContainer>
         <Button
-          large
           gray
           text
           onClick={handleCurrentMenu}

@@ -191,7 +191,6 @@ const SettingsChangeName = () => {
 
             <InputGroup flexEnd spaced>
               <Button
-                grid
                 gray
                 type="button"
                 onClick={() => {
@@ -206,7 +205,7 @@ const SettingsChangeName = () => {
                 Cancel
               </Button>
 
-              <Button grid>Save</Button>
+              <Button>Save</Button>
             </InputGroup>
           </Form>
         )}

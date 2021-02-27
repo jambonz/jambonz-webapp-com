@@ -163,7 +163,6 @@ const SettingsChangePassword = () => {
 
             <InputGroup flexEnd spaced>
               <Button
-                grid
                 gray
                 type="button"
                 onClick={() => {
@@ -178,7 +177,7 @@ const SettingsChangePassword = () => {
                 Cancel
               </Button>
 
-              <Button grid>Save</Button>
+              <Button>Save</Button>
             </InputGroup>
           </Form>
         )}

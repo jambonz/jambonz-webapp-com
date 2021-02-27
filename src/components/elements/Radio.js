@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef, useImperativeHandle } from 'react';
+import { useRef, forwardRef, useImperativeHandle } from 'react';
 import styled from 'styled-components/macro';
 import Label from './Label';
 import Tooltip from './Tooltip';

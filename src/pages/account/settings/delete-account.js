@@ -238,7 +238,6 @@ const SettingsDeleteAccount = () => {
 
             <InputGroup flexEnd spaced>
               <Button
-                grid
                 gray
                 type="button"
                 onClick={() => {
@@ -253,7 +252,7 @@ const SettingsDeleteAccount = () => {
                 Cancel
               </Button>
 
-              <Button grid>PERMANENTLY DELETE MY ACCOUNT</Button>
+              <Button>PERMANENTLY DELETE MY ACCOUNT</Button>
             </InputGroup>
           </Form>
         )}

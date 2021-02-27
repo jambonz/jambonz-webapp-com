@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
@@ -86,7 +86,6 @@ const SignIn = props => {
       <Section>
         <Form left onSubmit={handleSubmit}>
           <Input
-            large
             fullWidth
             type="email"
             name="email"
@@ -99,7 +98,6 @@ const SignIn = props => {
             autoFocus
           />
           <PasswordInput
-            large
             allowShowPassword
             name="password"
             id="password"
@@ -114,7 +112,6 @@ const SignIn = props => {
             <FormError message={errorMessage} />
           )}
           <Button
-            large
             fullWidth
           >
             Sign In

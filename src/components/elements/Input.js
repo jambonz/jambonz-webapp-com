@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef, useImperativeHandle } from 'react';
+import { useRef, forwardRef, useImperativeHandle } from 'react';
 import styled from 'styled-components/macro';
 import { ReactComponent as ViewPassword } from '../../images/ViewPassword.svg';
 import { ReactComponent as HidePassword } from '../../images/HidePassword.svg';

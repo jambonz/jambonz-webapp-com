@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import ExternalTemplate from '../../components/templates/ExternalTemplate';
@@ -101,7 +101,9 @@ const RegisterMobileNumber = () => {
       }
 
       const code = generateActivationCode();
-      console.log('CODE: ', code);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('CODE: ', code);
+      }
 
       const activationCodeResponse = await axios({
         method: 'post',

@@ -1,10 +1,10 @@
-import React, { useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalTemplate from '../../../components/templates/InternalTemplate';
-import Section from '../../../components/blocks/Section.js';
-import TableContent from '../../../components/blocks/TableContent.js';
+import Section from '../../../components/blocks/Section';
+import TableContent from '../../../components/blocks/TableContent';
 
 const ApplicationsIndex = () => {
   let history = useHistory();
@@ -134,7 +134,7 @@ const ApplicationsIndex = () => {
       }
       if (errorMessages.length) {
         return (
-          <React.Fragment>
+          <>
             <p style={{ margin: '0.5rem 0' }}>
               This application cannot be deleted because it is in use by:
             </p>
@@ -143,7 +143,7 @@ const ApplicationsIndex = () => {
                 <li key={i}>{err}</li>
               ))}
             </ul>
-          </React.Fragment>
+          </>
         );
       }
 
