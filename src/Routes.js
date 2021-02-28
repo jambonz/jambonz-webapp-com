@@ -33,8 +33,6 @@ import SpeechServicesIndex from './pages/account/speech-services/index';
 import SpeechServicesAddEdit from './pages/account/speech-services/add-edit';
 import AddOnsIndex from './pages/account/add-ons/index';
 import AddOnsAddRemove from './pages/account/add-ons/add-remove';
-import GettingStartedIndex from './pages/account/getting-started/index';
-import GettingStartedDetails from './pages/account/getting-started/details';
 import SettingsIndex from './pages/account/settings/index';
 import SettingsName from './pages/account/settings/name';
 import SettingsEmail from './pages/account/settings/email';
@@ -125,9 +123,6 @@ function Routes() {
               <Route exact path="/account/add-ons"><AddOnsIndex /></Route>
               <Route exact path="/account/add-ons/:slug/add"><AddOnsAddRemove /></Route>
               <Route exact path="/account/add-ons/:slug/remove"><AddOnsAddRemove /></Route>
-
-              <Route exact path="/account/getting-started"><GettingStartedIndex /></Route>
-              <Route exact path="/account/getting-started/:slug"><GettingStartedDetails /></Route>
 
               <Route exact path="/account/settings"><SettingsIndex /></Route>
               <Route exact path="/account/settings/name"><SettingsName /></Route>

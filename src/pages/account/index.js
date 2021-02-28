@@ -5,11 +5,13 @@ import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../conte
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
 import { ModalStateContext } from '../../contexts/ModalContext';
 import InternalTemplate from '../../components/templates/InternalTemplate';
+import AccountSetupList from '../../components/blocks/AccountSetupList';
 import Section from '../../components/blocks/Section';
 import TableMenu from '../../components/blocks/TableMenu';
 import InputGroup from '../../components/elements/InputGroup';
 import H2 from '../../components/elements/H2';
 import Button from '../../components/elements/Button';
+import P from '../../components/elements/P';
 import Table from '../../components/elements/Table';
 import Th from '../../components/elements/Th';
 import Td from '../../components/elements/Td';
@@ -129,16 +131,22 @@ const AccountHome = () => {
 
   return (
     <InternalTemplate title="Home">
-      {data.account && data.account.show_tutorial_reminder && (
-        <Section>
-          <H2>Getting Started</H2>
-          <p>{data.account.tutorial_completion}</p>
-          <InputGroup flexEnd spaced>
-            <Button gray>Don't show again</Button>
-            <Button as={ReactRouterLink} to="/account/getting-started">Continue →</Button>
-          </InputGroup>
-        </Section>
-      )}
+      <Section>
+        <H2>Your Subscription</H2>
+        <P>
+          You are currently on the Free plan (trial period). You are limited to 10
+          simultaneous calls and 10 registered devices
+        </P>
+        <InputGroup flexEnd spaced>
+          <Button as={ReactRouterLink} to="#">Upgrade to a paid subscription</Button>
+        </InputGroup>
+      </Section>
+
+      <Section>
+        <H2>Account Setup</H2>
+        <P>1 of 4 steps complete</P>
+        <AccountSetupList />
+      </Section>
 
       {data.account && (
         <Section>
