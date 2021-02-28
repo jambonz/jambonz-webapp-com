@@ -1,4 +1,4 @@
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 
 const SipRealmEdit = () => {
   return (

@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
 import Form from '../../../components/elements/Form';
 import Input from '../../../components/elements/Input';
@@ -43,8 +43,6 @@ const PhoneNumbersAddEdit = () => {
   const [ errorMessage, setErrorMessage ] = useState('');
 
   useEffect(() => {
-    document.title = `${pageTitle} | jambonz`;
-
     const getAPIData = async () => {
       let isMounted = true;
       try {

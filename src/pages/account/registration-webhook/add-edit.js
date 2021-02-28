@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
 import Form from '../../../components/elements/Form';
 import Input from '../../../components/elements/Input';
@@ -21,10 +21,6 @@ const RegistrationWebhookAddEdit = () => {
 
   const { webhook_sid } = useParams();
   const type = webhook_sid ? 'edit' : 'add';
-  const pageTitle = `${type === 'edit' ? 'Edit' : 'Add'} Registration Webhook`;
-  useEffect(() => {
-    document.title = `${pageTitle} | jambonz`;
-  });
 
   // Refs
   const refWebhook = useRef(null);
@@ -208,7 +204,7 @@ const RegistrationWebhookAddEdit = () => {
   return (
     <InternalMain
       type="form"
-      title={pageTitle}
+      title={`${type === 'edit' ? 'Edit' : 'Add'} Registration Webhook`}
       breadcrumbs={[
         { name: 'Back to Account Home', url: '/account' },
       ]}

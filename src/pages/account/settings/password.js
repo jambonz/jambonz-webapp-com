@@ -1,8 +1,8 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import FormError from '../../../components/blocks/FormError';
 import Loader from '../../../components/blocks/Loader';
 import Section from '../../../components/blocks/Section';
@@ -17,10 +17,6 @@ const SettingsChangePassword = () => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem('jwt');
   const user_sid = localStorage.getItem('user_sid');
-
-  useEffect(() => {
-    document.title = `Change Password | jambonz`;
-  });
 
   const refOldPassword = useRef(null);
   const refNewPassword = useRef(null);

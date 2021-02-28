@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import FormError from '../../../components/blocks/FormError';
 import Loader from '../../../components/blocks/Loader';
 import Section from '../../../components/blocks/Section';
@@ -20,10 +20,6 @@ const SettingsDeleteAccount = () => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem('jwt');
   const account_sid = localStorage.getItem('account_sid');
-
-  useEffect(() => {
-    document.title = `Delete Account | jambonz`;
-  });
 
   // Refs
   const refPassword = useRef(null);

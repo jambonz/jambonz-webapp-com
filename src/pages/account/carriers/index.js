@@ -1,8 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
 import TableContent from '../../../components/blocks/TableContent';
 import sortSipGateways from '../../../helpers/sortSipGateways';
@@ -14,10 +14,6 @@ const CarriersIndex = () => {
 
   const [ carriers, setCarriers ] = useState('');
   const [ sipRealm, setSipRealm ] = useState('');
-
-  useEffect(() => {
-    document.title = `Carriers | jambonz`;
-  });
 
   //=============================================================================
   // Get carriers

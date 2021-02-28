@@ -5,7 +5,7 @@ import styled from 'styled-components/macro';
 import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../../contexts/CurrentMenuContext';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import { ModalStateContext } from '../../../contexts/ModalContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import InputGroup from '../../../components/elements/InputGroup';
 import Loader from '../../../components/blocks/Loader';
 import Section from '../../../components/blocks/Section';
@@ -28,10 +28,6 @@ const SettingsIndex = () => {
   const currentMenu = useContext(CurrentMenuStateContext);
   const setCurrentMenu = useContext(CurrentMenuDispatchContext);
   const jwt = localStorage.getItem('jwt');
-
-  useEffect(() => {
-    document.title = `Settings | jambonz`;
-  });
 
   const [ provider, setProvider ] = useState(null);
   const [ name, setName ] = useState(null);

@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
 import Form from '../../../components/elements/Form';
 import Input from '../../../components/elements/Input';
@@ -25,10 +25,6 @@ const SpeechServicesAddEdit = () => {
 
   let { speech_credential_sid } = useParams();
   const type = speech_credential_sid ? 'edit' : 'add';
-  const pageTitle = type === 'edit' ? 'Edit Speech Service' : 'Add Speech Service';
-  useEffect(() => {
-    document.title = `${pageTitle} | jambonz`;
-  });
 
   // Refs
   const refVendorGoogle = useRef(null);
@@ -399,7 +395,7 @@ const SpeechServicesAddEdit = () => {
   return (
     <InternalMain
       type="form"
-      title={pageTitle}
+      title={`${type === 'edit' ? 'Edit' : 'Add'} Speech Service`}
       breadcrumbs={[
         { name: 'Back to Speech Services', url: '/account/speech-services' },
       ]}

@@ -54,10 +54,10 @@ const ContentContainer = styled.div`
 const InternalMain = props => {
   const setCurrentMenu = useContext(CurrentMenuDispatchContext);
 
-  // Close any open menu on any page transition (needed for mobile nav drawer)
   useEffect(() => {
     setCurrentMenu(null);
-  }, [setCurrentMenu]);
+    document.title = `${props.metaTitle || props.title} | jambonz`;
+  }, [ setCurrentMenu, props.metaTitle, props.title ]);
 
   return (
     <PageMain type={props.type}>

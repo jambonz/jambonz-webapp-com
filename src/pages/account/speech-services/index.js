@@ -1,8 +1,8 @@
-import { useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
 import TableContent from '../../../components/blocks/TableContent';
 
@@ -11,10 +11,6 @@ const SpeechServicesIndex = () => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem('jwt');
   const account_sid = localStorage.getItem('account_sid');
-
-  useEffect(() => {
-    document.title = `Speech Services | jambonz`;
-  });
 
   //=============================================================================
   // Get speech services

@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro';
-import InternalMain from '../components/blocks/InternalMain';
+import InternalMain from '../components/wrappers/InternalMain';
 import Section from '../components/blocks/Section';
 
 const Container = styled.div`

@@ -1,8 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import TableContent from '../../../components/blocks/TableContent';
 import phoneNumberFormat from '../../../helpers/phoneNumberFormat';
 import Section from '../../../components/blocks/Section';
@@ -11,10 +11,6 @@ const PhoneNumbersIndex = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem('jwt');
-
-  useEffect(() => {
-    document.title = `Phone Numbers | jambonz`;
-  });
 
   //=============================================================================
   // Get phone numbers

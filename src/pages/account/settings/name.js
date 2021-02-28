@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
 import Form from '../../../components/elements/Form';
 import Input from '../../../components/elements/Input';
@@ -17,11 +17,6 @@ const SettingsChangeName = () => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem('jwt');
   const user_sid = localStorage.getItem('user_sid');
-
-  const pageTitle = `Edit Name`;
-  useEffect(() => {
-    document.title = `${pageTitle} | jambonz`;
-  });
 
   const refName = useRef(null);
   const [ name, setName ] = useState('');

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
 import { ModalStateContext } from '../../contexts/ModalContext';
-import InternalMain from '../../components/blocks/InternalMain';
+import InternalMain from '../../components/wrappers/InternalMain';
 import AccountSetupList from '../../components/blocks/AccountSetupList';
 import Section from '../../components/blocks/Section';
 import TableMenu from '../../components/blocks/TableMenu';
@@ -76,8 +76,6 @@ const AccountHome = () => {
   };
 
   useEffect(() => {
-    document.title = `Account Home | jambonz`;
-
     let isMounted = true;
     const getData = async () => {
       try {
@@ -160,7 +158,7 @@ const AccountHome = () => {
   }, [ jwt, dispatch, history ]);
 
   return (
-    <InternalMain title="Home">
+    <InternalMain title="Home" metaTitle="Account Home">
       {showLoader ? (
         <Loader height="calc(100vh - 24rem)" />
       ) : (

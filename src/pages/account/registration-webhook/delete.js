@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/blocks/InternalMain';
+import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
 import InputGroup from '../../../components/elements/InputGroup';
 import FormError from '../../../components/blocks/FormError';
@@ -16,10 +16,6 @@ const RegistrationWebhookDelete = () => {
   const account_sid = localStorage.getItem('account_sid');
 
   const { webhook_sid } = useParams();
-  const pageTitle = `Delete Registration Webhook`;
-  useEffect(() => {
-    document.title = `${pageTitle} | jambonz`;
-  });
 
   const [ url, setUrl] = useState('');
   const [ showLoader, setShowLoader ] = useState(true);
