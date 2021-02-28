@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro';
 
 const StyledSection = styled.section`
-  height: 100%;
   min-width: fit-content;
   margin-bottom: 1.5rem;
   padding: 2rem;
@@ -19,16 +18,30 @@ const StyledSection = styled.section`
   }
 
   ${props => props.fullPage && `
+    height: 100%;
     min-width: auto;
     margin: 0;
     border-radius: 0;
     overflow: auto;
   `}
+
+  ${props => props.theme.mobileOnly} {
+    ${props => props.normalTable && `
+      height: 100%;
+      min-width: auto;
+      margin: 0;
+      border-radius: 0;
+      overflow: auto;
+    `}
+  }
 `;
 
 const Section = props => {
   return (
-    <StyledSection fullPage={props.fullPage}>
+    <StyledSection
+      fullPage={props.fullPage}
+      normalTable={props.normalTable}
+    >
       {props.children}
     </StyledSection>
   );

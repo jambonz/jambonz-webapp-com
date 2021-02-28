@@ -181,14 +181,15 @@ const CarriersIndex = () => {
   //=============================================================================
   return (
     <InternalTemplate
-      type="singleTable"
+      type="normalTable"
       title="Carriers"
       addButtonText="Add a Carriers"
       addButtonLink="/account/carriers/add"
       subtitle={sipRealm ? `Have your carrier${carriers.length > 1 ? 's' : ''} send calls to ${sipRealm}` : <>&nbsp;</>}
     >
-      <Section>
+      <Section normalTable>
         <TableContent
+          normalTable
           name="carrier"
           urlParam="carriers"
           getContent={getCarriers}

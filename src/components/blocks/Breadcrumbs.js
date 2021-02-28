@@ -4,7 +4,7 @@ import { ReactComponent as Chevron } from '../../images/Chevron.svg';
 import Link from '../elements/Link';
 
 const BreadcrumbsContainer = styled.div`
-  margin-top: 1.5rem;
+  margin-bottom: 1rem;
   display: flex;
   align-items: center;
 `;

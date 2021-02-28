@@ -30,6 +30,10 @@ const Table = styled.table`
       ? '2.5rem'
       : '4rem'
     };
+
+    ${props => props.theme.mobileOnly} {
+      height: 2.5rem;
+    }
   }
 
   & tbody tr {
@@ -37,13 +41,25 @@ const Table = styled.table`
       ? '2.5rem'
       : '5.5rem'
     };
+
+    ${props => props.theme.mobileOnly} {
+      ${props => props.normalTable && `
+        height: 2.5rem;
+      `}
+    }
   }
 
-  ${props => props.fullWidth ? '' : `
+  ${props => !props.fullWidth && `
     & tbody tr:last-child {
       border-bottom: 0;
     }
   `}
+
+  ${props => props.theme.mobileOnly} {
+    & tbody tr:last-child {
+      border-bottom: 1px solid #E0E0E0;
+    }
+  }
 
   & thead th {
     background: #F7F7F7;

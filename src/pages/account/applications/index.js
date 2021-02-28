@@ -179,13 +179,14 @@ const ApplicationsIndex = () => {
   //=============================================================================
   return (
     <InternalTemplate
-      type="singleTable"
+      type="normalTable"
       title="Applications"
       addButtonText="Add an Application"
       addButtonLink="/account/applications/add"
     >
-      <Section>
+      <Section normalTable>
         <TableContent
+          normalTable
           name="application"
           urlParam="applications"
           getContent={getApplications}

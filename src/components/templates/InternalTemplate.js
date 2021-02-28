@@ -10,27 +10,28 @@ import AddButton from '../elements/AddButton';
 import Breadcrumbs from '../blocks/Breadcrumbs';
 
 const PageMain = styled.main`
+  display: flex;
+  flex-direction: column;
   height: calc(100vh - 4rem);
   width: calc(100% - 15rem);
+  padding: 2.5rem 3rem;
   overflow: auto;
 
-  ${props => props.type === 'fullWidthTable' ? `
-    display: flex;
-    flex-direction: column;
-    padding-top: 2.5rem;
-  ` : `
-    padding: 2.5rem 3rem;
-  `};
+  ${props => props.theme.mobileOnly} {
+    width: 100%;
+    padding: 1.5rem 1rem;
+  }
 `;
 
 const TopSection = styled.section`
-  ${props => props.type === 'fullWidthTable' && `
-    padding: 0 3rem;
-  `}
+  display: flex;
+  justify-content: space-between;
+  align-items: ${props => props.centerVertical ? 'center' : 'flex-start'};
+  margin-bottom: 1.5rem;
 `;
 
 const Subtitle = styled.p`
-  margin: -0.5rem 0 1.5rem;
+  margin: 1rem 0 0;
 `;
 
 const ContentContainer = styled.div`
@@ -39,7 +40,18 @@ const ContentContainer = styled.div`
   `}
   ${props => props.type === 'fullWidthTable' && `
     flex-grow: 1;
+    margin: 0 -3rem -2.5rem;
   `}
+
+  ${props => props.theme.mobileOnly} {
+    ${props => (
+      props.type === 'normalTable' ||
+      props.type === 'fullWidthTable'
+    ) && `
+      flex-grow: 1;
+      margin: 0 -1rem -1.5rem;
+    `}
+  }
 `;
 
 const InternalTemplate = props => {
@@ -160,30 +172,26 @@ const InternalTemplate = props => {
           {props.breadcrumbs && (
             <Breadcrumbs breadcrumbs={props.breadcrumbs} />
           )}
-          <TopSection type={props.type}>
-            <H1>{props.title}</H1>
+          <TopSection type={props.type} centerVertical={!props.subtitle}>
+            <div>
+              <H1>{props.title}</H1>
+              {props.subtitle
+                ? <Subtitle>{props.subtitle}</Subtitle>
+                : null
+              }
+            </div>
             {props.addButtonText && (
               <AddButton
                 addButtonText={props.addButtonText}
                 to={props.addButtonLink}
               />
             )}
-            {props.subtitle
-              ? <Subtitle>{props.subtitle}</Subtitle>
-              : null
-            }
           </TopSection>
           <ContentContainer
             type={props.type}
           >
             {props.children}
           </ContentContainer>
-
-          {props.additionalTable && (
-            <ContentContainer>
-              {props.additionalTable}
-            </ContentContainer>
-          )}
         </PageMain>
       </div>
     </>

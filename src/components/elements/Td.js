@@ -37,6 +37,14 @@ const Td = styled.td`
   ${props => props.simpleTable && `
     padding: 0 0 1rem 0;
   `}
+
+  ${props => props.emptyResults && `
+    text-align: center;
+
+    ${props.theme.mobileOnly} {
+      text-align: left;
+    }
+  `}
 `;
 
 export default Td;

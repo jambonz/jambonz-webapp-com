@@ -208,13 +208,14 @@ const PhoneNumbersIndex = () => {
   //=============================================================================
   return (
     <InternalTemplate
-      type="singleTable"
+      type="normalTable"
       title="Phone Numbers"
       addButtonText="Add a Phone Number"
       addButtonLink="/account/phone-numbers/add"
     >
-      <Section>
+      <Section normalTable>
         <TableContent
+          normalTable
           withCheckboxes
           name="phone number"
           urlParam="phone-numbers"

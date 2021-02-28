@@ -147,15 +147,21 @@ const StyledButton = styled.button`
     overflow: hidden;
 
     & > span {
+      height: 3rem;
+      width: 3rem;
+      padding: 0;
+      border-radius: 50%;
+      outline: 0;
       background: ${props.selected
         ? '#E3E3E3'
         : 'none'
       };
-      height: 3rem;
-      width: 3rem;
-      border-radius: 50%;
-      outline: 0;
       fill: #767676;
+
+      ${props.theme.mobileOnly} {
+        height: 2rem;
+        width: 2rem;
+      }
     }
 
     &:focus > span {

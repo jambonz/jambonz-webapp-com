@@ -12,15 +12,14 @@ const PageContainer = styled.div`
     height: calc(100vh - 20rem);
     justify-content: center;
   `}
-`;
 
-const StyledH1 = styled(H1)`
-  text-align: center;
-  margin-bottom: 3rem;
+  ${props => props.theme.mobileOnly} {
+    margin: 1.5rem 1rem;
+  }
 `;
 
 const ContentContainer = styled.div`
-  width: 32rem;
+  width: ${props => props.theme.externalMaxWidth};
   max-width: 100%;
 `;
 
@@ -39,7 +38,7 @@ const ExternalTemplate = props => (
     />
     <PageContainer fullPage={props.fullPage}>
       {props.title && (
-        <StyledH1>{props.title}</StyledH1>
+        <H1 external>{props.title}</H1>
       )}
       <ContentContainer>
         {props.children}

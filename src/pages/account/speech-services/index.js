@@ -183,13 +183,14 @@ const SpeechServicesIndex = () => {
   //=============================================================================
   return (
     <InternalTemplate
-      type="singleTable"
+      type="normalTable"
       title="Speech Services"
       addButtonText="Add Speech Service"
       addButtonLink="/account/speech-services/add"
     >
-      <Section>
+      <Section normalTable>
         <TableContent
+          normalTable
           name="speech service"
           urlParam="speech-services"
           getContent={getSpeechServices}

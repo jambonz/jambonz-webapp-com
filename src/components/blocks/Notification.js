@@ -23,6 +23,7 @@ const NotificationDiv = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 28rem;
+  max-width: calc(100% - 2rem);
   padding: 0.75rem;
   background: #fff;
   border: 1px solid ${props => (

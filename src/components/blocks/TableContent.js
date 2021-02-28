@@ -254,6 +254,7 @@ const TableContent = props => {
         withCheckboxes={props.withCheckboxes}
         fullWidth={props.fullWidth}
         condensed={props.condensed}
+        normalTable={props.normalTable}
       >
         <thead>
           <tr>
@@ -340,12 +341,10 @@ const TableContent = props => {
           ) : (
             !content || !content.length ? (
               <tr>
-                <Td
-                  colSpan={props.withCheckboxes ? props.columns.length + 1 : props.columns.length}
-                  textAlign="center"
-                >
+                <Td emptyResults colSpan={props.withCheckboxes ? props.columns.length + 1 : props.columns.length}>
                   No {props.name}s
                 </Td>
+                <Td></Td>
               </tr>
             ) : (
               content.map(a => (

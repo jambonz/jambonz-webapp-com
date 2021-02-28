@@ -8,9 +8,6 @@ const FilteredLink = ({ addButtonText, ...props }) => (
 );
 
 const StyledLink = styled(FilteredLink)`
-  position: absolute;
-  top: 7rem;
-  right: 3rem;
   display: flex;
   padding: 0;
   border: 0;
@@ -46,6 +43,11 @@ const StyledLink = styled(FilteredLink)`
   }
 
   &:active > span:first-child  {
+  }
+
+  ${props => props.theme.mobileOnly} {
+    top: 5rem;
+    right: 1rem;
   }
 `;
 
