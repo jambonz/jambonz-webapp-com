@@ -16,6 +16,7 @@ import Table from '../../components/elements/Table';
 import Th from '../../components/elements/Th';
 import Td from '../../components/elements/Td';
 import maskApiToken from '../../helpers/maskApiToken';
+import Loader from '../../components/blocks/Loader';
 
 const AccountHome = () => {
   let history = useHistory();
@@ -30,6 +31,7 @@ const AccountHome = () => {
   const [ data,                         setData                         ] = useState({});
   const [ registrationWebhookUrl,       setRegistrationWebhookUrl       ] = useState('');
   const [ registrationWebhookMenuItems, setRegistrationWebhookMenuItems ] = useState([]);
+  const [ showLoader,                   setShowLoader                   ] = useState(true);
 
   const copyText = async ({ text, textType }) => {
     try {
@@ -76,225 +78,259 @@ const AccountHome = () => {
   useEffect(() => {
     document.title = `Account Home | jambonz`;
 
+    let isMounted = true;
     const getData = async () => {
-      const userResponse = await axios({
-        method: 'get',
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: '/Users/me',
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-
-      setData(userResponse.data);
-
-      if (userResponse.data.account && userResponse.data.account.registration_hook_sid) {
-        const webhook_sid = userResponse.data.account.registration_hook_sid;
-        const regWebhookResponse = await axios({
+      try {
+        const userResponse = await axios({
           method: 'get',
           baseURL: process.env.REACT_APP_API_BASE_URL,
-          url: `/Webhooks/${webhook_sid}`,
+          url: '/Users/me',
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
         });
 
-        if (regWebhookResponse.data && regWebhookResponse.data.url) {
-          setRegistrationWebhookUrl(regWebhookResponse.data.url);
-        }
+        setData(userResponse.data);
 
-        setRegistrationWebhookMenuItems([
-          {
-            name: 'Edit',
-            type: 'link',
-            url: `/account/registration-webhook/${webhook_sid}/edit`,
-          },
-          {
-            name: 'Delete',
-            type: 'link',
-            url: `/account/registration-webhook/${webhook_sid}/delete`,
-          },
-        ]);
-      } else {
-        setRegistrationWebhookMenuItems([
-          {
-            name: 'Add',
-            type: 'link',
-            url: `/account/registration-webhook/add`,
-          },
-        ]);
+        if (userResponse.data.account && userResponse.data.account.registration_hook_sid) {
+          const webhook_sid = userResponse.data.account.registration_hook_sid;
+          const regWebhookResponse = await axios({
+            method: 'get',
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url: `/Webhooks/${webhook_sid}`,
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+
+          if (regWebhookResponse.data && regWebhookResponse.data.url) {
+            setRegistrationWebhookUrl(regWebhookResponse.data.url);
+          }
+
+          setRegistrationWebhookMenuItems([
+            {
+              name: 'Edit',
+              type: 'link',
+              url: `/account/registration-webhook/${webhook_sid}/edit`,
+            },
+            {
+              name: 'Delete',
+              type: 'link',
+              url: `/account/registration-webhook/${webhook_sid}/delete`,
+            },
+          ]);
+        } else {
+          setRegistrationWebhookMenuItems([
+            {
+              name: 'Add',
+              type: 'link',
+              url: `/account/registration-webhook/add`,
+            },
+          ]);
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+          localStorage.removeItem('jwt');
+          sessionStorage.clear();
+          isMounted = false;
+          history.push('/');
+          dispatch({
+            type: 'ADD',
+            level: 'error',
+            message: 'Your session has expired. Please log in and try again.',
+          });
+        } else {
+          isMounted = false;
+          history.push('/account/speech-services');
+          dispatch({
+            type: 'ADD',
+            level: 'error',
+            message: (err.response && err.response.data && err.response.data.msg) || 'That speech service does not exist',
+          });
+          console.error(err.response || err);
+        }
+      } finally {
+        if (isMounted) {
+          setShowLoader(false);
+        }
       }
     };
 
     getData();
-  }, [jwt]);
+  }, [ jwt, dispatch, history ]);
 
   return (
     <InternalMain title="Home">
-      <Section>
-        <H2>Your Subscription</H2>
-        <P>
-          You are currently on the Free plan (trial period). You are limited to 10
-          simultaneous calls and 10 registered devices
-        </P>
-        <InputGroup flexEnd spaced>
-          <Button as={ReactRouterLink} to="#">Upgrade to a paid subscription</Button>
-        </InputGroup>
-      </Section>
+      {showLoader ? (
+        <Loader height="calc(100vh - 24rem)" />
+      ) : (
+        <>
+          <Section>
+            <H2>Your Subscription</H2>
+            <P>
+              You are currently on the Free plan (trial period). You are limited to 10
+              simultaneous calls and 10 registered devices
+            </P>
+            <InputGroup flexEnd spaced>
+              <Button as={ReactRouterLink} to="#">Upgrade to a paid subscription</Button>
+            </InputGroup>
+          </Section>
 
-      <Section>
-        <H2>Account Setup</H2>
-        <P>1 of 4 steps complete</P>
-        <AccountSetupList />
-      </Section>
+          <Section>
+            <H2>Account Setup</H2>
+            <P>1 of 4 steps complete</P>
+            <AccountSetupList />
+          </Section>
 
-      {data.account && (
-        <Section>
-          <H2>Account</H2>
-          <Table>
-            <tbody>
-              <tr>
-                <Th scope="row">SIP Realm</Th>
-                <Td>{data.account.sip_realm}</Td>
-                <Td containsMenuButton>
-                  <TableMenu
-                    open={currentMenu === 'account-home-sip-realm'}
-                    handleCurrentMenu={() => setCurrentMenu('account-home-sip-realm')}
-                    disabled={modalOpen}
-                    menuItems={[
-                      {
-                        name: 'Edit',
-                        type: 'link',
-                        url: `/account/sip-realm/edit`,
-                      },
-                    ]}
-                  />
-                </Td>
-              </tr>
-              <tr>
-                <Th scope="row">Account SID</Th>
-                <Td>{data.account.account_sid}</Td>
-                <Td containsMenuButton>
-                  <TableMenu
-                    open={currentMenu === 'account-home-account-sid'}
-                    handleCurrentMenu={() => setCurrentMenu('account-home-account-sid')}
-                    disabled={modalOpen}
-                    menuItems={[
-                      {
-                        name: 'Copy',
-                        type: 'button',
-                        action: () => copyText({
-                          text: data.account.account_sid,
-                          textType: 'Account SID',
-                        }),
-                      },
-                    ]}
-                  />
-                </Td>
-              </tr>
-              <tr>
-                <Th scope="row">Registration Webhook</Th>
-                <Td>{registrationWebhookUrl || 'None'}</Td>
-                <Td containsMenuButton>
-                  <TableMenu
-                    open={currentMenu === 'account-home-registration-webhook'}
-                    handleCurrentMenu={() => setCurrentMenu('account-home-registration-webhook')}
-                    disabled={modalOpen}
-                    menuItems={registrationWebhookMenuItems}
-                  />
-                </Td>
-              </tr>
-            </tbody>
-          </Table>
-        </Section>
-      )}
-
-      {data.api_keys && (
-        <Section>
-          <Table sectionTableWithHeader>
-            <thead>
-              <tr>
-                <Th sectionTableWithHeader>
-                  <H2 inTable>API Keys</H2>
-                </Th>
-                <Th sectionTableWithHeader>
-                  {data.api_keys.length ? 'Last Used' : ''}
-                </Th>
-                <Th sectionTableWithHeader containsSquareButton>
-                  <Button square onClick={addApiKey}>+</Button>
-                </Th>
-              </tr>
-            </thead>
-            <tbody>
-              {!data.api_keys.length ? (
-                <tr>
-                  <Td>No API Keys</Td>
-                  <Td></Td>
-                  <Td></Td>
-                </tr>
-              ) : (
-                data.api_keys.map(apiKey => (
-                  <tr key={apiKey.api_key_sid}>
-                    <Th scope="row">{maskApiToken(apiKey.token)}</Th>
-                    <Td>{apiKey.last_used || 'Never used'}</Td>
+          {data.account && (
+            <Section>
+              <H2>Account</H2>
+              <Table>
+                <tbody>
+                  <tr>
+                    <Th scope="row">SIP Realm</Th>
+                    <Td>{data.account.sip_realm}</Td>
                     <Td containsMenuButton>
                       <TableMenu
-                        open={currentMenu === `account-home-api-key-${apiKey.api_key_sid}`}
-                        handleCurrentMenu={() => setCurrentMenu(`account-home-api-key-${apiKey.api_key_sid}`)}
+                        open={currentMenu === 'account-home-sip-realm'}
+                        handleCurrentMenu={() => setCurrentMenu('account-home-sip-realm')}
                         disabled={modalOpen}
                         menuItems={[
                           {
-                            name: 'Copy Key',
-                            type: 'button',
-                            action: () => copyText({
-                              text: apiKey.token,
-                              textType: 'API key',
-                            }),
-                          },
-                          {
-                            name: 'View Key',
+                            name: 'Edit',
                             type: 'link',
-                            url: `/account/api-keys/${apiKey.api_key_sid}`,
-                          },
-                          {
-                            name: 'Delete',
-                            type: 'link',
-                            url: `/account/api-keys/${apiKey.api_key_sid}/delete`,
+                            url: `/account/sip-realm/edit`,
                           },
                         ]}
                       />
                     </Td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </Table>
-        </Section>
-      )}
+                  <tr>
+                    <Th scope="row">Account SID</Th>
+                    <Td>{data.account.account_sid}</Td>
+                    <Td containsMenuButton>
+                      <TableMenu
+                        open={currentMenu === 'account-home-account-sid'}
+                        handleCurrentMenu={() => setCurrentMenu('account-home-account-sid')}
+                        disabled={modalOpen}
+                        menuItems={[
+                          {
+                            name: 'Copy',
+                            type: 'button',
+                            action: () => copyText({
+                              text: data.account.account_sid,
+                              textType: 'Account SID',
+                            }),
+                          },
+                        ]}
+                      />
+                    </Td>
+                  </tr>
+                  <tr>
+                    <Th scope="row">Registration Webhook</Th>
+                    <Td>{registrationWebhookUrl || 'None'}</Td>
+                    <Td containsMenuButton>
+                      <TableMenu
+                        open={currentMenu === 'account-home-registration-webhook'}
+                        handleCurrentMenu={() => setCurrentMenu('account-home-registration-webhook')}
+                        disabled={modalOpen}
+                        menuItems={registrationWebhookMenuItems}
+                      />
+                    </Td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Section>
+          )}
 
-      {data.products && data.balance && (
-        <Section>
-          <H2>Capacity and Balance</H2>
-          <Table>
-            <tbody>
-              <tr>
-                <Th scope="row">Max simultaneous calls</Th>
-                <Td textAlign="right">{data.products.find(product => product.category === 'devices').quantity}</Td>
-              </tr>
-              <tr>
-                <Th scope="row">Max simultaneous registered devices</Th>
-                <Td textAlign="right">{data.products.find(product => product.category === 'calls').quantity}</Td>
-              </tr>
-              <tr>
-                <Th scope="row">Prepaid balance</Th>
-                <Td textAlign="right">{data.balance.balance ? `$${data.balance.balance}` : ''}</Td>
-              </tr>
-            </tbody>
-          </Table>
-          <InputGroup flexEnd>
-            <Button gray disabled>Add Capacity of Funds (coming soon)</Button>
-          </InputGroup>
-        </Section>
+          {data.api_keys && (
+            <Section>
+              <Table sectionTableWithHeader>
+                <thead>
+                  <tr>
+                    <Th sectionTableWithHeader>
+                      <H2 inTable>API Keys</H2>
+                    </Th>
+                    <Th sectionTableWithHeader>
+                      {data.api_keys.length ? 'Last Used' : ''}
+                    </Th>
+                    <Th sectionTableWithHeader containsSquareButton>
+                      <Button square onClick={addApiKey}>+</Button>
+                    </Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {!data.api_keys.length ? (
+                    <tr>
+                      <Td>No API Keys</Td>
+                      <Td></Td>
+                      <Td></Td>
+                    </tr>
+                  ) : (
+                    data.api_keys.map(apiKey => (
+                      <tr key={apiKey.api_key_sid}>
+                        <Th scope="row">{maskApiToken(apiKey.token)}</Th>
+                        <Td>{apiKey.last_used || 'Never used'}</Td>
+                        <Td containsMenuButton>
+                          <TableMenu
+                            open={currentMenu === `account-home-api-key-${apiKey.api_key_sid}`}
+                            handleCurrentMenu={() => setCurrentMenu(`account-home-api-key-${apiKey.api_key_sid}`)}
+                            disabled={modalOpen}
+                            menuItems={[
+                              {
+                                name: 'Copy Key',
+                                type: 'button',
+                                action: () => copyText({
+                                  text: apiKey.token,
+                                  textType: 'API key',
+                                }),
+                              },
+                              {
+                                name: 'View Key',
+                                type: 'link',
+                                url: `/account/api-keys/${apiKey.api_key_sid}`,
+                              },
+                              {
+                                name: 'Delete',
+                                type: 'link',
+                                url: `/account/api-keys/${apiKey.api_key_sid}/delete`,
+                              },
+                            ]}
+                          />
+                        </Td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </Table>
+            </Section>
+          )}
+
+          {data.products && data.balance && (
+            <Section>
+              <H2>Capacity and Balance</H2>
+              <Table>
+                <tbody>
+                  <tr>
+                    <Th scope="row">Max simultaneous calls</Th>
+                    <Td textAlign="right">{data.products.find(product => product.category === 'devices').quantity}</Td>
+                  </tr>
+                  <tr>
+                    <Th scope="row">Max simultaneous registered devices</Th>
+                    <Td textAlign="right">{data.products.find(product => product.category === 'calls').quantity}</Td>
+                  </tr>
+                  <tr>
+                    <Th scope="row">Prepaid balance</Th>
+                    <Td textAlign="right">{data.balance.balance ? `$${data.balance.balance}` : ''}</Td>
+                  </tr>
+                </tbody>
+              </Table>
+              <InputGroup flexEnd>
+                <Button gray disabled>Add Capacity of Funds (coming soon)</Button>
+              </InputGroup>
+            </Section>
+          )}
+        </>
       )}
     </InternalMain>
   );
