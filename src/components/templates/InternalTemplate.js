@@ -14,9 +14,9 @@ const InternalTemplate = props => {
   const [ email, setEmail ] = useState('');
 
   useEffect(() => {
-    try {
 
-      const getData = async () => {
+    const getData = async () => {
+      try {
         const userResponse = await axios({
           method: 'get',
           baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -44,29 +44,29 @@ const InternalTemplate = props => {
 
         setName(userResponse.data.user.name);
         setEmail(userResponse.data.user.email);
-      };
-      getData();
 
-    } catch (err) {
-      if (err.response && err.response.status === 401) {
-        localStorage.removeItem('jwt');
-        sessionStorage.clear();
-        history.push('/');
-        dispatch({
-          type: 'ADD',
-          level: 'error',
-          message: 'Your session has expired. Please log in and try again.',
-        });
-      } else {
-        dispatch({
-          type: 'ADD',
-          level: 'error',
-          message: (err.response && err.response.data && err.response.data.msg) ||
-          err.message || 'Error getting navigation data',
-        });
-        console.error(err.response || err);
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+          localStorage.removeItem('jwt');
+          sessionStorage.clear();
+          history.push('/');
+          dispatch({
+            type: 'ADD',
+            level: 'error',
+            message: 'Your session has expired. Please log in and try again.',
+          });
+        } else {
+          dispatch({
+            type: 'ADD',
+            level: 'error',
+            message: (err.response && err.response.data && err.response.data.msg) ||
+            err.message || 'Error getting navigation data',
+          });
+          console.error(err.response || err);
+        }
       }
-    }
+    };
+    getData();
     // eslint-disable-next-line
   }, []);
 
