@@ -1,14 +1,14 @@
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import Link from '../../../components/elements/Link';
 import Section from '../../../components/blocks/Section';
 
 const AlertsDetails = () => {
   return (
-    <InternalTemplate title="Alert Details">
+    <InternalMain title="Alert Details">
       <Section>
         <Link to="/account/alerts">← Back to Alerts</Link>
       </Section>
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 

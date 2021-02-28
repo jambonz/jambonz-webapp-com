@@ -1,8 +1,8 @@
-import InternalTemplate from '../../../../components/templates/InternalTemplate';
+import InternalMain from '../../../../components/blocks/InternalMain';
 
 const SettingsAuthEmail = () => {
   return (
-    <InternalTemplate title="Settings - Auth - Email"></InternalTemplate>
+    <InternalMain title="Settings - Auth - Email"></InternalMain>
   );
 };
 

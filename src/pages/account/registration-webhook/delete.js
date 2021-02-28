@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import Section from '../../../components/blocks/Section';
 import InputGroup from '../../../components/elements/InputGroup';
 import FormError from '../../../components/blocks/FormError';
@@ -130,7 +130,7 @@ const RegistrationWebhookDelete = () => {
   };
 
   return (
-    <InternalTemplate
+    <InternalMain
       type="form"
       title="Delete Registration Webhook"
       breadcrumbs={[
@@ -173,7 +173,7 @@ const RegistrationWebhookDelete = () => {
           </>
         )}
       </Section>
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 

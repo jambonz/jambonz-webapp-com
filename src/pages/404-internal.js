@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro';
-import InternalTemplate from '../components/templates/InternalTemplate';
+import InternalMain from '../components/blocks/InternalMain';
+import Section from '../components/blocks/Section';
 
 const Container = styled.div`
   padding: 4rem;
@@ -8,14 +9,16 @@ const Container = styled.div`
 
 const InvalidRoute = () => {
   return (
-      <InternalTemplate
+      <InternalMain
         type="simple"
         title="Invalid Route"
       >
-        <Container>
-          That page doesn't exist.
-        </Container>
-      </InternalTemplate>
+        <Section>
+          <Container>
+            That page doesn't exist.
+          </Container>
+        </Section>
+      </InternalMain>
   );
 };
 

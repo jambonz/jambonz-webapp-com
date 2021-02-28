@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import Section from '../../../components/blocks/Section';
 import Form from '../../../components/elements/Form';
 import Input from '../../../components/elements/Input';
@@ -355,7 +355,7 @@ const ApplicationsAddEdit = () => {
   };
 
   return (
-    <InternalTemplate
+    <InternalMain
       type="form"
       title={pageTitle}
       breadcrumbs={[
@@ -784,7 +784,7 @@ const ApplicationsAddEdit = () => {
           </Form>
         )}
       </Section>
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 

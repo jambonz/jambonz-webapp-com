@@ -47,6 +47,8 @@ import InvalidRouteExternal from './pages/404-external';
 // Component Imports
 //===============================================
 import Notification from './components/blocks/Notification';
+import ExternalTemplate from './components/templates/ExternalTemplate';
+import InternalTemplate from './components/templates/InternalTemplate';
 
 //===============================================
 // Routes Component
@@ -57,31 +59,11 @@ function Routes() {
     <Router>
       <Notification notifications={notifications} />
       <Switch>
-
-        {/***********/}
-        {/* Sign in */}
-        {/***********/}
-        <Route exact path="/"><Redirect to="/sign-in" /></Route>
-        <Route exact path="/sign-in"><SignIn /></Route>
-        <Route exact path="/sign-in/email"><SignInEmail /></Route>
-
-        {/****************/}
-        {/* Registration */}
-        {/****************/}
-        <Route exact path="/register"><Register /></Route>
-        <Route exact path="/register/email"><RegisterWithEmail /></Route>
-        <Route exact path="/register/verify-your-email"><RegisterWithEmailVerify /></Route>
-        <Route exact path="/register/choose-a-subdomain"><RegisterChooseSubdomain /></Route>
-
-        {/******************/}
-        {/* OAuth Callback */}
-        {/******************/}
-        <Route exact path="/oauth-callback/:provider"><OauthCallback /></Route>
-
         {/*******************/}
         {/* INTERNAL ROUTES */}
         {/*******************/}
         <Route path="/account">
+          <InternalTemplate>
             <Switch>
               <Route exact path="/account"><AccountHome /></Route>
 
@@ -136,12 +118,44 @@ function Routes() {
               {/****************/}
               <Route path="/account"><InvalidRouteInternal /></Route>
             </Switch>
+          </InternalTemplate>
         </Route>
 
-        {/****************/}
-        {/* External 404 */}
-        {/****************/}
-        <Route><InvalidRouteExternal /></Route>
+        {/*******************/}
+        {/* EXTERNAL ROUTES */}
+        {/*******************/}
+        <Route>
+          <ExternalTemplate>
+            <Switch>
+
+              {/***********/}
+              {/* Sign in */}
+              {/***********/}
+              <Route exact path="/"><Redirect to="/sign-in" /></Route>
+              <Route exact path="/sign-in"><SignIn /></Route>
+              <Route exact path="/sign-in/email"><SignInEmail /></Route>
+
+              {/****************/}
+              {/* Registration */}
+              {/****************/}
+              <Route exact path="/register"><Register /></Route>
+              <Route exact path="/register/email"><RegisterWithEmail /></Route>
+              <Route exact path="/register/verify-your-email"><RegisterWithEmailVerify /></Route>
+              <Route exact path="/register/choose-a-subdomain"><RegisterChooseSubdomain /></Route>
+
+              {/******************/}
+              {/* OAuth Callback */}
+              {/******************/}
+              <Route exact path="/oauth-callback/:provider"><OauthCallback /></Route>
+
+              {/****************/}
+              {/* External 404 */}
+              {/****************/}
+              <Route><InvalidRouteExternal /></Route>
+
+            </Switch>
+          </ExternalTemplate>
+        </Route>
       </Switch>
     </Router>
   );

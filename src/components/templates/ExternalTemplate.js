@@ -1,12 +1,11 @@
 import Nav from '../blocks/Nav';
 import styled from 'styled-components/macro';
-import H1 from '../elements/H1';
 
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 8rem 1rem;
+  margin: 12rem 1rem 8rem;
 
   ${props => props.fullPage && `
     height: calc(100vh - 20rem);
@@ -48,9 +47,6 @@ const ExternalTemplate = props => (
       drawerAlignment="center"
     />
     <PageContainer fullPage={props.fullPage}>
-      {props.title && (
-        <H1 external>{props.title}</H1>
-      )}
       <ContentContainer>
         {props.children}
       </ContentContainer>

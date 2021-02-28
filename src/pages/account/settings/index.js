@@ -5,7 +5,7 @@ import styled from 'styled-components/macro';
 import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../../contexts/CurrentMenuContext';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import { ModalStateContext } from '../../../contexts/ModalContext';
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import InputGroup from '../../../components/elements/InputGroup';
 import Loader from '../../../components/blocks/Loader';
 import Section from '../../../components/blocks/Section';
@@ -93,7 +93,7 @@ const SettingsIndex = () => {
 
 
   return (
-    <InternalTemplate title="Settings">
+    <InternalMain title="Settings">
       {showLoader ? <Loader /> : (
         <>
           <Section>
@@ -208,7 +208,7 @@ const SettingsIndex = () => {
           </Section>
         </>
       )}
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 

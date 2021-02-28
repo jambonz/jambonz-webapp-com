@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import FormError from '../../../components/blocks/FormError';
 import Loader from '../../../components/blocks/Loader';
 import Section from '../../../components/blocks/Section';
@@ -117,7 +117,7 @@ const SettingsChangePassword = () => {
   };
 
   return (
-    <InternalTemplate
+    <InternalMain
       type="form"
       title="Change Password"
       breadcrumbs={[
@@ -182,7 +182,7 @@ const SettingsChangePassword = () => {
           </Form>
         )}
       </Section>
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 

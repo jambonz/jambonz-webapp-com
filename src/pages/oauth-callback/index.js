@@ -2,7 +2,6 @@ import { useEffect, useContext } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
-import ExternalTemplate from '../../components/templates/ExternalTemplate';
 import Loader from '../../components/blocks/Loader';
 
 const OauthCallback = () => {
@@ -96,9 +95,7 @@ const OauthCallback = () => {
   }, [history, location, dispatch, provider]);
 
   return (
-    <ExternalTemplate fullPage>
-      <Loader />
-    </ExternalTemplate>
+    <Loader height="calc(100vh - 20rem)" />
   );
 };
 

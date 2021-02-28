@@ -2,7 +2,7 @@ import { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import Section from '../../../components/blocks/Section';
 import TableContent from '../../../components/blocks/TableContent';
 
@@ -178,7 +178,7 @@ const ApplicationsIndex = () => {
   // Render
   //=============================================================================
   return (
-    <InternalTemplate
+    <InternalMain
       type="normalTable"
       title="Applications"
       addButtonText="Add an Application"
@@ -199,7 +199,7 @@ const ApplicationsIndex = () => {
           deleteContent={deleteApplication}
         />
       </Section>
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 

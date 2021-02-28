@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import TableContent from '../../../components/blocks/TableContent';
 import phoneNumberFormat from '../../../helpers/phoneNumberFormat';
 import Section from '../../../components/blocks/Section';
@@ -207,7 +207,7 @@ const PhoneNumbersIndex = () => {
   // Render
   //=============================================================================
   return (
-    <InternalTemplate
+    <InternalMain
       type="normalTable"
       title="Phone Numbers"
       addButtonText="Add a Phone Number"
@@ -231,7 +231,7 @@ const PhoneNumbersIndex = () => {
           bulkAction={handleBulkEditApplications}
         />
       </Section>
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 

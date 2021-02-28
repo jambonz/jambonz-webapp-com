@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import ExternalTemplate from '../../components/templates/ExternalTemplate';
+import H1 from '../../components/elements/H1';
 import Section from '../../components/blocks/Section';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
@@ -86,7 +86,8 @@ const EmailVerify = () => {
   };
 
   return (
-    <ExternalTemplate title="Verify Your Email">
+    <>
+      <H1 external>Verify Your Email</H1>
       <Section>
         <Form left onSubmit={handleSubmit}>
           {showLoader ? (
@@ -121,7 +122,7 @@ const EmailVerify = () => {
           )}
         </Form>
       </Section>
-    </ExternalTemplate>
+    </>
   );
 };
 

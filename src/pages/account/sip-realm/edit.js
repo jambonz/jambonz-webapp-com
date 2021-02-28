@@ -1,8 +1,8 @@
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 
 const SipRealmEdit = () => {
   return (
-    <InternalTemplate title="Edit SIP Realm"></InternalTemplate>
+    <InternalMain title="Edit SIP Realm"></InternalMain>
 
   );
 };

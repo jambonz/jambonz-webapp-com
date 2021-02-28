@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import FormError from '../../../components/blocks/FormError';
 import Loader from '../../../components/blocks/Loader';
 import Section from '../../../components/blocks/Section';
@@ -188,7 +188,7 @@ const SettingsDeleteAccount = () => {
   };
 
   return (
-    <InternalTemplate
+    <InternalMain
       title="Delete Account"
       breadcrumbs={[
         { name: 'Back to Settings', url: '/account/settings' },
@@ -257,7 +257,7 @@ const SettingsDeleteAccount = () => {
           </Form>
         )}
       </Section>
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 

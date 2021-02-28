@@ -2,7 +2,7 @@ import { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import Section from '../../../components/blocks/Section';
 import TableContent from '../../../components/blocks/TableContent';
 import phoneNumberFormat from '../../../helpers/phoneNumberFormat';
@@ -69,7 +69,7 @@ const RecentCallsIndex = () => {
   // Render
   //=============================================================================
   return (
-    <InternalTemplate
+    <InternalMain
       type="fullWidthTable"
       title="Recent Calls"
     >
@@ -90,7 +90,7 @@ const RecentCallsIndex = () => {
           ]}
         />
       </Section>
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 

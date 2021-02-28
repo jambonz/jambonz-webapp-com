@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import Section from '../../../components/blocks/Section';
 import TableContent from '../../../components/blocks/TableContent';
 import sortSipGateways from '../../../helpers/sortSipGateways';
@@ -180,7 +180,7 @@ const CarriersIndex = () => {
   // Render
   //=============================================================================
   return (
-    <InternalTemplate
+    <InternalMain
       type="normalTable"
       title="Carriers"
       addButtonText="Add a Carriers"
@@ -202,7 +202,7 @@ const CarriersIndex = () => {
           deleteContent={deleteCarrier}
         />
       </Section>
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 

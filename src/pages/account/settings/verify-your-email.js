@@ -1,14 +1,14 @@
-import InternalTemplate from '../../../components/templates/InternalTemplate';
+import InternalMain from '../../../components/blocks/InternalMain';
 import Link from '../../../components/elements/Link';
 import Section from '../../../components/blocks/Section';
 
 const SettingsVerifyYourEmail = () => {
   return (
-    <InternalTemplate title="Verify Your Email">
+    <InternalMain title="Verify Your Email">
       <Section>
         <Link to="/account/settings">← Back to Settings</Link>
       </Section>
-    </InternalTemplate>
+    </InternalMain>
   );
 };
 
