@@ -13,9 +13,7 @@ import Button from '../../components/elements/Button';
 import Table from '../../components/elements/Table';
 import Th from '../../components/elements/Th';
 import Td from '../../components/elements/Td';
-import Select from '../../components/elements/Select';
 import maskApiToken from '../../helpers/maskApiToken';
-import phoneNumberFormat from '../../helpers/phoneNumberFormat';
 
 const AccountHome = () => {
   let history = useHistory();
@@ -28,10 +26,7 @@ const AccountHome = () => {
   const account_sid = localStorage.getItem('account_sid');
 
   const [ data,                         setData                         ] = useState({});
-  const [ testApplication,              setTestApplication              ] = useState('');
   const [ registrationWebhookUrl,       setRegistrationWebhookUrl       ] = useState('');
-  const [ applications,                 setApplications                 ] = useState([]);
-  const [ mobileNumberMenuItems,        setMobileNumberMenuItems        ] = useState([]);
   const [ registrationWebhookMenuItems, setRegistrationWebhookMenuItems ] = useState([]);
 
   const copyText = async ({ text, textType }) => {
@@ -47,30 +42,6 @@ const AccountHome = () => {
         type: 'ADD',
         level: 'error',
         message: `Unable to copy ${textType}, please select the text and right click to copy`,
-      });
-    }
-  };
-
-  const changeTestApplication = async (e) => {
-    try {
-      setTestApplication(e.target.value);
-
-      await axios({
-        method: 'put',
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: `/Accounts/${account_sid}`,
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-        data: {
-          test_call_application_sid: e.target.value,
-        },
-      });
-    } catch(err) {
-      dispatch({
-        type: 'ADD',
-        level: 'error',
-        message: `Error changing test application: ${err.message}`
       });
     }
   };
@@ -113,34 +84,7 @@ const AccountHome = () => {
         },
       });
 
-      if (userResponse.data.testapp && userResponse.data.testapp.application_sid) {
-        setTestApplication(userResponse.data.testapp.application_sid);
-      }
-
       setData(userResponse.data);
-
-      if (userResponse.data.user && userResponse.data.user.phone) {
-        setMobileNumberMenuItems([
-          {
-            name: 'Edit',
-            type: 'link',
-            url: `/account/mobile-number/edit`,
-          },
-          {
-            name: 'Remove',
-            type: 'link',
-            url: `/account/mobile-number/remove`,
-          },
-        ]);
-      } else {
-        setMobileNumberMenuItems([
-          {
-            name: 'Add',
-            type: 'link',
-            url: `/account/mobile-number/add`,
-          },
-        ]);
-      }
 
       if (userResponse.data.account && userResponse.data.account.registration_hook_sid) {
         const webhook_sid = userResponse.data.account.registration_hook_sid;
@@ -178,72 +122,6 @@ const AccountHome = () => {
           },
         ]);
       }
-      const applicationsRespose = await axios({
-        method: 'get',
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: '/Applications',
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-
-      const testAppSid = userResponse.data.testapp && userResponse.data.testapp.application_sid;
-
-      const userCreatedApps = applicationsRespose.data;
-
-      let appsToShow = [];
-
-      if (!userCreatedApps.length && !testAppSid) {
-
-        appsToShow = [{
-          sid: '',
-          name: '-- Requires an application -- ',
-        }];
-
-      } else if (!userCreatedApps.length && testAppSid) {
-
-        appsToShow = [{
-          sid: testAppSid,
-          name: 'Test Application',
-        }];
-
-      } else if (userCreatedApps.length && !testAppSid) {
-
-        appsToShow = [
-          {
-            sid: '',
-            name: '-- Choose One --',
-          },
-          ...userCreatedApps.map(app => ({
-            sid: app.application_sid,
-            name: app.name,
-          })),
-        ];
-
-      } else if (userCreatedApps.length && testAppSid) {
-
-        const testAppIsUserCreated = userCreatedApps.some(app => app.application_sid === testAppSid);
-
-        if (testAppIsUserCreated) {
-          appsToShow = userCreatedApps.map(app => ({
-            sid: app.application_sid,
-            name: app.name,
-          }));
-        } else {
-          appsToShow = [
-            {
-              sid: testAppSid,
-              name: 'Test Application',
-            },
-            ...userCreatedApps.map(app => ({
-              sid: app.application_sid,
-              name: app.name,
-            }))
-          ];
-        }
-      }
-
-      setApplications(appsToShow);
     };
 
     getData();
@@ -259,55 +137,6 @@ const AccountHome = () => {
             <Button gray>Don't show again</Button>
             <Button as={ReactRouterLink} to="/account/getting-started">Continue →</Button>
           </InputGroup>
-        </Section>
-      )}
-
-      {data.user && (
-        <Section>
-          <H2>Test Your Applications</H2>
-          <p>Test an application by calling the test number from the mobile number you signed up with</p>
-          <Table>
-            <tbody>
-              <tr>
-                <Th scope="row">Test Number</Th>
-                <Td colSpan="2">
-                  {
-                    (!data.user.phone && 'Requires mobile number') ||
-                    (data.test_numbers && data.test_numbers[0] && phoneNumberFormat(data.test_numbers[0])) ||
-                    'None'
-                  }
-                </Td>
-              </tr>
-              <tr>
-                <Th scope="row">Your Mobile Number</Th>
-                <Td>{(data.user.phone && phoneNumberFormat(data.user.phone)) || 'None'}</Td>
-                <Td containsMenuButton>
-                  <TableMenu
-                    open={currentMenu === 'account-home-mobile-number'}
-                    handleCurrentMenu={() => setCurrentMenu('account-home-mobile-number')}
-                    disabled={modalOpen}
-                    menuItems={mobileNumberMenuItems}
-                  />
-                </Td>
-              </tr>
-              <tr>
-                <Th scope="row"><label htmlFor="testApplication">Application</label></Th>
-                <Td colSpan="2">
-                  <Select
-                    fullWidth
-                    name="testApplication"
-                    id="testApplication"
-                    value={testApplication}
-                    onChange={changeTestApplication}
-                  >
-                    {applications.length && applications.map(app => (
-                      <option key={app.sid} value={app.sid}>{app.name}</option>
-                    ))}
-                  </Select>
-                </Td>
-              </tr>
-            </tbody>
-          </Table>
         </Section>
       )}
 

@@ -16,9 +16,6 @@ import AccountHome from './pages/account/index';
 import ApiKeysDetails from './pages/account/api-keys/details';
 import ApiKeysNew from './pages/account/api-keys/new';
 import ApiKeysDelete from './pages/account/api-keys/delete';
-import MobileNumberAddEdit from './pages/account/mobile-number/add-edit';
-import MobileNumberVerify from './pages/account/mobile-number/verify';
-import MobileNumberRemove from './pages/account/mobile-number/remove';
 import RegistrationWebhookAddEdit from './pages/account/registration-webhook/add-edit';
 import RegistrationWebhookDelete from './pages/account/registration-webhook/delete';
 import SipRealmEdit from './pages/account/sip-realm/edit';
@@ -94,11 +91,6 @@ function Routes() {
               <Route exact path="/account/api-keys/:id"><ApiKeysDetails /></Route>
               <Route exact path="/account/api-keys/:id/new"><ApiKeysNew /></Route>
               <Route exact path="/account/api-keys/:id/delete"><ApiKeysDelete /></Route>
-
-              <Route exact path="/account/mobile-number/add"><MobileNumberAddEdit /></Route>
-              <Route exact path="/account/mobile-number/edit"><MobileNumberAddEdit /></Route>
-              <Route exact path="/account/mobile-number/verify"><MobileNumberVerify /></Route>
-              <Route exact path="/account/mobile-number/remove"><MobileNumberRemove /></Route>
 
               <Route exact path="/account/registration-webhook/add"><RegistrationWebhookAddEdit /></Route>
               <Route exact path="/account/registration-webhook/:webhook_sid/edit"><RegistrationWebhookAddEdit /></Route>
