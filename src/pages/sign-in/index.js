@@ -1,14 +1,8 @@
-import { useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
-import H1 from '../../components/elements/H1';
-import Section from '../../components/blocks/Section';
+import ExternalMain from '../../components/wrappers/ExternalMain';
 import Link from '../../components/elements/Link';
 
 const SignIn = props => {
-  useEffect(() => {
-    document.title = `Sign In | jambonz`;
-  });
-
   const state = uuid();
   localStorage.setItem('location-before-oauth', '/sign-in');
   localStorage.setItem('oauth-state', state);
@@ -16,16 +10,13 @@ const SignIn = props => {
   const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=email+profile+https://www.googleapis.com/auth/cloud-platform&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
 
   return (
-    <>
-      <H1 external>Sign In</H1>
-      <Section>
-        <p>Sign in with:</p>
-        <p><a href={gitHubUrl}>GitHub</a> </p>
-        <p><a href={googleUrl}>Google</a> </p>
-        <p><Link to="/sign-in/email">Email</Link></p>
-        <p><Link to="/register">Register</Link></p>
-      </Section>
-    </>
+    <ExternalMain title="Sign In">
+      <p>Sign in with:</p>
+      <p><a href={gitHubUrl}>GitHub</a> </p>
+      <p><a href={googleUrl}>Google</a> </p>
+      <p><Link to="/sign-in/email">Email</Link></p>
+      <p><Link to="/register">Register</Link></p>
+    </ExternalMain>
   );
 };
 

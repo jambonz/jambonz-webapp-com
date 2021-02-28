@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import H1 from '../../components/elements/H1';
-import Section from '../../components/blocks/Section';
+import ExternalMain from '../../components/wrappers/ExternalMain';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Link from '../../components/elements/Link';
@@ -12,9 +11,6 @@ import FormError from '../../components/blocks/FormError';
 
 const SignIn = props => {
   let history = useHistory();
-  useEffect(() => {
-    document.title = `Sign In With Email | jambonz`;
-  });
 
   // Refs
   const refEmail = useRef(null);
@@ -82,47 +78,44 @@ const SignIn = props => {
   };
 
   return (
-    <>
-      <H1 external>Sign In With Email</H1>
-      <Section>
-        <Form left onSubmit={handleSubmit}>
-          <Input
-            fullWidth
-            type="email"
-            name="email"
-            id="email"
-            placeholder="Email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            ref={refEmail}
-            invalid={invalidEmail}
-            autoFocus
-          />
-          <PasswordInput
-            allowShowPassword
-            name="password"
-            id="password"
-            placeholder="Password"
-            password={password}
-            setPassword={setPassword}
-            setErrorMessage={setErrorMessage}
-            ref={refPassword}
-            invalid={invalidPassword}
-          />
-          {errorMessage && (
-            <FormError message={errorMessage} />
-          )}
-          <Button
-            fullWidth
-          >
-            Sign In
-          </Button>
-          <p>
-            <Link to="/">Sign in another way</Link>
-          </p>
-        </Form>
-      </Section>
-    </>
+    <ExternalMain title="Sign In With Email">
+      <Form left onSubmit={handleSubmit}>
+        <Input
+          fullWidth
+          type="email"
+          name="email"
+          id="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          ref={refEmail}
+          invalid={invalidEmail}
+          autoFocus
+        />
+        <PasswordInput
+          allowShowPassword
+          name="password"
+          id="password"
+          placeholder="Password"
+          password={password}
+          setPassword={setPassword}
+          setErrorMessage={setErrorMessage}
+          ref={refPassword}
+          invalid={invalidPassword}
+        />
+        {errorMessage && (
+          <FormError message={errorMessage} />
+        )}
+        <Button
+          fullWidth
+        >
+          Sign In
+        </Button>
+        <p>
+          <Link to="/">Sign in another way</Link>
+        </p>
+      </Form>
+    </ExternalMain>
   );
 };
 

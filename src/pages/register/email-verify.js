@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import H1 from '../../components/elements/H1';
-import Section from '../../components/blocks/Section';
+import ExternalMain from '../../components/wrappers/ExternalMain';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Link from '../../components/elements/Link';
@@ -24,10 +23,6 @@ const EmailVerify = () => {
 
   const [ showLoader, setShowLoader ] = useState(false);
   const [ errorMessage, setErrorMessage ] = useState('');
-
-  useEffect(() => {
-    document.title = 'Verify Your Email | jambonz';
-  });
 
   const jwt = localStorage.getItem('jwt');
   const email = localStorage.getItem('email');
@@ -86,43 +81,40 @@ const EmailVerify = () => {
   };
 
   return (
-    <>
-      <H1 external>Verify Your Email</H1>
-      <Section>
-        <Form left onSubmit={handleSubmit}>
-          {showLoader ? (
-            <Loader height="161px" />
-          ) : (
-            <>
-              {email ? (
-                <p style={{ overflowWrap: 'anywhere' }}>Please enter the code we just sent to {email}</p>
-              ) : (
-                null
-              )}
-              <Input
-                fullWidth
-                type="text"
-                name="code"
-                id="code"
-                placeholder="Verification Code"
-                value={code}
-                onChange={e => setCode(e.target.value)}
-                ref={refCode}
-                invalid={invalidCode}
-                autoFocus
-              />
-              {errorMessage && (
-                <FormError message={errorMessage} />
-              )}
-              <Button fullWidth>Continue →</Button>
-              <p>
-                <Link to="/register/email">Go back</Link>
-              </p>
-            </>
-          )}
-        </Form>
-      </Section>
-    </>
+    <ExternalMain title="Verify Your Email">
+      <Form left onSubmit={handleSubmit}>
+        {showLoader ? (
+          <Loader height="161px" />
+        ) : (
+          <>
+            {email ? (
+              <p style={{ overflowWrap: 'anywhere' }}>Please enter the code we just sent to {email}</p>
+            ) : (
+              null
+            )}
+            <Input
+              fullWidth
+              type="text"
+              name="code"
+              id="code"
+              placeholder="Verification Code"
+              value={code}
+              onChange={e => setCode(e.target.value)}
+              ref={refCode}
+              invalid={invalidCode}
+              autoFocus
+            />
+            {errorMessage && (
+              <FormError message={errorMessage} />
+            )}
+            <Button fullWidth>Continue →</Button>
+            <p>
+              <Link to="/register/email">Go back</Link>
+            </p>
+          </>
+        )}
+      </Form>
+    </ExternalMain>
   );
 };
 

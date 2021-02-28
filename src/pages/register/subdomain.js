@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import H1 from '../../components/elements/H1';
-import Section from '../../components/blocks/Section';
+import ExternalMain from '../../components/wrappers/ExternalMain';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Input from '../../components/elements/Input';
@@ -24,10 +23,6 @@ const RegisterChooseSubdomain = () => {
   const [ quickValid, setQuickValid ] = useState(null);
   const [ showLoader, setShowLoader ] = useState(false);
   const [ errorMessage, setErrorMessage ] = useState('');
-
-  useEffect(() => {
-    document.title = 'Choose a Subdomain | jambonz';
-  });
 
   const jwt = localStorage.getItem('jwt');
   const root_domain = localStorage.getItem('root_domain');
@@ -148,46 +143,43 @@ const RegisterChooseSubdomain = () => {
   };
 
   return (
-    <>
-      <H1 external>Choose a Subdomain</H1>
-      <Section>
-        <Form left onSubmit={handleSubmit}>
-          {showLoader ? (
-            <Loader height="161px" />
-          ) : (
-            <>
+    <ExternalMain title="Choose a Subdomain">
+      <Form left onSubmit={handleSubmit}>
+        {showLoader ? (
+          <Loader height="161px" />
+        ) : (
+          <>
+            <p>
+              This will be the FQDN where your carrier will
+              send calls, and where you can register devices
+              to. This can be changed at any time.
+            </p>
+            <Input
+              fullWidth
+              type="text"
+              name="subdomain"
+              id="subdomain"
+              placeholder="your-name-here"
+              value={subdomain}
+              onChange={handleChange}
+              ref={refSubdomain}
+              invalid={invalidSubdomain}
+              quickValid={quickValid}
+              autoFocus
+            />
+            {subdomain &&
               <p>
-                This will be the FQDN where your carrier will
-                send calls, and where you can register devices
-                to. This can be changed at any time.
+                FQDN: {subdomain}.{root_domain}
               </p>
-              <Input
-                fullWidth
-                type="text"
-                name="subdomain"
-                id="subdomain"
-                placeholder="your-name-here"
-                value={subdomain}
-                onChange={handleChange}
-                ref={refSubdomain}
-                invalid={invalidSubdomain}
-                quickValid={quickValid}
-                autoFocus
-              />
-              {subdomain &&
-                <p>
-                  FQDN: {subdomain}.{root_domain}
-                </p>
-              }
-              {errorMessage && (
-                <FormError message={errorMessage} />
-              )}
-              <Button fullWidth>Complete Registration →</Button>
-            </>
-          )}
-        </Form>
-      </Section>
-    </>
+            }
+            {errorMessage && (
+              <FormError message={errorMessage} />
+            )}
+            <Button fullWidth>Complete Registration →</Button>
+          </>
+        )}
+      </Form>
+    </ExternalMain>
   );
 };
 
