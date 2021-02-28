@@ -11,9 +11,6 @@ import Register from './pages/register/index';
 import RegisterWithEmail from './pages/register/email';
 import RegisterWithEmailVerify from './pages/register/email-verify';
 import RegisterChooseSubdomain from './pages/register/subdomain';
-import RegisterMobileNumber from './pages/register/mobile-number';
-import RegisterMobileNumberVerify from './pages/register/mobile-number-verify';
-import RegisterComplete from './pages/register/complete';
 import OauthCallback from './pages/oauth-callback/index';
 import AccountHome from './pages/account/index';
 import ApiKeysDetails from './pages/account/api-keys/details';
@@ -81,9 +78,6 @@ function Routes() {
         <Route exact path="/register/email"><RegisterWithEmail /></Route>
         <Route exact path="/register/verify-your-email"><RegisterWithEmailVerify /></Route>
         <Route exact path="/register/choose-a-subdomain"><RegisterChooseSubdomain /></Route>
-        <Route exact path="/register/mobile-number"><RegisterMobileNumber /></Route>
-        <Route exact path="/register/verify-your-mobile-number"><RegisterMobileNumberVerify /></Route>
-        <Route exact path="/register/complete"><RegisterComplete /></Route>
 
         {/******************/}
         {/* OAuth Callback */}

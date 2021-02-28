@@ -132,7 +132,7 @@ const RegisterChooseSubdomain = () => {
       }
 
       isMounted = false;
-      history.push('/register/mobile-number');
+      history.push('/account');
 
     } catch (err) {
       setErrorMessage(
@@ -181,7 +181,7 @@ const RegisterChooseSubdomain = () => {
               {errorMessage && (
                 <FormError message={errorMessage} />
               )}
-              <Button fullWidth>Continue →</Button>
+              <Button fullWidth>Complete Registration →</Button>
             </>
           )}
         </Form>
