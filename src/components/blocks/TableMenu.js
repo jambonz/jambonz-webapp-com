@@ -22,6 +22,17 @@ const Container = styled.div`
   box-shadow: 0 0.5rem 0.5rem rgba(0, 0, 0, 0.12),
               0 0      0.5rem rgba(0, 0, 0, 0.12);
   z-index: 70;
+
+  ${props => props.theme.mobileOnly} {
+    right: ${props => props.bulkEditMenu
+      ? '0'
+      : '1.5rem'
+    };
+    top: ${props => props.bulkEditMenu
+      ? 'calc(100% + 0.25rem)'
+      : '1.75rem'
+    };
+  }
 `;
 
 const buttonLink = css`

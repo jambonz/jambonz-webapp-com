@@ -110,6 +110,10 @@ const Table = styled.table`
     & td:first-child {
       width: 3rem;
       padding: 1.25rem 0 1.25rem 1.25rem;
+
+      ${props.theme.mobileOnly} {
+        padding: 0 0 0 1.25rem;
+      }
     }
   `}
 `;

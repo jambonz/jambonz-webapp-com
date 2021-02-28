@@ -1,4 +1,6 @@
+import { useEffect, useContext } from 'react';
 import styled from 'styled-components/macro';
+import { CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
 import H1 from '../elements/H1';
 import AddButton from '../elements/AddButton';
 import Breadcrumbs from '../blocks/Breadcrumbs';
@@ -50,6 +52,13 @@ const ContentContainer = styled.div`
 `;
 
 const InternalMain = props => {
+  const setCurrentMenu = useContext(CurrentMenuDispatchContext);
+
+  // Close any open menu on any page transition (needed for mobile nav drawer)
+  useEffect(() => {
+    setCurrentMenu(null);
+  }, [setCurrentMenu]);
+
   return (
     <PageMain type={props.type}>
       {props.breadcrumbs && (

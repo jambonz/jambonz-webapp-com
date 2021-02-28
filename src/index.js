@@ -7,7 +7,7 @@ import { ModalProvider } from './contexts/ModalContext';
 import Routes from './Routes';
 
 const theme = {
-  mobileOnly: '@media (max-width: 768px)',
+  mobileOnly: `@media (max-width: ${process.env.REACT_APP_MOBILE_BREAKPOINT})`,
   externalMaxWidth: '32rem',
 };
 

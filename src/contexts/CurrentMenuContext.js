@@ -13,11 +13,19 @@ export const CurrentMenuDispatchContext = createContext();
 export function CurrentMenuProvider(props) {
 
   const [ currentMenu, setCurrentMenu ] = useState(null);
+  const hideMenu = () => setCurrentMenu(null);
 
+  // Hide any open menu on mouse click
   useEffect(() => {
-    const hideMenu = () => setCurrentMenu(null);
     window.addEventListener('click', hideMenu);
     return () => window.removeEventListener('click', hideMenu);
+  }, [setCurrentMenu]);
+
+  // Hide any open menu when resizing across mobile/desktop breakpoint
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(`(max-width: ${process.env.REACT_APP_MOBILE_BREAKPOINT}`);
+    mediaQuery.addListener(hideMenu);
+    return () => mediaQuery.removeListener(hideMenu);
   }, [setCurrentMenu]);
 
   return (

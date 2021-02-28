@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components/macro';
 import NavItem from './NavItem';
 import Button from '../elements/Button';
+import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
 
 const ButtonLine = styled.span`
   width: 16px;
@@ -52,7 +53,13 @@ const CloseSpan2 = styled.span`
 `;
 
 const NavMenuButton = props => {
-  const [ drawerOpen, setDrawerOpen ] = useState(false);
+  const currentMenu = useContext(CurrentMenuStateContext);
+  const setCurrentMenu = useContext(CurrentMenuDispatchContext);
+
+  const handleMenuButtonClick = e => {
+    e.stopPropagation();
+    setCurrentMenu('nav-drawer');
+  };
 
   return (
     <>
@@ -60,16 +67,16 @@ const NavMenuButton = props => {
         navMenuButton
         gray
         text
-        onClick={() => setDrawerOpen(!drawerOpen)}
+        onClick={handleMenuButtonClick}
       >
         <ButtonLine />
         <ButtonLine />
         <ButtonLine />
       </Button>
-      {drawerOpen && (
-        <DrawerOverlay onClick={() => setDrawerOpen(false)}>
+      {currentMenu === 'nav-drawer' && (
+        <DrawerOverlay onClick={() => setCurrentMenu(null)}>
           <Drawer drawerAlignment={props.drawerAlignment} onClick={e => e.stopPropagation()}>
-            <Button close gray text onClick={() => setDrawerOpen(false)}>
+            <Button close gray text onClick={() => setCurrentMenu(null)}>
               <CloseSpan1 />
               <CloseSpan2 />
             </Button>
