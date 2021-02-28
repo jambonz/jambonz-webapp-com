@@ -14,6 +14,7 @@ const PageMain = styled.main`
   flex-direction: column;
   height: calc(100vh - 4rem);
   width: calc(100% - 15rem);
+  margin-top: 4rem;
   padding: 2.5rem 3rem;
   overflow: auto;
 
@@ -139,6 +140,7 @@ const InternalTemplate = props => {
           {
             type: 'submenu',
             text: 'Account',
+            desktopOnly: true,
             content: [
               {
                 type: 'text-large',
@@ -164,7 +166,76 @@ const InternalTemplate = props => {
             ],
           },
         ]}
-        sidebar={[]}
+        drawer={[
+          {
+            type: 'text-large',
+            text: name,
+          },
+          {
+            type: 'text',
+            text: email,
+          },
+          {
+            type: 'horizontal-rule',
+          },
+          {
+            type: 'link',
+            text: 'Home',
+            url: '/account',
+          },
+          {
+            type: 'link',
+            text: 'Applications',
+            url: '/account/applications',
+          },
+          {
+            type: 'link',
+            text: 'Recent Calls',
+            url: '/account/recent-calls',
+          },
+          {
+            type: 'link',
+            text: 'Alerts',
+            url: '/account/alerts',
+          },
+          {
+            type: 'horizontal-rule',
+          },
+          {
+            type: 'text',
+            text: 'Bring Your Own Services',
+          },
+
+          {
+            type: 'link',
+            text: 'Carriers',
+            url: '/account/carriers',
+          },
+          {
+            type: 'link',
+            text: 'Phone Numbers',
+            url: '/account/phone-numbers',
+          },
+          {
+            type: 'link',
+            text: 'Speech',
+            url: '/account/speech-services',
+          },
+          {
+            type: 'horizontal-rule',
+          },
+          {
+            type: 'link',
+            text: 'Account Settings',
+            url: '/account/settings',
+          },
+          {
+            type: 'button',
+            text: 'Sign Out',
+            onClick: signOut,
+          },
+        ]}
+        drawerAlignment="left"
       />
       <div style={{ display: "flex" }}>
         <SideMenu />

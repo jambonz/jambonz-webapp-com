@@ -1,13 +1,17 @@
 import styled from 'styled-components/macro';
 import NavItem from './NavItem';
+import NavDrawer from './NavDrawer';
 
 const StyledNav = styled.nav`
-  position: relative;
-  z-index: 50;
+  position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  top: -1px;
+  left: 0;
+  width: 100%;
   height: 4rem;
+  z-index: 50;
   padding: 0.5rem 1rem;
   background: #fff;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.12);
@@ -38,6 +42,10 @@ const Nav = props => {
             key={i}
           />
         ))}
+        <NavDrawer
+          drawer={props.drawer}
+          drawerAlignment={props.drawerAlignment}
+        />
       </NavSection>
     </StyledNav>
   );

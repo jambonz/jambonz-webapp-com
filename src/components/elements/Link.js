@@ -3,7 +3,7 @@ import { Link as ReactRouterLink } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { ModalStateContext } from '../../contexts/ModalContext';
 
-const FilteredLink = ({ formLink, right, inModal, nav, navMain, ...props }) => (
+const FilteredLink = ({ formLink, right, inModal, nav, navMain, desktopOnly, ...props }) => (
   <ReactRouterLink {...props}>{props.children}</ReactRouterLink>
 );
 
@@ -78,6 +78,12 @@ const StyledReactRouterLink = styled(FilteredLink)`
   ${props => props.navMain && `
     margin: 0;
     font-size: 1.5rem;
+  `}
+
+  ${props => props.desktopOnly && `
+    ${props.theme.mobileOnly} {
+      display: none;
+    }
   `}
 `;
 

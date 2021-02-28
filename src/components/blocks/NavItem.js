@@ -86,6 +86,7 @@ const NavItem = ({ navMain, item }) => {
         to={item.type === 'link' ? item.url : null}
         href={item.type === 'linkExternal' ? item.url : null}
         style={{ whiteSpace: 'nowrap' }}
+        desktopOnly={item.desktopOnly}
       >
         {item.text}
       </Link>
@@ -96,15 +97,31 @@ const NavItem = ({ navMain, item }) => {
         text
         onClick={item.onClick}
         style={{ whiteSpace: 'nowrap' }}
+        desktopOnly={item.desktopOnly}
       >
         {item.text}
       </Button>
+
+    ) : item.type === 'text-large' ? (
+      <SubmenuTextLarge>
+        {item.text}
+      </SubmenuTextLarge>
+
+    ) : item.type === 'text' ? (
+      <SubmenuText>
+        {item.text}
+      </SubmenuText>
+
+    ) : item.type === 'horizontal-rule' ? (
+      <Hr />
+
     ) : item.type === 'submenu' ? (
-      <SubmenuContainer>
+      <SubmenuContainer desktopOnly={item.desktopOnly}>
         <Button
           gray
           text
           onClick={handleCurrentMenu}
+          desktopOnly={item.desktopOnly}
         >
           {item.text}
         </Button>
@@ -121,12 +138,13 @@ const NavItem = ({ navMain, item }) => {
                 <NavItem key={i} item={subItem} />
               ) : (
                 <p>{subItem.text}</p>
-              )))}
+              )
+            ))}
           </Submenu>
         )}
       </SubmenuContainer>
     ) : (
-      <span>item.text</span>
+      <span>{item.text}</span>
     )
   );
 };

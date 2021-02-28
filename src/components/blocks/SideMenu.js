@@ -15,11 +15,16 @@ const StyledSideMenu = styled.div`
   width: 15rem;
   flex-shrink: 0;
   height: calc(100vh - 4rem);
+  margin-top: 4rem;
   overflow: auto;
   background: #FFF;
   padding: 3.25rem 0;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.12);
   z-index: 40;
+
+  ${props => props.theme.mobileOnly} {
+    display: none;
+  }
 `;
 
 const activeClassName = 'nav-item-active';

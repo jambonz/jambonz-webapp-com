@@ -248,6 +248,39 @@ const StyledButton = styled.button`
       background: #FFF;
     }
   `}
+
+  ${props => props.navMenuButton && `
+    display: none;
+
+    & > span {
+      height: 2.5rem;
+      width: 2.5rem;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    ${props.theme.mobileOnly} {
+      display: block;
+    }
+  `}
+
+  ${props => props.close && `
+    align-self: flex-end;
+    margin: -1.5rem -1.25rem 0 0;
+    & > span {
+      height: 3rem;
+      width: 3rem;
+      padding: 0;
+    }
+  `}
+
+  ${props => props.desktopOnly && `
+    ${props.theme.mobileOnly} {
+      display: none;
+    }
+  `}
 `;
 
 const Button = (props, ref) => {
