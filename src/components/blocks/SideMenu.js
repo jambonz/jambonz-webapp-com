@@ -9,7 +9,6 @@ import { ReactComponent as AlertsIcon       } from '../../images/AlertsIcon.svg'
 import { ReactComponent as CarriersIcon     } from '../../images/CarriersIcon.svg';
 import { ReactComponent as PhoneNumbersIcon } from '../../images/PhoneNumbersIcon.svg';
 import { ReactComponent as SpeechIcon       } from '../../images/SpeechIcon.svg';
-import { ReactComponent as AddOnsIcon       } from '../../images/AddOnsIcon.svg';
 
 const StyledSideMenu = styled.div`
   width: 15rem;
@@ -114,10 +113,6 @@ const SideMenu = () => {
       <MenuLink to="/account/carriers"        name="Carriers"         icon={<CarriersIcon     />} />
       <MenuLink to="/account/phone-numbers"   name="Phone Numbers"    icon={<PhoneNumbersIcon />} />
       <MenuLink to="/account/speech-services" name="Speech"           icon={<SpeechIcon       />} />
-
-      <StyledH2>Bring Your Own Services</StyledH2>
-      <MenuLink to="/account/add-ons"         name="Explore Add-Ons"  icon={<AddOnsIcon       />} />
-
     </StyledSideMenu>
   );
 };
