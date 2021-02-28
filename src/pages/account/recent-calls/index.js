@@ -41,11 +41,6 @@ const RecentCallsIndex = () => {
           to:             phoneNumberFormat(call.to),
           status:         call.status,
           duration:       timeFormat(call.duration),
-          amount_charged: {
-            type: call.amount_charged ? 'link' : null,
-            content: call.amount_charged ? `$${call.amount_charged}` : null,
-            url: call.amount_charged ? `/account/recent-calls/${call.call_billing_record_sid}` : null,
-          },
         };
       });
       return(simplifiedRecentCalls);
@@ -92,7 +87,6 @@ const RecentCallsIndex = () => {
             { header: 'To',             key: 'to'                                   },
             { header: 'Status',         key: 'status'                               },
             { header: 'Duration',       key: 'duration',       textAlign: 'right'   },
-            { header: 'Amount Charged', key: 'amount_charged', textAlign: 'right'   },
           ]}
         />
       </Section>

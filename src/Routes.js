@@ -22,7 +22,6 @@ import SipRealmEdit from './pages/account/sip-realm/edit';
 import ApplicationsIndex from './pages/account/applications/index';
 import ApplicationsAddEdit from './pages/account/applications/add-edit';
 import RecentCallsIndex from './pages/account/recent-calls/index';
-import RecentCallsDetails from './pages/account/recent-calls/details';
 import AlertsIndex from './pages/account/alerts/index';
 import AlertsDetails from './pages/account/alerts/details';
 import CarriersIndex from './pages/account/carriers/index';
@@ -101,7 +100,6 @@ function Routes() {
               <Route exact path="/account/applications/:application_sid/edit"><ApplicationsAddEdit /></Route>
 
               <Route exact path="/account/recent-calls"><RecentCallsIndex /></Route>
-              <Route exact path="/account/recent-calls/:id"><RecentCallsDetails /></Route>
 
               <Route exact path="/account/alerts"><AlertsIndex /></Route>
               <Route exact path="/account/alerts/:id"><AlertsDetails /></Route>
