@@ -26,10 +26,24 @@ const InternalTemplate = props => {
           },
         });
 
-        if (userResponse.data && userResponse.data.user) {
-          setName(userResponse.data.user.name);
-          setEmail(userResponse.data.user.email);
+        if (!userResponse.data || !userResponse.data.user || !userResponse.data.account) {
+          throw new Error('Unable to get navigation data.');
         }
+
+        // If user hasn't finished registration send them back
+        if (!userResponse.data.account.sip_realm) {
+
+          localStorage.setItem('root_domain', userResponse.data.account.root_domain);
+
+          if (!userResponse.data.user.email_validated) {
+            history.push('/register/verify-your-email');
+          } else {
+            history.push('/register/choose-a-subdomain');
+          }
+        }
+
+        setName(userResponse.data.user.name);
+        setEmail(userResponse.data.user.email);
       };
       getData();
 
