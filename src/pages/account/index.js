@@ -170,7 +170,7 @@ const AccountHome = () => {
               simultaneous calls and 10 registered devices
             </P>
             <InputGroup flexEnd spaced>
-              <Button as={ReactRouterLink} to="#">Upgrade to a paid subscription</Button>
+              <Button as={ReactRouterLink} to="#">Upgrade to a Paid Subscription</Button>
             </InputGroup>
           </Section>
 
