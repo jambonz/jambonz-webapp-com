@@ -15,6 +15,7 @@ import P from '../../components/elements/P';
 import Table from '../../components/elements/Table';
 import Th from '../../components/elements/Th';
 import Td from '../../components/elements/Td';
+import handleErrors from '../../helpers/handleErrors';
 import maskApiToken from '../../helpers/maskApiToken';
 import Loader from '../../components/blocks/Loader';
 
@@ -70,7 +71,7 @@ const AccountHome = () => {
       const newApiKeySid = apiKeyResponse.data && apiKeyResponse.data.sid;
       history.push(`/account/api-keys/${newApiKeySid}/new`);
 
-    } catch(err) {
+    } catch (err) {
       dispatch({
         type: 'ADD',
         level: 'error',
@@ -131,26 +132,8 @@ const AccountHome = () => {
           ]);
         }
       } catch (err) {
-        if (err.response && err.response.status === 401) {
-          localStorage.clear();
-          sessionStorage.clear();
-          isMounted = false;
-          history.push('/');
-          dispatch({
-            type: 'ADD',
-            level: 'error',
-            message: 'Your session has expired. Please log in and try again.',
-          });
-        } else {
-          isMounted = false;
-          history.push('/account/speech-services');
-          dispatch({
-            type: 'ADD',
-            level: 'error',
-            message: (err.response && err.response.data && err.response.data.msg) || 'That speech service does not exist',
-          });
-          console.error(err.response || err);
-        }
+        isMounted = false;
+        handleErrors({ err, history, dispatch, fallbackMessage: 'fine' });
       } finally {
         if (isMounted) {
           setShowLoader(false);

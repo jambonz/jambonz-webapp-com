@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
+import handleErrors from '../../../helpers/handleErrors';
 import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
 import Form from '../../../components/elements/Form';
@@ -143,26 +144,15 @@ const ApplicationsAddEdit = () => {
         }
         setShowLoader(false);
       } catch (err) {
-        if (err.response && err.response.status === 401) {
-          localStorage.clear();
-          sessionStorage.clear();
-          isMounted = false;
-          history.push('/');
-          dispatch({
-            type: 'ADD',
-            level: 'error',
-            message: 'Your session has expired. Please log in and try again.',
-          });
-        } else {
-          isMounted = false;
-          history.push('/account/applications');
-          dispatch({
-            type: 'ADD',
-            level: 'error',
-            message: (err.response && err.response.data && err.response.data.msg) || 'That application does not exist',
-          });
-          console.error(err.response || err);
-        }
+        isMounted = false;
+        handleErrors({
+          err,
+          history,
+          dispatch,
+          redirect: '/account/applications',
+          fallbackMessage: 'That application does not exist',
+          preferFallback: true,
+        });
       } finally {
         if (isMounted) {
           setShowLoader(false);
@@ -175,7 +165,6 @@ const ApplicationsAddEdit = () => {
 
 
   const handleSubmit = async (e) => {
-    let isMounted = true;
     try {
       setShowLoader(true);
       e.preventDefault();
@@ -318,7 +307,7 @@ const ApplicationsAddEdit = () => {
         data,
       });
 
-      isMounted = false;
+      setShowLoader(false);
       history.push('/account/applications');
       const dispatchMessage = type === 'add'
         ? 'Application created successfully'
@@ -330,24 +319,13 @@ const ApplicationsAddEdit = () => {
       });
 
     } catch (err) {
-      if (err.response && err.response.status === 401) {
-        localStorage.clear();
-        sessionStorage.clear();
-        isMounted = false;
-        history.push('/');
-        dispatch({
-          type: 'ADD',
-          level: 'error',
-          message: 'Your session has expired. Please log in and try again.',
-        });
-      } else {
-        setErrorMessage((err.response && err.response.data && err.response.data.msg) || 'Something went wrong, please try again.');
-        console.error(err.response || err);
-      }
-    } finally {
-      if (isMounted) {
-        setShowLoader(false);
-      }
+      setShowLoader(false);
+      handleErrors({
+        err,
+        history,
+        dispatch,
+        setErrorMessage,
+      });
     }
   };
 

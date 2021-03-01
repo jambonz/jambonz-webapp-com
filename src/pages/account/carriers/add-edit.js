@@ -585,7 +585,7 @@ const CarriersAddEdit = () => {
         message: dispatchMessage
       });
 
-    } catch(err) {
+    } catch (err) {
       if (err.response && err.response.status === 401) {
         localStorage.clear();
         sessionStorage.clear();

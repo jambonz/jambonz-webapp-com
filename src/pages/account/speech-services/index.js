@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
+import handleErrors from '../../../helpers/handleErrors';
 import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
 import TableContent from '../../../components/blocks/TableContent';
@@ -105,23 +106,7 @@ const SpeechServicesIndex = () => {
       });
       return(cleanedUpSpeechServices);
     } catch (err) {
-      if (err.response && err.response.status === 401) {
-        localStorage.clear();
-        sessionStorage.clear();
-        history.push('/');
-        dispatch({
-          type: 'ADD',
-          level: 'error',
-          message: 'Your session has expired. Please log in and try again.',
-        });
-      } else {
-        dispatch({
-          type: 'ADD',
-          level: 'error',
-          message: (err.response && err.response.data && err.response.data.msg) || 'Unable to get speech services',
-        });
-        console.error(err.response || err);
-      }
+      handleErrors({ err, history, dispatch, fallbackMessage: 'Unable to get speech services' });
     }
   };
 

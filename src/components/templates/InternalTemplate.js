@@ -2,6 +2,7 @@ import { useEffect, useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
+import handleErrors from '../../helpers/handleErrors';
 import Nav from '../blocks/Nav';
 import SideMenu from '../blocks/SideMenu';
 
@@ -46,24 +47,7 @@ const InternalTemplate = props => {
         setEmail(userResponse.data.user.email);
 
       } catch (err) {
-        if (err.response && err.response.status === 401) {
-          localStorage.clear();
-          sessionStorage.clear();
-          history.push('/');
-          dispatch({
-            type: 'ADD',
-            level: 'error',
-            message: 'Your session has expired. Please log in and try again.',
-          });
-        } else {
-          dispatch({
-            type: 'ADD',
-            level: 'error',
-            message: (err.response && err.response.data && err.response.data.msg) ||
-            err.message || 'Error getting navigation data',
-          });
-          console.error(err.response || err);
-        }
+        handleErrors({ err, history, dispatch, fallbackMessage: 'Error getting navigation data' });
       }
     };
     getData();

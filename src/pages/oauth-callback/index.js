@@ -89,7 +89,7 @@ const OauthCallback = () => {
           type: 'ADD',
           level: 'error',
           message: (err.response && err.response.data && err.response.data.msg) ||
-          err.message || 'Something went wrong, please try again',
+          err.message || 'Something went wrong, please try again.',
         });
         console.error(err.response || err);
       }
