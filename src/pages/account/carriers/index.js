@@ -87,7 +87,7 @@ const CarriersIndex = () => {
       return(simplifiedCarriers);
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        localStorage.removeItem('token');
+        localStorage.clear();
         sessionStorage.clear();
         history.push('/');
         dispatch({
@@ -157,7 +157,7 @@ const CarriersIndex = () => {
       return 'success';
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        localStorage.removeItem('token');
+        localStorage.clear();
         sessionStorage.clear();
         history.push('/');
         dispatch({

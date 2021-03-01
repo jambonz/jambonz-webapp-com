@@ -135,7 +135,11 @@ const RegisterChooseSubdomain = () => {
         err.message || 'Something went wrong, please try again.'
       );
       console.error(err.response || err);
+
     } finally {
+
+      localStorage.removeItem('root_domain');
+
       if (isMounted) {
         setShowLoader(false);
       }

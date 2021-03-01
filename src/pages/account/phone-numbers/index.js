@@ -82,7 +82,7 @@ const PhoneNumbersIndex = () => {
       return(combinedData);
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        localStorage.removeItem('jwt');
+        localStorage.clear();
         sessionStorage.clear();
         history.push('/');
         dispatch({
@@ -133,7 +133,7 @@ const PhoneNumbersIndex = () => {
       return 'success';
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        localStorage.removeItem('jwt');
+        localStorage.clear();
         sessionStorage.clear();
         history.push('/');
         dispatch({
@@ -179,7 +179,7 @@ const PhoneNumbersIndex = () => {
       return true;
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        localStorage.removeItem('jwt');
+        localStorage.clear();
         sessionStorage.clear();
         history.push('/');
         dispatch({

@@ -38,7 +38,7 @@ const ApplicationsIndex = () => {
       return(simplifiedApplications);
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        localStorage.removeItem('jwt');
+        localStorage.clear();
         sessionStorage.clear();
         history.push('/');
         dispatch({
@@ -155,7 +155,7 @@ const ApplicationsIndex = () => {
       return 'success';
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        localStorage.removeItem('jwt');
+        localStorage.clear();
         sessionStorage.clear();
         history.push('/');
         dispatch({

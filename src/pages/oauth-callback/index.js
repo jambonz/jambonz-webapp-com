@@ -61,18 +61,23 @@ const OauthCallback = () => {
         });
 
         localStorage.removeItem('oauth-state');
-
-        localStorage.setItem('jwt',         response.data.jwt);
-        localStorage.setItem('user_sid',    response.data.user_sid);
-        localStorage.setItem('account_sid', response.data.account_sid);
-        localStorage.setItem('provider',    response.data.provider);
-        localStorage.setItem('root_domain', response.data.root_domain);
+        localStorage.removeItem('location-before-oauth');
 
         if (response.status === 200) {
+
+          localStorage.setItem('jwt',         response.data.jwt);
+          localStorage.setItem('user_sid',    response.data.user_sid);
+          localStorage.setItem('account_sid', response.data.account_sid);
+
           if (previousLocation === '/register') {
+
+            localStorage.setItem('root_domain', response.data.root_domain);
             history.replace('/register/choose-a-subdomain');
+
           } else {
+
             history.replace('/account');
+
           }
         } else {
           throw Error('Non-200 response');

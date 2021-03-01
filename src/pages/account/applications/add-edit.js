@@ -144,7 +144,7 @@ const ApplicationsAddEdit = () => {
         setShowLoader(false);
       } catch (err) {
         if (err.response && err.response.status === 401) {
-          localStorage.removeItem('jwt');
+          localStorage.clear();
           sessionStorage.clear();
           isMounted = false;
           history.push('/');
@@ -331,7 +331,7 @@ const ApplicationsAddEdit = () => {
 
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        localStorage.removeItem('jwt');
+        localStorage.clear();
         sessionStorage.clear();
         isMounted = false;
         history.push('/');

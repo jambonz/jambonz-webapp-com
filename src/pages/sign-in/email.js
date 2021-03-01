@@ -12,6 +12,10 @@ import FormError from '../../components/blocks/FormError';
 const SignIn = props => {
   let history = useHistory();
 
+  // Clean up OAuth localStorage since the user is using email
+  localStorage.removeItem('oauth-state');
+  localStorage.removeItem('location-before-oauth');
+
   // Refs
   const refEmail = useRef(null);
   const refPassword = useRef(null);
@@ -64,7 +68,6 @@ const SignIn = props => {
       localStorage.setItem('jwt', response.data.jwt);
       localStorage.setItem('user_sid', response.data.user_sid);
       localStorage.setItem('account_sid', response.data.account_sid);
-      localStorage.setItem('provider', response.data.provider);
 
       history.push('/account');
 

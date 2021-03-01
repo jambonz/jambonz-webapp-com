@@ -28,6 +28,10 @@ const AccountHome = () => {
   const jwt = localStorage.getItem('jwt');
   const account_sid = localStorage.getItem('account_sid');
 
+  // Clean up OAuth localStorage
+  localStorage.removeItem('oauth-state');
+  localStorage.removeItem('location-before-oauth');
+
   const [ data,                         setData                         ] = useState({});
   const [ registrationWebhookUrl,       setRegistrationWebhookUrl       ] = useState('');
   const [ registrationWebhookMenuItems, setRegistrationWebhookMenuItems ] = useState([]);
@@ -128,7 +132,7 @@ const AccountHome = () => {
         }
       } catch (err) {
         if (err.response && err.response.status === 401) {
-          localStorage.removeItem('jwt');
+          localStorage.clear();
           sessionStorage.clear();
           isMounted = false;
           history.push('/');

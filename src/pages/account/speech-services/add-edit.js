@@ -95,7 +95,7 @@ const SpeechServicesAddEdit = () => {
         setShowLoader(false);
       } catch (err) {
         if (err.response && err.response.status === 401) {
-          localStorage.removeItem('jwt');
+          localStorage.clear();
           sessionStorage.clear();
           isMounted = false;
           history.push('/');
@@ -369,7 +369,7 @@ const SpeechServicesAddEdit = () => {
 
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        localStorage.removeItem('jwt');
+        localStorage.clear();
         sessionStorage.clear();
         isMounted = false;
         history.push('/');

@@ -163,7 +163,7 @@ const CarriersAddEdit = () => {
 
       } catch (err) {
         if (err.response && err.response.status === 401) {
-          localStorage.removeItem('jwt');
+          localStorage.clear();
           sessionStorage.clear();
           isMounted = false;
           history.push('/');
@@ -587,7 +587,7 @@ const CarriersAddEdit = () => {
 
     } catch(err) {
       if (err.response && err.response.status === 401) {
-        localStorage.removeItem('jwt');
+        localStorage.clear();
         sessionStorage.clear();
         isMounted = false;
         history.push('/');

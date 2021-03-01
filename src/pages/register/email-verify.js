@@ -73,7 +73,11 @@ const EmailVerify = () => {
         err.message || 'Something went wrong, please try again.'
       );
       console.error(err.response || err);
+
     } finally {
+
+      localStorage.removeItem('email');
+
       if (isMounted) {
         setShowLoader(false);
       }

@@ -14,6 +14,10 @@ import generateActivationCode from '../../helpers/generateActivationCode';
 const RegisterWithEmail = props => {
   let history = useHistory();
 
+  // Clean up OAuth localStorage since the user is using email
+  localStorage.removeItem('oauth-state');
+  localStorage.removeItem('location-before-oauth');
+
   // Refs
   const refName = useRef(null);
   const refEmail = useRef(null);
@@ -135,7 +139,6 @@ const RegisterWithEmail = props => {
       localStorage.setItem('jwt', response.data.jwt);
       localStorage.setItem('user_sid', response.data.user_sid);
       localStorage.setItem('account_sid', response.data.account_sid);
-      localStorage.setItem('provider', response.data.provider);
       localStorage.setItem('email', response.data.email);
       localStorage.setItem('root_domain', response.data.root_domain);
 
