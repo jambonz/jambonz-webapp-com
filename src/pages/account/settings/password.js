@@ -56,6 +56,44 @@ const SettingsChangePassword = () => {
         }
       }
 
+      if (!newPassword) {
+        errorMessages.push('Password is required.');
+        setInvalidNewPassword(true);
+        if (!focusHasBeenSet) {
+          refNewPassword.current.focus();
+          focusHasBeenSet = true;
+        }
+
+      } else {
+
+        if (newPassword.length < 6) {
+          errorMessages.push('Password must be at least 6 characters long.');
+          setInvalidNewPassword(true);
+          if (!focusHasBeenSet) {
+            refNewPassword.current.focus();
+            focusHasBeenSet = true;
+          }
+        }
+
+        if (!/[a-zA-Z]/.test(newPassword)) {
+          errorMessages.push('Password must contain a letter.');
+          setInvalidNewPassword(true);
+          if (!focusHasBeenSet) {
+            refNewPassword.current.focus();
+            focusHasBeenSet = true;
+          }
+        }
+
+        if (!/[0-9]/.test(newPassword)) {
+          errorMessages.push('Password must contain a number.');
+          setInvalidNewPassword(true);
+          if (!focusHasBeenSet) {
+            refNewPassword.current.focus();
+            focusHasBeenSet = true;
+          }
+        }
+      }
+
       if (errorMessages.length > 1) {
         setErrorMessage(errorMessages);
         return;
