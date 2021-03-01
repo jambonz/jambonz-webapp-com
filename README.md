@@ -29,6 +29,8 @@ https://github.com/jambonz/jambonz-webapp-com
   * `src/Routes.js`: the primary component called by `src/index.js`, it lays out all routes for the application
   * `src/pages/`: contains application web pages in a structure similar to the final URL of the page
   * `src/components/`: contains the React components used to build the UI
+  * `src/components/templates`: imported in the Routes.js file, these don't re-render on page transitions
+  * `src/components/wrappers`: imported in each page's file, useful for triggering code on every page transitions (e.g. to close any open menus)
 
 
 ## Misc notes
