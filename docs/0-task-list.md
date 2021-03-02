@@ -1,8 +1,5 @@
 
-#================================================
 # Tasks
-#================================================
-
   - API keys: add/view/delete
   - Alerts
   - subscriptions/plans
@@ -52,10 +49,7 @@
   - create a full set of favicons: https://realfavicongenerator.net/
   - create a web app manifest: https://developer.mozilla.org/en-US/docs/Web/Manifest
 
-#================================================
 # Accessibility
-#================================================
-
   - nav: add accessibilty tags to the menu open button:
     - aria-haspopup="true"
     - aria-expanded="true"/"false"
@@ -67,19 +61,13 @@
   - visible keyboard focus broken on first columns of tables for some reason
   - test with a screen reader
 
-#================================================
 # Bugs
-#================================================
-
   - iOS - choose subdomain: the success icon has a background
   - getting duplicate notifications on session timeout (two separate requests both getting 401 and redirecting)
     - maybe have notification context check for duplicate messages
   - table sort on a column with empty values sometimes has unexpected results (should always push rows with empty values to the end)
 
-#================================================
 # Styling tweaks
-#================================================
-
   - on desktop, highlight "Account" when user is on a settings page
   - customize styling on select lists so they look consistent across browsers
   - Recent calls: adjust the page layout so that the page title (H1) and table content line up on the left
@@ -94,10 +82,7 @@
     - If I remove that, all tables will lose their background
     - Refactoring table css will fix this
 
-#================================================
 # UX improvements
-#================================================
-
   - Update notification context to support a custom duration so that you can set a longer duration for some notifications
   - for inputs, set autocapitalize and/or inputmode (to trigger specific mobile keyboards)
   - speech services: prevent user from going to the "Add" page if there is already google && aws
@@ -110,10 +95,7 @@
       - link to delete those other things?
       - option to delete all of those items as well?
 
-#================================================
 # Refactoring
-#================================================
-
   - finish refactoring error handling into separate helper function
     - I made a helper function for error handling (`src/helpers/handleErrors.js`), and starting converting error handling over to using it, but didn't finish. Not every try/catch block handles errors in the same way, so it needs to be done carefully
   - use a styled components theme for colors

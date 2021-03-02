@@ -41,5 +41,5 @@ https://github.com/jambonz/jambonz-webapp-com
 ## Developer notes
   * [remaining task list](docs/0-task-list.md)
   * [links to figma designs](docs/design-links.md)
-  * [notes on changes required to handle 401 session timeouts](docs/handle-401-session-timeout.md)
+  * [notes on changes required to handle 401 session timeouts](docs/handle-401-session-timeouts.md)
   * [list of react routes used in the app](docs/routes.md)

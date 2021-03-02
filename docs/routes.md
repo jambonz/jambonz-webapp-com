@@ -1,8 +1,5 @@
 
-#================================================
 # jambonz.org website
-#================================================
-
   --------------------------------------------
   filename                                path
   --------------------------------------------
@@ -19,10 +16,7 @@
 
   404                                     404 not found
 
-#================================================
 # Portal - public
-#================================================
-
   register/index                          /register
   register/email                          /register/email
   register/email-verify                   /register/verify-your-email
@@ -37,10 +31,7 @@
 
   404-external                            404 not found
 
-#================================================
 # Portal - internal
-#================================================
-
   account/index                           /account
 
   account/api-keys/details                /account/api-keys/:id
