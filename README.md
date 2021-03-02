@@ -37,3 +37,9 @@ https://github.com/jambonz/jambonz-webapp-com
 
   * Email verification codes are logged to the console if `process.env.NODE_ENV === 'development'`
   * Links and buttons use a nested span with tabindex="-1" in order to allow styling that only applies to keyboard focus ([reference](https://stackoverflow.com/a/45191208/8742362)). When changing the styling on these elements, make sure that the span always fills the entire parent element, otherwise you may end up seeing keyboard focus styling when clicking, and may get other strange styling bugs.
+
+## Developer notes
+  * [remaining task list](docs/0-task-list.md)
+  * [links to figma designs](docs/design-links.md)
+  * [notes on changes required to handle 401 session timeouts](docs/handle-401-session-timeout.md)
+  * [list of react routes used in the app](docs/routes.md)
