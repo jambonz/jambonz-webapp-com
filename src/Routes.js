@@ -67,7 +67,7 @@ function Routes() {
             <Switch>
               <Route exact path="/account"><AccountHome /></Route>
 
-              <Route exact path="/account/api-keys/:id"><ApiKeysDetails /></Route>
+              <Route exact path="/account/api-keys/:id" render={(props) => <ApiKeysDetails {...props} />} />
               <Route exact path="/account/api-keys/:id/new" render={(props) => <ApiKeysNew {...props} />} />
               <Route exact path="/account/api-keys/:id/delete"><ApiKeysDelete /></Route>
 

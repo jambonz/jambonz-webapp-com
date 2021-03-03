@@ -32,7 +32,7 @@ const Copy = ({ title, value }) => {
     }
   };
 
-  return <CopyArea onClick={copyText}>Copy</CopyArea>;
+  return <CopyArea onClick={copyText}>copy</CopyArea>;
 };
 
 export default Copy;
