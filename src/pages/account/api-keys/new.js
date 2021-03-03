@@ -7,14 +7,14 @@ import Button from '../../../components/elements/Button';
 import InputGroup from '../../../components/elements/InputGroup';
 
 const ApiKeyNew = (props) => {
-  const { id } = props.match.params || {};
+  const { token } = props.location.state || {};
   return (
     <InternalMain title="New API Key" topMenu={{ label: "← Back to Account Home", link: "/account" }}>
       <Section>
         <P>Below is your new API key. To view this key in the future, go to the API Keys section of your account home page.</P>
-        <P>{id} <Copy title="API Key" value={id} /></P>
+        <P>{token} <Copy title="API Key" value={token} /></P>
         <InputGroup flexEnd spaced>
-          <Button as={ReactRouterLink} to="/account" gray disabled={true}>Back to Account Home</Button>
+          <Button as={ReactRouterLink} to="/account" gray="true" disabled={true}>Back to Account Home</Button>
         </InputGroup>
       </Section>
     </InternalMain>

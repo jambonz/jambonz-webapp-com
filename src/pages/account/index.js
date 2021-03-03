@@ -69,7 +69,10 @@ const AccountHome = () => {
         },
       });
       const newApiKeySid = apiKeyResponse.data && apiKeyResponse.data.sid;
-      history.push(`/account/api-keys/${newApiKeySid}/new`);
+      history.push({
+        pathname: `/account/api-keys/${newApiKeySid}/new`,
+        state: { token: apiKeyResponse.data.token },
+      });
 
     } catch (err) {
       dispatch({
