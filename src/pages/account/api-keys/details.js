@@ -10,6 +10,7 @@ import Copy from "../../../components/elements/Copy";
 import Button from "../../../components/elements/Button";
 import InputGroup from "../../../components/elements/InputGroup";
 import Loader from "../../../components/blocks/Loader";
+import { getPastDays } from "../../../utils/parse";
 
 const APIKeyInfo = styled.div`
   display: grid;
@@ -74,7 +75,7 @@ const ApiKeyDetails = (props) => {
           </P>
           <APIKeyInfo>
             <Cell>Last Used</Cell>
-            <Cell>{data.last_used ? moment(data.last_used).format('YYYY-MM-DD') : ""}</Cell>
+            <Cell>{data.last_used ? getPastDays(data.last_used) : ""}</Cell>
             <Cell>Created</Cell>
             <Cell>{moment(data.created_at).format('YYYY-MM-DD')}</Cell>
           </APIKeyInfo>

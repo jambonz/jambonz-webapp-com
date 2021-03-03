@@ -18,6 +18,7 @@ import Td from '../../components/elements/Td';
 import handleErrors from '../../helpers/handleErrors';
 import maskApiToken from '../../helpers/maskApiToken';
 import Loader from '../../components/blocks/Loader';
+import { getPastDays } from "../../utils/parse";
 
 const AccountHome = () => {
   let history = useHistory();
@@ -258,7 +259,7 @@ const AccountHome = () => {
                     data.api_keys.map(apiKey => (
                       <tr key={apiKey.api_key_sid}>
                         <Th scope="row">{maskApiToken(apiKey.token)}</Th>
-                        <Td>{apiKey.last_used || 'Never used'}</Td>
+                        <Td>{apiKey.last_used ? getPastDays(apiKey.last_used) : 'Never used'}</Td>
                         <Td containsMenuButton>
                           <TableMenu
                             open={currentMenu === `account-home-api-key-${apiKey.api_key_sid}`}
