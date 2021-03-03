@@ -74,7 +74,7 @@ const ApiKeyDetails = (props) => {
           </P>
           <APIKeyInfo>
             <Cell>Last Used</Cell>
-            <Cell>{data.last_used || ""}</Cell>
+            <Cell>{data.last_used ? moment(data.last_used).format('YYYY-MM-DD') : ""}</Cell>
             <Cell>Created</Cell>
             <Cell>{moment(data.created_at).format('YYYY-MM-DD')}</Cell>
           </APIKeyInfo>
