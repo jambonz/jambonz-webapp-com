@@ -1,11 +1,24 @@
-import moment from "moment";
-
 const getPastDays = (date) => {
-  const current = moment();
-  const certainDate = moment(date);
-  const diff = current.diff(certainDate, "days");
+  let res = "Never used";
+  if (date) {
+    const currentDate = new Date();
+    const lastUsedDate = new Date(date);
+    currentDate.setHours(0, 0, 0, 0);
+    lastUsedDate.setHours(0, 0, 0, 0);
+    const daysDifference = Math.round(
+      (currentDate - lastUsedDate) / 1000 / 60 / 60 / 24
+    );
+    res =
+      daysDifference > 1
+        ? `${daysDifference} days ago`
+        : daysDifference === 1
+        ? "Yesterday"
+        : daysDifference === 0
+        ? "Today"
+        : "Never used";
+  }
 
-  return diff === 1 ? `1 day ago` : `${diff} days ago`;
+  return res;
 };
 
 export { getPastDays };

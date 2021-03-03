@@ -259,7 +259,7 @@ const AccountHome = () => {
                     data.api_keys.map(apiKey => (
                       <tr key={apiKey.api_key_sid}>
                         <Th scope="row">{maskApiToken(apiKey.token)}</Th>
-                        <Td>{apiKey.last_used ? getPastDays(apiKey.last_used) : 'Never used'}</Td>
+                        <Td>{getPastDays(apiKey.last_used)}</Td>
                         <Td containsMenuButton>
                           <TableMenu
                             open={currentMenu === `account-home-api-key-${apiKey.api_key_sid}`}
