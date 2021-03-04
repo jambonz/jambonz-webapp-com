@@ -40,7 +40,7 @@ const ApiKeyDelete = (props) => {
         message: `Error deleting API key: ${error.message}`
       });
     }
-  }
+  };
 
   return (
     <InternalMain title="Delete API Key" topMenu={{ label: "← Back to Account Home", link: "/account" }}>

@@ -60,7 +60,9 @@ const ApiKeyDetails = (props) => {
     };
 
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
   return (
     <InternalMain
       title="API Key Details"
