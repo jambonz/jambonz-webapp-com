@@ -167,7 +167,6 @@ const AccountHome = () => {
 
           <Section>
             <H2>Account Setup</H2>
-            <P>1 of 4 steps complete</P>
             <AccountSetupList />
           </Section>
 
