@@ -67,9 +67,9 @@ function Routes() {
             <Switch>
               <Route exact path="/account"><AccountHome /></Route>
 
-              <Route exact path="/account/api-keys/:id"><ApiKeysDetails /></Route>
-              <Route exact path="/account/api-keys/:id/new"><ApiKeysNew /></Route>
-              <Route exact path="/account/api-keys/:id/delete"><ApiKeysDelete /></Route>
+              <Route exact path="/account/api-keys/:id" render={(props) => <ApiKeysDetails {...props} />} />
+              <Route exact path="/account/api-keys/:id/new" render={(props) => <ApiKeysNew {...props} />} />
+              <Route exact path="/account/api-keys/:id/delete" render={(props) => <ApiKeysDelete {...props} />} />
 
               <Route exact path="/account/registration-webhook/add"><RegistrationWebhookAddEdit /></Route>
               <Route exact path="/account/registration-webhook/:webhook_sid/edit"><RegistrationWebhookAddEdit /></Route>

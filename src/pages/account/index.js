@@ -18,6 +18,7 @@ import Td from '../../components/elements/Td';
 import handleErrors from '../../helpers/handleErrors';
 import maskApiToken from '../../helpers/maskApiToken';
 import Loader from '../../components/blocks/Loader';
+import { getPastDays } from "../../utils/parse";
 
 const AccountHome = () => {
   let history = useHistory();
@@ -69,7 +70,10 @@ const AccountHome = () => {
         },
       });
       const newApiKeySid = apiKeyResponse.data && apiKeyResponse.data.sid;
-      history.push(`/account/api-keys/${newApiKeySid}/new`);
+      history.push({
+        pathname: `/account/api-keys/${newApiKeySid}/new`,
+        state: { token: apiKeyResponse.data.token },
+      });
 
     } catch (err) {
       dispatch({
@@ -255,7 +259,7 @@ const AccountHome = () => {
                     data.api_keys.map(apiKey => (
                       <tr key={apiKey.api_key_sid}>
                         <Th scope="row">{maskApiToken(apiKey.token)}</Th>
-                        <Td>{apiKey.last_used || 'Never used'}</Td>
+                        <Td>{getPastDays(apiKey.last_used)}</Td>
                         <Td containsMenuButton>
                           <TableMenu
                             open={currentMenu === `account-home-api-key-${apiKey.api_key_sid}`}
