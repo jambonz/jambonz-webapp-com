@@ -38,6 +38,7 @@ const AccountHome = () => {
   const [ registrationWebhookUrl,       setRegistrationWebhookUrl       ] = useState('');
   const [ registrationWebhookMenuItems, setRegistrationWebhookMenuItems ] = useState([]);
   const [ showLoader,                   setShowLoader                   ] = useState(true);
+  const [accountSetupCompleted, setAccountSetupCompleted] = useState(false);
 
   const copyText = async ({ text, textType }) => {
     try {
@@ -165,10 +166,12 @@ const AccountHome = () => {
             </InputGroup>
           </Section>
 
-          <Section>
-            <H2>Account Setup</H2>
-            <AccountSetupList />
-          </Section>
+          {!accountSetupCompleted && (
+            <Section>
+              <H2>Account Setup</H2>
+              <AccountSetupList onComplete={setAccountSetupCompleted}/>
+            </Section>
+          )}
 
           {data.account && (
             <Section>
