@@ -32,7 +32,7 @@ const SpeechServicesIndex = () => {
           return axios({
             method: 'get',
             baseURL: process.env.REACT_APP_API_BASE_URL,
-            url: `/Accounts/${account_sid}/SpeechCredentials/${s.speech_credentials_sid}/test`,
+            url: `/Accounts/${account_sid}/SpeechCredentials/${s.speech_credential_sid}/test`,
             headers: {
               Authorization: `Bearer ${jwt}`,
             },
@@ -90,7 +90,7 @@ const SpeechServicesIndex = () => {
         }
 
         return {
-          sid: s.speech_credentials_sid,
+          sid: s.speech_credential_sid,
           vendor: s.vendor,
           usage: (s.use_for_tts && s.use_for_stt) ? 'TTS/STT'
                 : s.use_for_tts ? 'TTS'
