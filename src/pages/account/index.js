@@ -19,6 +19,7 @@ import maskApiToken from '../../helpers/maskApiToken';
 import Loader from '../../components/blocks/Loader';
 import Subscription from '../../components/blocks/Subscription';
 import { getPastDays } from "../../utils/parse";
+import PlanType from '../../data/PlanType';
 
 const AccountHome = () => {
   let history = useHistory();
@@ -155,9 +156,11 @@ const AccountHome = () => {
         <Loader height="calc(100vh - 24rem)" />
       ) : (
         <>
-          <Section>
-            <Subscription data={data} />
-          </Section>
+          {(data.account || {}).plan_type !== PlanType.PAID && (
+            <Section>
+              <Subscription data={data} />
+            </Section>
+          )}
 
           {!accountSetupCompleted && (
             <Section>

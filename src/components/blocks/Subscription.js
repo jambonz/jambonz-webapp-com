@@ -6,6 +6,7 @@ import H2 from '../../components/elements/H2';
 import Button from '../../components/elements/Button';
 import P from '../../components/elements/P';
 import InputGroup from '../../components/elements/InputGroup';
+import PlanType from '../../data/PlanType';
 
 const Subscription = ({ data }) => {
   const [description, setDescription] = useState('');
@@ -18,10 +19,10 @@ const Subscription = ({ data }) => {
     let description = '';
 
     switch (planType) {
-      case 'trial':
+      case PlanType.TRIAL:
         description = `You are currently on the Free plan (trial period). You are limited to ${callSessionRecord.quantity} simultaneous calls and ${registeredDeviceRecord.quantity} registered devices`;
         break;
-      case 'free':
+      case PlanType.FREE:
         description = `You are currently on the Free plan (trial period expired). You are limited to ${callSessionRecord.quantity} simultaneous calls and ${registeredDeviceRecord.quantity} registered devices`;
         break;
       default:
