@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link as ReactRouterLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
@@ -11,14 +11,15 @@ import TableMenu from '../../components/blocks/TableMenu';
 import InputGroup from '../../components/elements/InputGroup';
 import H2 from '../../components/elements/H2';
 import Button from '../../components/elements/Button';
-import P from '../../components/elements/P';
 import Table from '../../components/elements/Table';
 import Th from '../../components/elements/Th';
 import Td from '../../components/elements/Td';
 import handleErrors from '../../helpers/handleErrors';
 import maskApiToken from '../../helpers/maskApiToken';
 import Loader from '../../components/blocks/Loader';
+import Subscription from '../../components/blocks/Subscription';
 import { getPastDays } from "../../utils/parse";
+import PlanType from '../../data/PlanType';
 
 const AccountHome = () => {
   let history = useHistory();
@@ -155,16 +156,11 @@ const AccountHome = () => {
         <Loader height="calc(100vh - 24rem)" />
       ) : (
         <>
-          <Section>
-            <H2>Your Subscription</H2>
-            <P>
-              You are currently on the Free plan (trial period). You are limited to 10
-              simultaneous calls and 10 registered devices
-            </P>
-            <InputGroup flexEnd spaced>
-              <Button as={ReactRouterLink} to="#">Upgrade to a Paid Subscription</Button>
-            </InputGroup>
-          </Section>
+          {(data.account || {}).plan_type !== PlanType.PAID && (
+            <Section>
+              <Subscription data={data} />
+            </Section>
+          )}
 
           {!accountSetupCompleted && (
             <Section>
