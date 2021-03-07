@@ -36,6 +36,7 @@ const CarriersAddEdit = () => {
   const refOutbound = useRef([]);
   const refTrash = useRef([]);
   const refAdd = useRef(null);
+  const refTechPrefix = useRef(null);
 
   // Form inputs
   const [ name,            setName            ] = useState('');
@@ -68,6 +69,10 @@ const CarriersAddEdit = () => {
   const [ carrierSid,   setCarrierSid   ] = useState('');
   const [ showLoader,   setShowLoader   ] = useState(true);
   const [ errorMessage, setErrorMessage ] = useState('');
+
+  const [requiredTechPrefix, setRequiredTechPrefix] = useState(false);
+  const [techPrefix, setTechPrefix] = useState('');
+  const [ techPrefixInvalid, setTechPrefixInvalid ] = useState(false);
 
   useEffect(() => {
     const getAPIData = async () => {
@@ -159,6 +164,8 @@ const CarriersAddEdit = () => {
             invalidOutbound: false,
           })));
           setCarrierSid(carrier.voip_carrier_sid);
+          setTechPrefix(carrier.tech_prefix || '');
+          setRequiredTechPrefix(carrier.tech_prefix ? true : false);
         }
 
       } catch (err) {
@@ -235,6 +242,7 @@ const CarriersAddEdit = () => {
     setUsernameInvalid(false);
     setPasswordInvalid(false);
     setRealmInvalid(false);
+    setTechPrefixInvalid(false);
     const newSipGateways = [...sipGateways];
     newSipGateways.forEach((s, i) => {
       newSipGateways[i].invalidIp = false;
@@ -301,6 +309,15 @@ const CarriersAddEdit = () => {
         setRealmInvalid(true);
         if (!focusHasBeenSet) {
           refRealm.current.focus();
+          focusHasBeenSet = true;
+        }
+      }
+
+      if (techPrefix && techPrefix.length < 2) {
+        errorMessages.push('If registration is required, you must provide a Tech prefix with more than 2 characters.');
+        setTechPrefixInvalid(true);
+        if (!focusHasBeenSet) {
+          refTechPrefix.current.focus();
           focusHasBeenSet = true;
         }
       }
@@ -471,6 +488,7 @@ const CarriersAddEdit = () => {
           register_username: username ? username.trim() : null,
           register_password: password ? password : null,
           register_sip_realm: register ? realm.trim() : null,
+          tech_prefix: techPrefix ? techPrefix.trim() : null,
         },
       });
       const voip_carrier_sid = voipCarrier.data.sid;
@@ -721,6 +739,37 @@ const CarriersAddEdit = () => {
                       null
                     )
                   }
+                </>
+              )
+            }
+
+            <hr style={{ margin: '0.5rem -2rem' }} />
+
+            {
+              requiredTechPrefix ? (
+                <>
+                  <Label htmlFor="techPrefix">Tech prefix</Label>
+                  <Input
+                    name="techPrefix"
+                    id="techPrefix"
+                    value={techPrefix}
+                    onChange={e => setTechPrefix(e.target.value)}
+                    placeholder="Tech Prefix"
+                    invalid={techPrefixInvalid}
+                    ref={refTechPrefix}
+                  />
+                </>
+              ) : (
+                <>
+                  <div></div>
+                  <Button
+                    text
+                    formLink
+                    type="button"
+                    onClick={e => setRequiredTechPrefix(!requiredTechPrefix)}
+                  >
+                    Does your carrier require a tech prefix?
+                  </Button>
                 </>
               )
             }
