@@ -16,6 +16,8 @@ import H3 from '../../../components/elements/H3';
 import Table from '../../../components/elements/Table';
 import Td from '../../../components/elements/Td';
 import Th from '../../../components/elements/Th';
+import Subscription from '../../../components/blocks/Subscription';
+import { ReactComponent as GithubIcon } from '../../../images/GithubIcon.svg';
 
 const SimpleTable = styled.table`
   border-collapse: collapse;
@@ -33,6 +35,7 @@ const SettingsIndex = () => {
   const [ name, setName ] = useState(null);
   const [ email, setEmail ] = useState(null);
   const [ showLoader, setShowLoader ] = useState(true);
+  const [ accountData, setAccountData ] = useState({});
 
   useEffect(() => {
     const getAPIData = async () => {
@@ -48,6 +51,7 @@ const SettingsIndex = () => {
         });
 
         const user = userDataResponse.data;
+        setAccountData(user);
 
         if (user.user) {
           setProvider(user.user.provider || '');
@@ -102,7 +106,7 @@ const SettingsIndex = () => {
             ) : provider === 'github' ? (
               <>
                 <p>You currently sign in with</p>
-                <div>{provider}</div>
+                <div>{<GithubIcon />}</div>
                 <H3>Data from GitHub</H3>
                 <SimpleTable>
                   <tbody>
@@ -121,7 +125,7 @@ const SettingsIndex = () => {
               <p>You currently sign in with {provider}</p>
             )}
             <InputGroup flexEnd>
-              <Button as={ReactRouterLink} to="/account/settings/auth">Change Authentication Method</Button>
+              <Button as={ReactRouterLink} gray="true" to="/account/settings/auth">Change Authentication Method</Button>
             </InputGroup>
           </Section>
 
@@ -189,18 +193,8 @@ const SettingsIndex = () => {
             </Section>
           )}
 
-
-
           <Section>
-            <H2>Delete Account</H2>
-            <p>
-              This will cancel your service and permanently delete your account.
-              All of your data will be deteled from our database. This cannot
-              be undone!
-            </p>
-            <InputGroup flexEnd>
-              <Button as={ReactRouterLink} to="/account/settings/delete-account">Delete Account</Button>
-            </InputGroup>
+            <Subscription data={accountData} hasDelete={true} />
           </Section>
         </>
       )}
