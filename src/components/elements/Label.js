@@ -11,6 +11,7 @@ const Label = styled.label`
       cursor: help;
     }
   `}
+  text-align: ${props => props.textAlign || 'left'}
 `;
 
 export default Label;

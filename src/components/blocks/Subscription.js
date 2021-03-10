@@ -53,7 +53,7 @@ const Subscription = ({ data, hasDelete }) => {
               Delete Account
             </Button>
           )}
-          <Button as={ReactRouterLink} to="#">Upgrade to a Paid Subscription</Button>
+          <Button as={ReactRouterLink} to="/account/subscription">Upgrade to a Paid Subscription</Button>
         </InputGroup>
       )}
     </>
