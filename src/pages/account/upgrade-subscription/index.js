@@ -1,4 +1,5 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
+import { CardElement, ElementsConsumer } from "@stripe/react-stripe-js";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
@@ -49,7 +50,38 @@ const StyledFormError = styled(FormError)`
   grid-column: 1 / 5;
 `;
 
-const UpgradeSubscription = () => {
+const StyledRow = styled.div`
+  grid-column: 1 / 5;
+`;
+
+const CardElementsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  border: 1px solid #b6b6b6;
+  width: 100%;
+  height: 36px;
+  padding: 0 1rem;
+
+  & .StripeElement {
+    width: 100%;
+  }
+`;
+
+const cardElementsOptions = {
+  style: {
+    base: {
+      fontSize: "16px",
+      color: "#424770",
+      "::placeholder": {
+        color: "#aab7c4",
+      },
+      border: "1px solid #B6B6B6 !important",
+    },
+  },
+  hidePostalCode: true,
+};
+
+const UpgradeSubscription = ({ elements, stripe }) => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem("jwt");
 
@@ -58,6 +90,11 @@ const UpgradeSubscription = () => {
   const [showLoader, setShowLoader] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [total, setTotal] = useState(0);
+  const [stripeCustomerId, setStripeCustomerId] = useState("");
+  const [paymentName, setPaymentName] = useState("");
+  const [paymentNameInvalid, setPaymentNameInvalid] = useState(false);
+
+  const paymentNameRef = useRef(null);
 
   const refArray = {
     voice_call_session: useRef(null),
@@ -180,6 +217,15 @@ const UpgradeSubscription = () => {
       });
       setServiceData(services);
 
+      if (!paymentName) {
+        errorMessages.push("You must input the name.");
+        setPaymentNameInvalid(true);
+        if (!focusHasBeenSet) {
+          paymentNameRef.focus();
+          focusHasBeenSet = true;
+        }
+      }
+
       // remove duplicate error messages
       for (let i = 0; i < errorMessages.length; i++) {
         for (let j = 0; j < errorMessages.length; j++) {
@@ -201,6 +247,19 @@ const UpgradeSubscription = () => {
       //=============================================================================
       // Submit
       //=============================================================================
+      const cardElement = elements.getElement(CardElement);
+
+      const {error, paymentMethod} = await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+      });
+
+      if (error) {
+        console.log("[error]", error);
+        setErrorMessage("Something went wrong, please try again.");
+      } else {
+        console.log('[PaymentMethod]', paymentMethod);
+      }
     } catch (err) {
       if (err.response && err.response.status === 401) {
         localStorage.clear();
@@ -233,6 +292,7 @@ const UpgradeSubscription = () => {
       });
       return prev;
     });
+    setPaymentNameInvalid(false);
   };
 
   const handleServiceData = (index, field, value) => {
@@ -331,11 +391,11 @@ const UpgradeSubscription = () => {
   }, [serviceData]);
 
   useEffect(() => {
-    const getPriceInfo = async () => {
-      let isMounted = true;
+    let isMounted = true;
 
+    const getPriceInfo = async () => {
       try {
-        const res = await axios({
+        const pricePromise = axios({
           method: "get",
           baseURL: process.env.REACT_APP_API_BASE_URL,
           url: `/Prices`,
@@ -343,7 +403,23 @@ const UpgradeSubscription = () => {
             Authorization: `Bearer ${jwt}`,
           },
         });
-        initFeesAndCost(res.data);
+
+        const stripePromise = axios({
+          method: "get",
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: `/StripeCustomerId`,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+
+        const [priceResult, stripeResult] = await Promise.all([
+          pricePromise,
+          stripePromise,
+        ]);
+
+        initFeesAndCost(priceResult.data);
+        setStripeCustomerId(stripeResult.data.stripe_customer_id);
       } catch (err) {
         if (err.response && err.response.status === 401) {
           localStorage.clear();
@@ -374,6 +450,10 @@ const UpgradeSubscription = () => {
     };
 
     getPriceInfo();
+
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -429,12 +509,39 @@ const UpgradeSubscription = () => {
               {`$${total}`}
             </Text>
             <hr />
+            <StyledRow>
+              <Text bold>Payment Information</Text>
+            </StyledRow>
+            <Label htmlFor="payment_name" textAlign="right">
+              Name
+            </Label>
+            <Input
+              name="payment_name"
+              id="payment_name"
+              value={paymentName}
+              onChange={(e) => {
+                setPaymentName(e.target.value);
+                setPaymentNameInvalid(false);
+              }}
+              placeholder=""
+              invalid={paymentNameInvalid}
+              ref={paymentNameRef}
+            />
+            <div />
+            <div />
+            <Label textAlign="right">Card</Label>
+            <CardElementsWrapper>
+              <CardElement options={cardElementsOptions} />
+            </CardElementsWrapper>
+            <div />
+            <div />
+            <hr />
             {errorMessage && <StyledFormError grid message={errorMessage} />}
             <StyledInputGroup flexEnd spaced>
               <Button gray="true" as={ReactRouterLink} to="/account">
                 Cancel
               </Button>
-              <Button>Continue →</Button>
+              <Button disabled={!stripe}>Upgrade to Paid Plan</Button>
             </StyledInputGroup>
           </Form>
         )}
@@ -443,4 +550,14 @@ const UpgradeSubscription = () => {
   );
 };
 
-export default UpgradeSubscription;
+const InjectedUpgradeSubscription = () => {
+  return (
+    <ElementsConsumer>
+      {({ elements, stripe }) => (
+        <UpgradeSubscription elements={elements} stripe={stripe} />
+      )}
+    </ElementsConsumer>
+  );
+};
+
+export default InjectedUpgradeSubscription;
