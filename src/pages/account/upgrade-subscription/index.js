@@ -16,7 +16,7 @@ import { NotificationDispatchContext } from "../../../contexts/NotificationConte
 
 const Form = styled.form`
   display: grid;
-  grid-template-columns: 2fr 6fr 2fr 2fr;
+  grid-template-columns: 190px 1fr 150px 100px;
   grid-row-gap: 1.5rem;
   grid-column-gap: 0.75rem;
   align-items: center;
@@ -393,10 +393,10 @@ const UpgradeSubscription = () => {
               Capacity
             </Text>
             <Text bold textAlign="center">
-              Fees
+              Price
             </Text>
             <Text bold textAlign="center">
-              Monthly Cost
+              Cost
             </Text>
             <hr />
             {serviceData.map((service, index) => (
@@ -422,7 +422,7 @@ const UpgradeSubscription = () => {
                 <hr />
               </React.Fragment>
             ))}
-            <Text bold>Total</Text>
+            <Text bold>Total Monthly Cost</Text>
             <div />
             <div />
             <Text bold textAlign="center">
