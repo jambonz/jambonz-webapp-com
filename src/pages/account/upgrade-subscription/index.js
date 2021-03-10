@@ -140,7 +140,9 @@ const UpgradeSubscription = () => {
           service.unit_label = record.unit_label;
           service.fees = fees;
           service.feesLabel = `${fees} ${service.currency.toUpperCase()} per ${
-            record.unit_label
+            record.unit_label.slice(0, 3) === "per"
+              ? record.unit_label.slice(3)
+              : record.unit_label
           }`;
         }
       }
@@ -281,7 +283,9 @@ const UpgradeSubscription = () => {
       }
     }
     feesLabel = `${fees} ${service.currency.toUpperCase()} per ${
-      service.unit_label
+      service.unit_label.slice(0, 3) === "per"
+        ? service.unit_label.slice(3)
+        : service.unit_label
     }`;
 
     return [fees, feesLabel, cost];
