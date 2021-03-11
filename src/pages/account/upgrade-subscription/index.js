@@ -70,12 +70,18 @@ const CardElementsWrapper = styled.div`
 
 const LoadingContainer = styled.div`
   display: flex;
+  flex-direction: ${(props) => props.direction};
   justify-content: center;
   align-items: center;
   padding: 2rem;
   height: 400px;
   max-width: 650px;
   margin: 0 auto;
+
+  a {
+    width: 100px;
+    margin-top: 1.5rem;
+  }
 `;
 
 const cardElementsOptions = {
@@ -281,11 +287,6 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       } else {
         await createSubscription(paymentMethod.id);
         setPaymentSuccess(true);
-        setTimeout(() => {
-          setPaymentLoading(false);
-          setPaymentSuccess(false);
-          history.push("/account");
-        }, 5000);
       }
     } catch (err) {
       setPaymentLoading(false);
@@ -520,7 +521,7 @@ const UpgradeSubscription = ({ elements, stripe }) => {
     >
       <Section normalTable>
         {!showLoader && paymentLoading && !paymentSuccess && (
-          <LoadingContainer>
+          <LoadingContainer direction="row">
             <Loader height="64px" />
             <Text>
               Your subscription is being processed. Please wait and do not hit
@@ -529,14 +530,17 @@ const UpgradeSubscription = ({ elements, stripe }) => {
           </LoadingContainer>
         )}
         {!showLoader && paymentLoading && paymentSuccess && (
-          <LoadingContainer>
-            <Text>{`Your paid subscription has been activated.  You will be billed ${
+          <LoadingContainer direction="column">
+            <Text textAlign="center">{`Your paid subscription has been activated.  You will be billed ${
               CurrencySymbol[paymentResult.currency]
             }${
               paymentResult.chargedAmount / 100
             } each month, and the charge will appear on your credit card statement as '${
               paymentResult.statementDescriptor
             }'.`}</Text>
+            <Button fullWidth="true" as={ReactRouterLink} to="/account">
+              OK
+            </Button>
           </LoadingContainer>
         )}
         {!paymentLoading && showLoader && <Loader height="376px" />}
