@@ -81,6 +81,10 @@ const LoadingContainer = styled.div`
   a {
     width: 100px;
     margin-top: 1.5rem;
+
+    span {
+      width: 100%;
+    }
   }
 `;
 
@@ -538,7 +542,7 @@ const UpgradeSubscription = ({ elements, stripe }) => {
             } each month, and the charge will appear on your credit card statement as '${
               paymentResult.statementDescriptor
             }'.`}</Text>
-            <Button fullWidth="true" as={ReactRouterLink} to="/account">
+            <Button as={ReactRouterLink} to="/account">
               OK
             </Button>
           </LoadingContainer>
