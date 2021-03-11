@@ -14,6 +14,7 @@ import InputGroup from "../../../components/elements/InputGroup";
 import Label from "../../../components/elements/Label";
 import InternalMain from "../../../components/wrappers/InternalMain";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
+import CurrencySymbol from "../../../data/CurrencySymbol";
 
 const Form = styled.form`
   display: grid;
@@ -67,6 +68,16 @@ const CardElementsWrapper = styled.div`
   }
 `;
 
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  height: 400px;
+  max-width: 650px;
+  margin: 0 auto;
+`;
+
 const cardElementsOptions = {
   style: {
     base: {
@@ -93,6 +104,10 @@ const UpgradeSubscription = ({ elements, stripe }) => {
   const [stripeCustomerId, setStripeCustomerId] = useState("");
   const [paymentName, setPaymentName] = useState("");
   const [paymentNameInvalid, setPaymentNameInvalid] = useState(false);
+  const [disabledSubmit, setDisabledSubmit] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentResult, setPaymentResult] = useState({});
 
   const paymentNameRef = useRef(null);
 
@@ -113,7 +128,6 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       capacity: "",
       invalid: false,
       currency: "usd",
-      currencySymbol: "$",
       min: 10,
       max: 1000,
     },
@@ -126,7 +140,6 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       capacity: "",
       invalid: false,
       currency: "usd",
-      currencySymbol: "$",
       min: 1,
       max: 200,
     },
@@ -139,7 +152,6 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       capacity: "",
       invalid: false,
       currency: "usd",
-      currencySymbol: "$",
       min: 6,
       max: 180,
     },
@@ -174,9 +186,12 @@ const UpgradeSubscription = ({ elements, stripe }) => {
               break;
           }
           service.billing_scheme = price.billing_scheme;
+          service.stripe_price_id = price.stripe_price_id;
           service.unit_label = record.unit_label;
+          service.product_sid = record.product_sid;
+          service.stripe_product_id = record.stripe_product_id;
           service.fees = fees;
-          service.feesLabel = `${fees} ${service.currency.toUpperCase()} per ${
+          service.feesLabel = `${CurrencySymbol[service.currency]}${fees} per ${
             record.unit_label.slice(0, 3) === "per"
               ? record.unit_label.slice(3)
               : record.unit_label
@@ -192,7 +207,6 @@ const UpgradeSubscription = ({ elements, stripe }) => {
     let isMounted = true;
 
     try {
-      setShowLoader(true);
       e.preventDefault();
       setErrorMessage("");
       resetInvalidFields();
@@ -221,7 +235,7 @@ const UpgradeSubscription = ({ elements, stripe }) => {
         errorMessages.push("You must input the name.");
         setPaymentNameInvalid(true);
         if (!focusHasBeenSet) {
-          paymentNameRef.focus();
+          paymentNameRef.current.focus();
           focusHasBeenSet = true;
         }
       }
@@ -238,9 +252,11 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       }
       if (errorMessages.length > 1) {
         setErrorMessage(errorMessages);
+        setDisabledSubmit(true);
         return;
       } else if (errorMessages.length === 1) {
         setErrorMessage(errorMessages[0]);
+        setDisabledSubmit(true);
         return;
       }
 
@@ -249,18 +265,31 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       //=============================================================================
       const cardElement = elements.getElement(CardElement);
 
-      const {error, paymentMethod} = await stripe.createPaymentMethod({
-        type: 'card',
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
         card: cardElement,
       });
 
+      setPaymentLoading(true);
+      setPaymentSuccess(false);
+
       if (error) {
         console.log("[error]", error);
-        setErrorMessage("Something went wrong, please try again.");
+        setErrorMessage(
+          error.message || "Something went wrong, please try again."
+        );
       } else {
-        console.log('[PaymentMethod]', paymentMethod);
+        await createSubscription(paymentMethod.id);
+        setPaymentSuccess(true);
+        setTimeout(() => {
+          setPaymentLoading(false);
+          setPaymentSuccess(false);
+          history.push("/account");
+        }, 5000);
       }
     } catch (err) {
+      setPaymentLoading(false);
+      setPaymentSuccess(false);
       if (err.response && err.response.status === 401) {
         localStorage.clear();
         sessionStorage.clear();
@@ -283,6 +312,31 @@ const UpgradeSubscription = ({ elements, stripe }) => {
         setShowLoader(false);
       }
     }
+  };
+
+  const createSubscription = async (paymentMethod) => {
+    const body = {
+      action: "upgrade-to-paid",
+      payment_method_id: paymentMethod,
+      stripe_customer_id: stripeCustomerId,
+      products: serviceData.map((service) => ({
+        price_id: service.stripe_price_id,
+        product_sid: service.product_sid,
+        quantity: service.capacity,
+      })),
+    };
+
+    const result = await axios({
+      method: "post",
+      baseURL: process.env.REACT_APP_API_BASE_URL,
+      url: `/Subscriptions`,
+      data: body,
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    setPaymentResult(result.data);
   };
 
   const resetInvalidFields = () => {
@@ -317,6 +371,7 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       }
       return [...prev];
     });
+    setDisabledSubmit(false);
   };
 
   const getServicePrice = (service, capacity) => {
@@ -342,7 +397,7 @@ const UpgradeSubscription = ({ elements, stripe }) => {
         }
       }
     }
-    feesLabel = `${fees} ${service.currency.toUpperCase()} per ${
+    feesLabel = `${CurrencySymbol[service.currency]}${fees} per ${
       service.unit_label.slice(0, 3) === "per"
         ? service.unit_label.slice(3)
         : service.unit_label
@@ -464,9 +519,28 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       breadcrumbs={[{ name: "Back to Account Home", url: "/account" }]}
     >
       <Section normalTable>
-        {showLoader ? (
-          <Loader height="376px" />
-        ) : (
+        {!showLoader && paymentLoading && !paymentSuccess && (
+          <LoadingContainer>
+            <Loader height="64px" />
+            <Text>
+              Your subscription is being processed. Please wait and do not hit
+              the back button or leave this page
+            </Text>
+          </LoadingContainer>
+        )}
+        {!showLoader && paymentLoading && paymentSuccess && (
+          <LoadingContainer>
+            <Text>{`Your paid subscription has been activated.  You will be billed ${
+              CurrencySymbol[paymentResult.currency]
+            }${
+              paymentResult.chargedAmount / 100
+            } each month, and the charge will appear on your credit card statement as '${
+              paymentResult.statementDescriptor
+            }'.`}</Text>
+          </LoadingContainer>
+        )}
+        {!paymentLoading && showLoader && <Loader height="376px" />}
+        {!paymentLoading && !showLoader && (
           <Form onSubmit={handleSubmit}>
             <Text bold>Service</Text>
             <Text bold textAlign="center">
@@ -496,7 +570,7 @@ const UpgradeSubscription = ({ elements, stripe }) => {
                 <Label textAlign="center">{service.feesLabel}</Label>
                 <Label textAlign="center">
                   {service.cost !== ""
-                    ? `${service.currencySymbol}${service.cost}`
+                    ? `${CurrencySymbol[service.currency]}${service.cost}`
                     : ""}
                 </Label>
                 <hr />
@@ -513,7 +587,7 @@ const UpgradeSubscription = ({ elements, stripe }) => {
               <Text bold>Payment Information</Text>
             </StyledRow>
             <Label htmlFor="payment_name" textAlign="right">
-              Name
+              Cardholder Name
             </Label>
             <Input
               name="payment_name"
@@ -522,6 +596,7 @@ const UpgradeSubscription = ({ elements, stripe }) => {
               onChange={(e) => {
                 setPaymentName(e.target.value);
                 setPaymentNameInvalid(false);
+                setDisabledSubmit(false);
               }}
               placeholder=""
               invalid={paymentNameInvalid}
@@ -541,7 +616,9 @@ const UpgradeSubscription = ({ elements, stripe }) => {
               <Button gray="true" as={ReactRouterLink} to="/account">
                 Cancel
               </Button>
-              <Button disabled={!stripe}>Upgrade to Paid Plan</Button>
+              <Button disabled={disabledSubmit || !stripe}>
+                Upgrade to Paid Plan
+              </Button>
             </StyledInputGroup>
           </Form>
         )}
