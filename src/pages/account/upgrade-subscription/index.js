@@ -68,15 +68,33 @@ const CardElementsWrapper = styled.div`
   }
 `;
 
+const ProgressContainer = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  padding: 1rem;
+  background: #ffffff55;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const LoadingContainer = styled.div`
   display: flex;
   flex-direction: ${(props) => props.direction};
   justify-content: center;
   align-items: center;
   padding: 2rem;
-  height: 400px;
   max-width: 650px;
-  margin: 0 auto;
+  margin: 0 auto 9rem;
+  background: white;
+  border: 1px solid #767676;
+  border-radius: 4px;
+  box-shadow: 0 0.375rem 0.25rem rgba(0, 0, 0, 0.12),
+    0 0 0.25rem rgba(0, 0, 0, 0.18);
 
   a {
     width: 100px;
@@ -273,6 +291,9 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       //=============================================================================
       // Submit
       //=============================================================================
+      setPaymentLoading(true);
+      setPaymentSuccess(false);
+
       const cardElement = elements.getElement(CardElement);
 
       const { error, paymentMethod } = await stripe.createPaymentMethod({
@@ -280,14 +301,12 @@ const UpgradeSubscription = ({ elements, stripe }) => {
         card: cardElement,
       });
 
-      setPaymentLoading(true);
-      setPaymentSuccess(false);
-
       if (error) {
         console.log("[error]", error);
         setErrorMessage(
           error.message || "Something went wrong, please try again."
         );
+        setPaymentLoading(false);
       } else {
         await createSubscription(paymentMethod.id);
         setPaymentSuccess(true);
@@ -341,7 +360,57 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       },
     });
 
-    setPaymentResult(result.data);
+    if (result.data.status === "success") {
+      setPaymentResult(result.data);
+    } else if (result.data.status === "action required") {
+      const cardElement = elements.getElement(CardElement);
+      const { paymentIntent, error } = await stripe.confirmCardPayment(
+        result.data.client_secret,
+        {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: paymentName,
+            },
+          },
+        }
+      );
+
+      if (error) {
+        setPaymentLoading(false);
+        setPaymentSuccess(false);
+        setErrorMessage(
+          error.message || "Something went wrong, please try again."
+        );
+      } else {
+        if (
+          paymentIntent.status === "succeeded" &&
+          !paymentIntent.last_payment_error
+        ) {
+          const result = await axios({
+            method: "get",
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url: `/Invoices`,
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+
+          setPaymentResult({
+            chargedAmount: result.data.total,
+            currency: result.data.currency,
+            statementDescriptor: result.data.customer_name,
+          });
+        } else {
+          setPaymentLoading(false);
+          setPaymentSuccess(false);
+          setErrorMessage(
+            paymentIntent.cancellation_reason ||
+              "Something went wrong, please try again."
+          );
+        }
+      }
+    }
   };
 
   const resetInvalidFields = () => {
@@ -523,32 +592,36 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       title="Upgrade your Subscription"
       breadcrumbs={[{ name: "Back to Account Home", url: "/account" }]}
     >
-      <Section normalTable>
-        {!showLoader && paymentLoading && !paymentSuccess && (
-          <LoadingContainer direction="row">
-            <Loader height="64px" />
-            <Text>
-              Your subscription is being processed. Please wait and do not hit
-              the back button or leave this page
-            </Text>
-          </LoadingContainer>
+      <Section normalTable position="relative">
+        {paymentLoading && (
+          <ProgressContainer>
+            {paymentSuccess ? (
+              <LoadingContainer direction="column">
+                <Text textAlign="center">{`Your paid subscription has been activated.  You will be billed ${
+                  CurrencySymbol[paymentResult.currency]
+                }${
+                  paymentResult.chargedAmount / 100
+                } each month, and the charge will appear on your credit card statement as '${
+                  paymentResult.statementDescriptor
+                }'.`}</Text>
+                <Button as={ReactRouterLink} to="/account">
+                  OK
+                </Button>
+              </LoadingContainer>
+            ) : (
+              <LoadingContainer direction="row">
+                <Loader height="64px" />
+                <Text>
+                  Your subscription is being processed. Please wait and do not
+                  hit the back button or leave this page
+                </Text>
+              </LoadingContainer>
+            )}
+          </ProgressContainer>
         )}
-        {!showLoader && paymentLoading && paymentSuccess && (
-          <LoadingContainer direction="column">
-            <Text textAlign="center">{`Your paid subscription has been activated.  You will be billed ${
-              CurrencySymbol[paymentResult.currency]
-            }${
-              paymentResult.chargedAmount / 100
-            } each month, and the charge will appear on your credit card statement as '${
-              paymentResult.statementDescriptor
-            }'.`}</Text>
-            <Button as={ReactRouterLink} to="/account">
-              OK
-            </Button>
-          </LoadingContainer>
-        )}
-        {!paymentLoading && showLoader && <Loader height="376px" />}
-        {!paymentLoading && !showLoader && (
+        {showLoader ? (
+          <Loader height="376px" />
+        ) : (
           <Form onSubmit={handleSubmit}>
             <Text bold>Service</Text>
             <Text bold textAlign="center">
