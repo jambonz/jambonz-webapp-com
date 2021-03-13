@@ -66,7 +66,7 @@ const ApiKeyDetails = (props) => {
   return (
     <InternalMain
       title="API Key Details"
-      topMenu={{ label: "← Back to Account Home", link: "/account" }}
+      breadcrumbs={[{ name: "Back to Account Home", url: "/account" }]}
     >
       {showLoader ? (
         <Loader height="calc(100vh - 24rem)" />

@@ -136,6 +136,7 @@ const UpgradeSubscription = ({ elements, stripe }) => {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [paymentResult, setPaymentResult] = useState({});
+  const [cardErrorCase, setCardErrorCase] = useState(false);
 
   const paymentNameRef = useRef(null);
 
@@ -339,16 +340,25 @@ const UpgradeSubscription = ({ elements, stripe }) => {
   };
 
   const createSubscription = async (paymentMethod) => {
-    const body = {
-      action: "upgrade-to-paid",
-      payment_method_id: paymentMethod,
-      stripe_customer_id: stripeCustomerId,
-      products: serviceData.map((service) => ({
-        price_id: service.stripe_price_id,
-        product_sid: service.product_sid,
-        quantity: service.capacity,
-      })),
-    };
+    let body = {};
+
+    if (cardErrorCase) {
+      body = {
+        action: "update-payment-method",
+        payment_method_id: paymentMethod,
+      };
+    } else {
+      body = {
+        action: "upgrade-to-paid",
+        payment_method_id: paymentMethod,
+        stripe_customer_id: stripeCustomerId,
+        products: serviceData.map((service) => ({
+          price_id: service.stripe_price_id,
+          product_sid: service.product_sid,
+          quantity: service.capacity,
+        })),
+      };
+    }
 
     const result = await axios({
       method: "post",
@@ -361,7 +371,13 @@ const UpgradeSubscription = ({ elements, stripe }) => {
     });
 
     if (result.data.status === "success") {
-      setPaymentResult(result.data);
+      if (cardErrorCase) {
+        const result = await getLatestInvoice();
+        setPaymentResult(result);
+        setCardErrorCase(false);
+      } else {
+        setPaymentResult(result.data);
+      }
     } else if (result.data.status === "action required") {
       const cardElement = elements.getElement(CardElement);
       const { paymentIntent, error } = await stripe.confirmCardPayment(
@@ -387,20 +403,8 @@ const UpgradeSubscription = ({ elements, stripe }) => {
           paymentIntent.status === "succeeded" &&
           !paymentIntent.last_payment_error
         ) {
-          const result = await axios({
-            method: "get",
-            baseURL: process.env.REACT_APP_API_BASE_URL,
-            url: `/Invoices`,
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          });
-
-          setPaymentResult({
-            chargedAmount: result.data.total,
-            currency: result.data.currency,
-            statementDescriptor: result.data.customer_name,
-          });
+          const result = await getLatestInvoice();
+          setPaymentResult(result);
         } else {
           setPaymentLoading(false);
           setPaymentSuccess(false);
@@ -410,6 +414,17 @@ const UpgradeSubscription = ({ elements, stripe }) => {
           );
         }
       }
+    } else if (result.data.status === "card error") {
+      setPaymentLoading(false);
+      setPaymentSuccess(false);
+      setErrorMessage(
+        result.data.reason || "Something went wrong, please try again."
+      );
+      setCardErrorCase(true);
+    } else {
+      setPaymentLoading(false);
+      setPaymentSuccess(false);
+      setErrorMessage("Something went wrong, please try again.");
     }
   };
 
@@ -421,6 +436,23 @@ const UpgradeSubscription = ({ elements, stripe }) => {
       return prev;
     });
     setPaymentNameInvalid(false);
+  };
+
+  const getLatestInvoice = async () => {
+    const result = await axios({
+      method: "get",
+      baseURL: process.env.REACT_APP_API_BASE_URL,
+      url: `/Invoices`,
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    return {
+      chargedAmount: result.data.total,
+      currency: result.data.currency,
+      statementDescriptor: result.data.customer_name,
+    };
   };
 
   const handleServiceData = (index, field, value) => {

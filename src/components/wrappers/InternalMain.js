@@ -2,7 +2,6 @@ import { useEffect, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
 import H1 from '../elements/H1';
-import Link from '../elements/Link';
 import AddButton from '../elements/AddButton';
 import Breadcrumbs from '../blocks/Breadcrumbs';
 
@@ -52,10 +51,6 @@ const ContentContainer = styled.div`
   }
 `;
 
-const TopMenuLink = styled(Link)`
-  margin-bottom: 0.5rem;
-`;
-
 const InternalMain = props => {
   const setCurrentMenu = useContext(CurrentMenuDispatchContext);
 
@@ -68,9 +63,6 @@ const InternalMain = props => {
     <PageMain type={props.type}>
       {props.breadcrumbs && (
         <Breadcrumbs breadcrumbs={props.breadcrumbs} />
-      )}
-      {props.topMenu && (
-        <TopMenuLink to={props.topMenu.link}>{props.topMenu.label}</TopMenuLink>
       )}
       <TopSection type={props.type} centerVertical={!props.subtitle}>
         <div>
