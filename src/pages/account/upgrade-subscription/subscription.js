@@ -4,6 +4,8 @@ import { Link as ReactRouterLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components/macro";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 import FormError from "../../../components/blocks/FormError";
 import Loader from "../../../components/blocks/Loader";
@@ -14,6 +16,8 @@ import InputGroup from "../../../components/elements/InputGroup";
 import Label from "../../../components/elements/Label";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
 import CurrencySymbol from "../../../data/CurrencySymbol";
+
+const stripePromise = loadStripe("pk_test_EChRaX9Tjk8csZZVSeoGqNvu00lsJzjaU0");
 
 const Form = styled.form`
   display: grid;
@@ -735,11 +739,13 @@ const Subscription = ({ elements, stripe }) => {
 
 const UpgradeSubscriptionContainer = () => {
   return (
-    <ElementsConsumer>
-      {({ elements, stripe }) => (
-        <Subscription elements={elements} stripe={stripe} />
-      )}
-    </ElementsConsumer>
+    <Elements stripe={stripePromise}>
+      <ElementsConsumer>
+        {({ elements, stripe }) => (
+          <Subscription elements={elements} stripe={stripe} />
+        )}
+      </ElementsConsumer>
+    </Elements>
   );
 };
 
