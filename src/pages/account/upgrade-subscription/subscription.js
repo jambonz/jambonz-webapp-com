@@ -454,7 +454,6 @@ const Subscription = ({ elements, stripe }) => {
     return {
       chargedAmount: result.data.total,
       currency: result.data.currency,
-      statementDescriptor: 'Drachtio Comm Svcs LLC',
     };
   };
 
@@ -631,9 +630,7 @@ const Subscription = ({ elements, stripe }) => {
                 CurrencySymbol[paymentResult.currency]
               }${
                 paymentResult.chargedAmount / 100
-              } each month, and the charge will appear on your credit card statement as '${
-                paymentResult.statementDescriptor
-              }'.`}</Text>
+              } each month, and the charge will appear on your credit card statement.`}</Text>
               <Button as={ReactRouterLink} to="/account">
                 OK
               </Button>
