@@ -93,7 +93,9 @@ const Subscription = ({ data, hasDelete }) => {
       <P>{description}</P>
       {planType === PlanType.PAID ? (
         <InputGroup flexEnd spaced>
-          <Button gray="true">Manage Payment Info</Button>
+          <Button as={ReactRouterLink} gray="true" to="/account/manage-payment">
+            Manage Payment Info
+          </Button>
           <Button gray="true">Modify My Subscription</Button>
         </InputGroup>
       ) : (
