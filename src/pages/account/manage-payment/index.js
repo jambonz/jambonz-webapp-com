@@ -8,6 +8,7 @@ import Section from "../../../components/blocks/Section";
 import Button from "../../../components/elements/Button";
 import InputGroup from "../../../components/elements/InputGroup";
 import Loader from "../../../components/blocks/Loader";
+import NewPaymentInfo from "./new-payment";
 
 const PaymentInfo = styled.div`
   display: grid;
@@ -28,6 +29,11 @@ const ManagePaymentInfo = () => {
 
   const [showLoader, setShowLoader] = useState(true);
   const [paymentInfo, setPaymentInfo] = useState({});
+  const [paymentEditMode, setPaymentEditMode] = useState(false);
+
+  const showPaymentEditPanel = () => {
+    setPaymentEditMode(true);
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -74,7 +80,7 @@ const ManagePaymentInfo = () => {
           <Loader height="calc(100vh - 24rem)" />
         ) : (
           <>
-            <H2>Payment information on file</H2>
+            <H2>Current payment information</H2>
             <PaymentInfo>
               <Cell>Card Type</Cell>
               <Cell>{paymentInfo.card_type || ""}</Cell>
@@ -84,11 +90,14 @@ const ManagePaymentInfo = () => {
               <Cell>{paymentInfo.exp_year ? `${paymentInfo.exp_month}/${paymentInfo.exp_year}`: ''}</Cell>
             </PaymentInfo>
             <InputGroup flexEnd spaced>
-              <Button>Change Payment Info</Button>
+              <Button onClick={showPaymentEditPanel}>Change Payment Info</Button>
             </InputGroup>
           </>
         )}
       </Section>
+      {paymentEditMode && (
+        <NewPaymentInfo />
+      )}
     </InternalMain>
   );
 };
