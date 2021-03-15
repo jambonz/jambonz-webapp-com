@@ -43,7 +43,10 @@ const ApiKeyDelete = (props) => {
   };
 
   return (
-    <InternalMain title="Delete API Key" topMenu={{ label: "← Back to Account Home", link: "/account" }}>
+    <InternalMain
+      title="Delete API Key"
+      breadcrumbs={[{ name: "Back to Account Home", url: "/account" }]}
+    >
       <Section>
         <P>Are you sure you want to delete this API key? This cannot be undone, but you can always create new API keys.</P>
         <InputGroup flexEnd spaced>

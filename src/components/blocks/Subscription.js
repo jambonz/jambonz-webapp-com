@@ -71,9 +71,9 @@ const Subscription = ({ data, hasDelete }) => {
         setInvoiceData({
           total: result.data.total / 100,
           currency: result.data.currency,
-          next_payment_attempt: moment(result.data.next_payment_attempt).format(
-            "MMMM DD, YYYY"
-          ),
+          next_payment_attempt: moment(
+            result.data.next_payment_attempt * 1000
+          ).format("MMMM DD, YYYY"),
         });
       } catch (err) {
         console.log(err);
@@ -93,7 +93,9 @@ const Subscription = ({ data, hasDelete }) => {
       <P>{description}</P>
       {planType === PlanType.PAID ? (
         <InputGroup flexEnd spaced>
-          <Button gray="true">Manage Payment Info</Button>
+          <Button as={ReactRouterLink} gray="true" to="/account/manage-payment">
+            Manage Payment Info
+          </Button>
           <Button gray="true">Modify My Subscription</Button>
         </InputGroup>
       ) : (

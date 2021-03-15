@@ -43,6 +43,7 @@ import SettingsAuthEmail from './pages/account/settings/auth/email';
 import InvalidRouteInternal from './pages/404-internal';
 import InvalidRouteExternal from './pages/404-external';
 import SubscriptionIndex from './pages/account/upgrade-subscription';
+import ManagePaymentInfo from './pages/account/manage-payment';
 
 //===============================================
 // Component Imports
@@ -115,6 +116,7 @@ function Routes() {
               <Route exact path="/account/settings/auth/email"><SettingsAuthEmail /></Route>
 
               <Route exact path="/account/subscription"><SubscriptionIndex /></Route>
+              <Route exact path="/account/manage-payment"><ManagePaymentInfo /></Route>
 
               {/****************/}
               {/* Internal 404 */}

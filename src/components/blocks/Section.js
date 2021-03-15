@@ -8,6 +8,7 @@ const StyledSection = styled.section`
   background: #FFF;
   box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1),
               0px 0px 0.25rem rgba(0, 0, 0, 0.1);
+  ${props => !!props.position ? `position: ${props.position};` : ''}
 
   > *:first-child {
     margin-top: 0;
@@ -41,6 +42,7 @@ const Section = props => {
     <StyledSection
       fullPage={props.fullPage}
       normalTable={props.normalTable}
+      position={props.position}
     >
       {props.children}
     </StyledSection>

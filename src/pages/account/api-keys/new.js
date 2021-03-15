@@ -9,7 +9,10 @@ import InputGroup from '../../../components/elements/InputGroup';
 const ApiKeyNew = (props) => {
   const { token } = props.location.state || {};
   return (
-    <InternalMain title="New API Key" topMenu={{ label: "← Back to Account Home", link: "/account" }}>
+    <InternalMain
+      title="New API Key"
+      breadcrumbs={[{ name: "Back to Account Home", url: "/account" }]}
+    >
       <Section>
         <P>Below is your new API key. To view this key in the future, go to the API Keys section of your account home page.</P>
         <P>{token} <Copy title="API Key" value={token} /></P>
