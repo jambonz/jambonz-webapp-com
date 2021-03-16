@@ -96,7 +96,13 @@ const Subscription = ({ data, hasDelete }) => {
           <Button as={ReactRouterLink} gray="true" to="/account/manage-payment">
             Manage Payment Info
           </Button>
-          <Button gray="true">Modify My Subscription</Button>
+          <Button
+            gray="true"
+            as={ReactRouterLink}
+            to="/account/modify-subscription"
+          >
+            Modify My Subscription
+          </Button>
         </InputGroup>
       ) : (
         <InputGroup flexEnd spaced>
