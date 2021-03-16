@@ -45,6 +45,7 @@ import InvalidRouteExternal from './pages/404-external';
 import SubscriptionIndex from './pages/account/upgrade-subscription';
 import ManagePaymentInfo from './pages/account/manage-payment';
 import ModifySubscription from './pages/account/modify-subscription';
+import ReturnToFreeSection from './pages/account/return-to-free-plan';
 
 //===============================================
 // Component Imports
@@ -119,6 +120,7 @@ function Routes() {
               <Route exact path="/account/subscription"><SubscriptionIndex /></Route>
               <Route exact path="/account/manage-payment"><ManagePaymentInfo /></Route>
               <Route exact path="/account/modify-subscription"><ModifySubscription /></Route>
+              <Route exact path="/account/return-to-free"><ReturnToFreeSection /></Route>
 
               {/****************/}
               {/* Internal 404 */}

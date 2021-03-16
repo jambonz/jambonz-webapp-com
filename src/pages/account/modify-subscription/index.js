@@ -395,7 +395,9 @@ const ModifySubscription = () => {
             {errorMessage && <StyledFormError grid message={errorMessage} />}
             <StyledInputGroup spaced>
               <InputGroup spaced style={{ flex: 1 }}>
-                <StyledLink to={"#"}>Return to free plan</StyledLink>
+                <StyledLink to="/account/return-to-free">
+                  Return to free plan
+                </StyledLink>
                 <StyledLink to={"#"}>Delete Account</StyledLink>
               </InputGroup>
               <InputGroup flexEnd spaced>
