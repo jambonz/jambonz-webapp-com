@@ -57,6 +57,8 @@ const Subscription = ({ data, hasDelete }) => {
   }, [data, invoiceData]);
 
   useEffect(() => {
+    let isMounted = true;
+
     const getInvoiceData = async () => {
       try {
         const result = await axios({
@@ -68,22 +70,30 @@ const Subscription = ({ data, hasDelete }) => {
           },
         });
 
-        setInvoiceData({
-          total: result.data.total / 100,
-          currency: result.data.currency,
-          next_payment_attempt: moment(
-            result.data.next_payment_attempt * 1000
-          ).format("MMMM DD, YYYY"),
-        });
+        if (isMounted) {
+          setInvoiceData({
+            total: result.data.total / 100,
+            currency: result.data.currency,
+            next_payment_attempt: moment(
+              result.data.next_payment_attempt * 1000
+            ).format("MMMM DD, YYYY"),
+          });
+        }
       } catch (err) {
         console.log(err);
-        setInvoiceData({});
+        if (isMounted) {
+          setInvoiceData({});
+        }
       }
     };
 
     if (planType === PlanType.PAID) {
       getInvoiceData();
     }
+
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planType]);
 

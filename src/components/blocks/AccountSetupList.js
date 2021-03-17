@@ -89,6 +89,8 @@ const AccountSetupList = ({ onComplete }) => {
   ];
 
   useEffect(() => {
+    let isMounted = true;
+
     const getPhoneNumbers = async () => {
       const phoneNumbersPromise = axios({
         method: "get",
@@ -134,23 +136,29 @@ const AccountSetupList = ({ onComplete }) => {
         speechPromise,
       ]);
 
-      setPhoneNumbers(phoneNumbersData.data);
-      setApplications(applicationsData.data);
-      setCarriors(carriersData.data);
-      setSpeeches(speechData.data);
-      setLoading(false);
+      if (isMounted) {
+        setPhoneNumbers(phoneNumbersData.data);
+        setApplications(applicationsData.data);
+        setCarriors(carriersData.data);
+        setSpeeches(speechData.data);
+        setLoading(false);
 
-      if (
-        (phoneNumbersData.data || []).length > 0 &&
-        (applicationsData.data || []).length > 0 &&
-        (carriersData.data || []).length > 0 &&
-        (speechData.data || []).length > 0
-      ) {
-        onComplete(true);
-      }
-    };
+        if (
+          (phoneNumbersData.data || []).length > 0 &&
+          (applicationsData.data || []).length > 0 &&
+          (carriersData.data || []).length > 0 &&
+          (speechData.data || []).length > 0
+          ) {
+            onComplete(true);
+          }
+        };
+      };
 
     getPhoneNumbers();
+
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
