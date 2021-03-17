@@ -64,6 +64,7 @@ const ModifySubscription = () => {
   const [showLoader, setShowLoader] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [total, setTotal] = useState(0);
+  const [disableSubmit, setDisabledSubmit] = useState(true);
 
   const refArray = {
     voice_call_session: useRef(null),
@@ -85,6 +86,7 @@ const ModifySubscription = () => {
       currency: "usd",
       min: 10,
       max: 1000,
+      dirty: false,
     },
     {
       category: "device",
@@ -98,6 +100,7 @@ const ModifySubscription = () => {
       currency: "usd",
       min: 1,
       max: 200,
+      dirty: false,
     },
     {
       category: "api_rate",
@@ -111,6 +114,7 @@ const ModifySubscription = () => {
       currency: "usd",
       min: 6,
       max: 180,
+      dirty: false,
     },
   ]);
 
@@ -161,6 +165,7 @@ const ModifySubscription = () => {
   };
 
   const handleServiceData = (index, field, value) => {
+    setDisabledSubmit(false);
     setServiceData((prev) => {
       if (isNaN(value)) {
         prev[index] = {
@@ -177,6 +182,7 @@ const ModifySubscription = () => {
           fees,
           feesLabel,
           cost,
+          dirty: true,
         };
         removeErrorMessage(`"${prev[index].service}" should be number.`);
       }
@@ -271,7 +277,123 @@ const ModifySubscription = () => {
     setServiceData(services);
   };
 
-  const handleSubmit = async (e) => {};
+  const resetInvalidFields = () => {
+    setServiceData((prev) => {
+      prev.forEach((service) => {
+        service.invalid = false;
+      });
+      return prev;
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setErrorMessage("");
+      resetInvalidFields();
+      let errorMessages = [];
+      let focusHasBeenSet = false;
+
+      let services = [...serviceData];
+      services.forEach((service, index) => {
+        const capacityNum = parseInt(service.capacity || "0", 10);
+        if (capacityNum < service.min || capacityNum > service.max) {
+          errorMessages.push(
+            `"${service.service}" must be greater than or equal to ${service.min}, less than or equal to ${service.max}.`
+          );
+          services[index] = { ...services[index], invalid: true };
+          if (!focusHasBeenSet) {
+            refArray[service.category].focus();
+            focusHasBeenSet = true;
+          }
+        } else {
+          services[index] = { ...services[index], invalid: false };
+        }
+      });
+      setServiceData(services);
+
+      // remove duplicate error messages
+      for (let i = 0; i < errorMessages.length; i++) {
+        for (let j = 0; j < errorMessages.length; j++) {
+          if (i >= j) continue;
+          if (errorMessages[i] === errorMessages[j]) {
+            errorMessages.splice(j, 1);
+            j = j - 1;
+          }
+        }
+      }
+      if (errorMessages.length > 1) {
+        setErrorMessage(errorMessages);
+        setDisabledSubmit(true);
+        return;
+      } else if (errorMessages.length === 1) {
+        setErrorMessage(errorMessages[0]);
+        setDisabledSubmit(true);
+        return;
+      }
+
+      //=============================================================================
+      // Submit
+      //=============================================================================
+      setShowLoader(true);
+      await upgradeQuantities();
+    } catch (err) {
+      if (err.response && err.response.status === 401) {
+        localStorage.clear();
+        sessionStorage.clear();
+        history.push("/");
+        dispatch({
+          type: "ADD",
+          level: "error",
+          message: "Your session has expired. Please log in and try again.",
+        });
+      } else {
+        setErrorMessage(
+          (err.response && err.response.data && err.response.data.msg) ||
+            "Something went wrong, please try again."
+        );
+        console.error(err.response || err);
+      }
+    } finally {
+      setShowLoader(false);
+    }
+  };
+
+  const upgradeQuantities = async () => {
+    const updatedProducts = serviceData
+      // .filter((product) => !!product.dirty)
+      .map((product) => ({
+        price_id: product.stripe_price_id,
+        product_sid: product.product_sid,
+        quantity: product.capacity,
+      }));
+
+    const result = await axios({
+      method: "post",
+      baseURL: process.env.REACT_APP_API_BASE_URL,
+      url: `/Subscriptions`,
+      data: {
+        action: "update-quantities",
+        products: updatedProducts,
+      },
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    if (result.data.status === "success") {
+      dispatch({
+        type: "ADD",
+        level: "success",
+        message: "Your subscription capacity has been successfully modified.",
+      });
+      history.push("/account/settings");
+    } else {
+      setErrorMessage(
+        "The additional capacity you that you requested could not be granted due to a failure processing payment.  Please configure a valid credit card for your account and the upgrade will be automatically processed"
+      );
+    }
+  };
 
   useEffect(() => {
     setTotal(serviceData.reduce((res, service) => res + service.cost || 0, 0));
@@ -404,7 +526,7 @@ const ModifySubscription = () => {
                 <Button gray="true" as={ReactRouterLink} to="/account/settings">
                   Cancel
                 </Button>
-                <Button>Continue →</Button>
+                <Button disabled={disableSubmit}>Continue →</Button>
               </InputGroup>
             </StyledInputGroup>
           </Form>
