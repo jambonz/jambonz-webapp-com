@@ -8,6 +8,7 @@ import { NotificationStateContext } from './contexts/NotificationContext';
 import SignIn from './pages/sign-in/index';
 import SignInEmail from './pages/sign-in/email';
 import ForgotPassword from './pages/sign-in/forgot-password';
+import ResetPassword from './pages/sign-in/reset-password';
 import Register from './pages/register/index';
 import RegisterWithEmail from './pages/register/email';
 import RegisterWithEmailVerify from './pages/register/email-verify';
@@ -145,6 +146,7 @@ function Routes() {
               <Route exact path="/sign-in"><SignIn /></Route>
               <Route exact path="/sign-in/email"><SignInEmail /></Route>
               <Route exact path="/sign-in/forgot-password"><ForgotPassword /></Route>
+              <Route exact path="/reset-password/:id"><ResetPassword /></Route>
 
               {/****************/}
               {/* Registration */}
