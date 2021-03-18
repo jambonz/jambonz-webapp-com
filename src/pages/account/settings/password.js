@@ -106,9 +106,9 @@ const SettingsChangePassword = () => {
       // Submit
       //=============================================================================
       await axios({
-        method: 'put',
+        method: 'post',
         baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: `/Users/${user_sid}`,
+        url: `/change-password`,
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
@@ -125,9 +125,15 @@ const SettingsChangePassword = () => {
         level: 'success',
         message: `Password updated successfully`,
       });
-
     } catch (err) {
-      if (err.response && err.response.status === 401) {
+      if (err.response && err.response.status === 400) {
+        const { msg } = err.response.data;
+        if (msg === "old_password is incorrect") {
+          setErrorMessage("You entered an invalid password for your current password.  Please try again.");
+        } else {
+          setErrorMessage(msg);
+        }
+      } else if (err.response && err.response.status === 401) {
         localStorage.clear();
         sessionStorage.clear();
         isMounted = false;
@@ -137,8 +143,6 @@ const SettingsChangePassword = () => {
           level: 'error',
           message: 'Your session has expired. Please log in and try again.',
         });
-      } else if (err.response && err.response.status === 403) {
-        setErrorMessage('Old password is incorrect');
       } else {
         setErrorMessage((err.response && err.response.data && err.response.data.msg) || 'Something went wrong, please try again.');
         console.error(err.response || err);
