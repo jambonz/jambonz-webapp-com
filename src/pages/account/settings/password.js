@@ -16,7 +16,6 @@ const SettingsChangePassword = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem('jwt');
-  const user_sid = localStorage.getItem('user_sid');
 
   const refOldPassword = useRef(null);
   const refNewPassword = useRef(null);
