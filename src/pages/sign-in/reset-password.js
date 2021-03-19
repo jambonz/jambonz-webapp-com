@@ -73,7 +73,7 @@ const ResetPassword = () => {
       //===============================================
       // Submit
       //===============================================
-      await axios({
+      const result = await axios({
         method: "post",
         baseURL: process.env.REACT_APP_API_BASE_URL,
         url: `/change-password`,
@@ -85,6 +85,15 @@ const ResetPassword = () => {
           new_password: password,
         },
       });
+
+      if (result.status === 204) {
+        history.push("/account");
+        dispatch({
+          type: 'ADD',
+          level: 'success',
+          message: 'New password was successfully set.'
+        });
+      }
 
       isMounted = false;
     } catch (err) {
