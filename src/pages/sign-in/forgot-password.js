@@ -82,6 +82,7 @@ const ForgotPassword = () => {
           message:
             "Please check your email for password reset instructions that we have sent for the email on file.",
         });
+        history.push("/");
       }
     } catch (err) {
       if (err.response && err.response.status === 400) {

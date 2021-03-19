@@ -148,7 +148,8 @@ const AccountHome = () => {
     };
 
     getData();
-  }, [ jwt, dispatch, history ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <InternalMain title="Home" metaTitle="Account Home">
