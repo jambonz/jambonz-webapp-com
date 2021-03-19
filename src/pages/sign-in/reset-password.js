@@ -88,6 +88,20 @@ const ResetPassword = () => {
 
       isMounted = false;
     } catch (err) {
+      if (err.response && err.response.status === 401) {
+        localStorage.clear();
+        sessionStorage.clear();
+        isMounted = false;
+        history.push('/');
+        dispatch({
+          type: 'ADD',
+          level: 'error',
+          message: 'Your session has expired. Please log in and try again.',
+        });
+      } else {
+        setErrorMessage((err.response && err.response.data && err.response.data.msg) || 'Something went wrong, please try again.');
+        console.error(err.response || err);
+      }
     } finally {
       if (isMounted) {
         setShowLoader(false);
