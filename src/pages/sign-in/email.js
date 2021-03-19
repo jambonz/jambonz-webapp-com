@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from "styled-components/macro";
 import ExternalMain from '../../components/wrappers/ExternalMain';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
@@ -8,6 +9,14 @@ import Link from '../../components/elements/Link';
 import Input from '../../components/elements/Input';
 import PasswordInput from '../../components/elements/PasswordInput';
 import FormError from '../../components/blocks/FormError';
+
+const Footer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+`;
 
 const SignIn = props => {
   let history = useHistory();
@@ -114,9 +123,10 @@ const SignIn = props => {
         >
           Sign In
         </Button>
-        <p>
+        <Footer>
           <Link to="/">Sign in another way</Link>
-        </p>
+          <Link to="/sign-in/forgot-password">Forgot password</Link>
+        </Footer>
       </Form>
     </ExternalMain>
   );
