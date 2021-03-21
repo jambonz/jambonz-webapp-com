@@ -11,10 +11,13 @@ import FormError from "../../../components/blocks/FormError";
 import InputGroup from "../../../components/elements/InputGroup";
 import Button from "../../../components/elements/Button";
 import Input from "../../../components/elements/Input";
+import P from "../../../components/elements/P";
 import Label from "../../../components/elements/Label";
 import Link from "../../../components/elements/Link";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
 import CurrencySymbol from "../../../data/CurrencySymbol";
+import Modal from "../../../components/blocks/Modal";
+import handleErrors from "../../../helpers/handleErrors";
 
 const Form = styled.form`
   display: grid;
@@ -55,6 +58,20 @@ const StyledLink = styled(Link)`
   color: #707070;
 `;
 
+const UL = styled.ul`
+  list-style-type: none;
+  padding-left: 1rem;
+`;
+
+const LoadingContainer = styled.div`
+  width: 500px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+`;
+
 const ModifySubscription = () => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem("jwt");
@@ -65,6 +82,10 @@ const ModifySubscription = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [total, setTotal] = useState(0);
   const [disableSubmit, setDisabledSubmit] = useState(true);
+  const [showChangeModal, setShowChangeModal] = useState(false);
+  const [showModalLoader, setShowModalLoader] = useState(false);
+  const [billingChange, setBillingChange] = useState({});
+  const [applyingChange, setApplyingChange] = useState(false);
 
   const refArray = {
     voice_call_session: useRef(null),
@@ -286,6 +307,18 @@ const ModifySubscription = () => {
     });
   };
 
+  const handleChangeSubscription = async () => {
+    try {
+      setApplyingChange(true);
+      await upgradeQuantities();
+    } catch (err) {
+      handleErrors({ err, history, dispatch, setErrorMessage });
+    } finally {
+      setShowChangeModal(false);
+      setApplyingChange(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -335,27 +368,47 @@ const ModifySubscription = () => {
       //=============================================================================
       // Submit
       //=============================================================================
-      setShowLoader(true);
-      await upgradeQuantities();
+      setShowChangeModal(true);
+      setShowModalLoader(true);
+      await retrieveBillingChanges();
+      setShowModalLoader(false);
     } catch (err) {
-      if (err.response && err.response.status === 401) {
-        localStorage.clear();
-        sessionStorage.clear();
-        history.push("/");
-        dispatch({
-          type: "ADD",
-          level: "error",
-          message: "Your session has expired. Please log in and try again.",
-        });
-      } else {
-        setErrorMessage(
-          (err.response && err.response.data && err.response.data.msg) ||
-            "Something went wrong, please try again."
-        );
-        console.error(err.response || err);
-      }
+      handleErrors({ err, history, dispatch, setErrorMessage });
+      setShowChangeModal(false);
+      setShowModalLoader(false);
     } finally {
       setShowLoader(false);
+    }
+  };
+
+  const retrieveBillingChanges = async () => {
+    const updatedProducts = serviceData
+      // .filter((product) => !!product.dirty)
+      .map((product) => ({
+        price_id: product.stripe_price_id,
+        product_sid: product.product_sid,
+        quantity: product.capacity,
+      }));
+
+    const result = await axios({
+      method: "post",
+      baseURL: process.env.REACT_APP_API_BASE_URL,
+      url: `/Subscriptions`,
+      data: {
+        action: "update-quantities",
+        dry_run: true,
+        products: updatedProducts,
+      },
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    if (result.status === 201) {
+      setBillingChange(result.data);
+    } else {
+      setShowChangeModal(false);
+      setShowModalLoader(false);
     }
   };
 
@@ -426,27 +479,7 @@ const ModifySubscription = () => {
 
         setProductsInfo(productsInfo.data);
       } catch (err) {
-        if (err.response && err.response.status === 401) {
-          localStorage.clear();
-          sessionStorage.clear();
-          isMounted = false;
-          history.push("/");
-          dispatch({
-            type: "ADD",
-            level: "error",
-            message: "Your session has expired. Please log in and try again.",
-          });
-        } else {
-          setErrorMessage("Something went wrong, please try again.");
-          dispatch({
-            type: "ADD",
-            level: "error",
-            message:
-              (err.response && err.response.data && err.response.data.msg) ||
-              "Unable to get carriers",
-          });
-          console.error(err.response || err);
-        }
+        handleErrors({ err, history, dispatch, setErrorMessage });
       } finally {
         if (isMounted) {
           setShowLoader(false);
@@ -526,12 +559,60 @@ const ModifySubscription = () => {
                 <Button gray="true" as={ReactRouterLink} to="/account/settings">
                   Cancel
                 </Button>
-                <Button disabled={disableSubmit}>Continue →</Button>
+                <Button disabled={disableSubmit}>Review Changes</Button>
               </InputGroup>
             </StyledInputGroup>
           </Form>
         )}
       </Section>
+      {showChangeModal && (
+        <Modal
+          title={(showModalLoader || applyingChange) ? "" : "Confirm Changes"}
+          loader={showModalLoader}
+          hideButtons={applyingChange}
+          maskClosable={false}
+          content={
+            applyingChange ? (
+              <LoadingContainer>
+                {`Please don't leave the page...`}
+              </LoadingContainer>
+            ) : (
+              <div>
+                <P>
+                  By pressing "Confirm Changes" below, your plan will be
+                  immediately adjusted to the following levels:
+                </P>
+                <UL style={{ listStyleType: "none" }}>
+                  <li>{`- ${serviceData[0].capacity} simultaneous calls`}</li>
+                  <li>{`- ${serviceData[1].capacity} registered devices`}</li>
+                  <li>{`- ${serviceData[2].capacity} API calls per minute`}</li>
+                </UL>
+                <P>
+                  {billingChange.prorated_cost > 0 &&
+                    `Your new monthly charge will be to $${
+                      billingChange.monthly_cost / 100
+                    }, and you will immediately be charged a one-time prorated amount of $${
+                      billingChange.prorated_cost / 100
+                    } to cover the remainder of the current billing period.`}
+                  {billingChange.prorated_cost === 0 &&
+                    `Your monthly charge will be $${
+                      billingChange.monthly_cost / 100
+                    }.`}
+                  {billingChange.prorated_cost < 0 &&
+                    `Your new monthly charge will be to $${
+                      billingChange.monthly_cost / 100
+                    }, and you will receive a credit of $${
+                      -billingChange.prorated_cost / 100
+                    } on your next invoice to reflect changes made during the current billing period.`}
+                </P>
+              </div>
+            )
+          }
+          actionText="Change"
+          handleCancel={() => setShowChangeModal(false)}
+          handleSubmit={handleChangeSubscription}
+        />
+      )}
     </InternalMain>
   );
 };
