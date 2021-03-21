@@ -3,6 +3,7 @@ import { ModalDispatchContext } from '../../contexts/ModalContext';
 import styled from 'styled-components/macro';
 import Button from '../elements/Button';
 import Loader from '../blocks/Loader';
+import PropTypes from "prop-types";
 
 const Overlay = styled.div`
   position: fixed;
@@ -94,25 +95,27 @@ const Modal = props => {
   });
 
   return (
-    <Overlay onClick={props.handleCancel}>
+    <Overlay onClick={() => props.maskClosable && props.handleCancel()}>
       <ModalContainer onClick={e => e.stopPropagation()}>
         <h1>{props.title}</h1>
         <ContentContainer>
           {props.content}
-          <ButtonContainer normalPadding={props.normalButtonPadding}>
-            <Button inModal gray onClick={props.handleCancel}>
-              {props.closeText || "Cancel"}
-            </Button>
-            {props.actionText && (
-              <Button
-                inModal
-                disabled={props.loader}
-                onClick={props.handleSubmit}
-              >
-                {props.actionText}
+          {!props.hideButtons && (
+            <ButtonContainer normalPadding={props.normalButtonPadding}>
+              <Button inModal gray onClick={props.handleCancel}>
+                {props.closeText || "Cancel"}
               </Button>
-            )}
-          </ButtonContainer>
+              {props.actionText && (
+                <Button
+                  inModal
+                  disabled={props.loader}
+                  onClick={props.handleSubmit}
+                >
+                  {props.actionText}
+                </Button>
+              )}
+            </ButtonContainer>
+          )}
           {props.loader && (
             <LoaderContainer>
               <Loader />
@@ -122,6 +125,32 @@ const Modal = props => {
       </ModalContainer>
     </Overlay>
   );
+};
+
+Modal.propTypes = {
+  title: PropTypes.string,
+  content: PropTypes.any,
+  hideButtons: PropTypes.bool,
+  normalButtonPadding: PropTypes.bool,
+  maskClosable: PropTypes.bool,
+  closeText: PropTypes.string,
+  actionText: PropTypes.string,
+  loader: PropTypes.bool,
+  handleSubmit: PropTypes.func,
+  handleCancel: PropTypes.func,
+};
+
+Modal.defaultProps = {
+  title: "",
+  content: "",
+  hideButtons: false,
+  normalButtonPadding: false,
+  maskClosable: true,
+  closeText: "",
+  actionText: "",
+  loader: false,
+  handleSubmit: () => {},
+  handleCancel: () => {},
 };
 
 export default Modal;

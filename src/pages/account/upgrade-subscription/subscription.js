@@ -725,7 +725,7 @@ const Subscription = ({ elements, stripe }) => {
               Cancel
             </Button>
             <Button disabled={disabledSubmit || !stripe}>
-              Upgrade to Paid Plan
+              {`Pay $${total} and Upgrade to Paid Plan`}
             </Button>
           </StyledInputGroup>
         </Form>
