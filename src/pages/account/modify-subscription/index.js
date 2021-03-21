@@ -466,7 +466,9 @@ const ModifySubscription = () => {
           },
         });
 
-        initFeesAndCost(priceResult.data);
+        if (isMounted) {
+          initFeesAndCost(priceResult.data);
+        }
 
         const productsInfo = await axios({
           method: "get",
@@ -477,7 +479,9 @@ const ModifySubscription = () => {
           },
         });
 
-        setProductsInfo(productsInfo.data);
+        if (isMounted) {
+          setProductsInfo(productsInfo.data);
+        }
       } catch (err) {
         handleErrors({ err, history, dispatch, setErrorMessage });
       } finally {
