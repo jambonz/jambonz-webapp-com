@@ -571,14 +571,14 @@ const ModifySubscription = () => {
       </Section>
       {showChangeModal && (
         <Modal
-          title={(showModalLoader || applyingChange) ? "" : "Confirm Changes"}
+          title={showModalLoader || applyingChange ? "" : "Confirm Changes"}
           loader={showModalLoader}
           hideButtons={applyingChange}
           maskClosable={false}
           content={
             applyingChange ? (
               <LoadingContainer>
-                {`Please don't leave the page...`}
+                {`Your requested changes are being processed.  Please do not leave the page or hit the back button until complete.`}
               </LoadingContainer>
             ) : (
               <div>
@@ -593,7 +593,7 @@ const ModifySubscription = () => {
                 </UL>
                 <P>
                   {billingChange.prorated_cost > 0 &&
-                    `Your new monthly charge will be to $${
+                    `Your new monthly charge will be $${
                       billingChange.monthly_cost / 100
                     }, and you will immediately be charged a one-time prorated amount of $${
                       billingChange.prorated_cost / 100
@@ -603,7 +603,7 @@ const ModifySubscription = () => {
                       billingChange.monthly_cost / 100
                     }.`}
                   {billingChange.prorated_cost < 0 &&
-                    `Your new monthly charge will be to $${
+                    `Your new monthly charge will be $${
                       billingChange.monthly_cost / 100
                     }, and you will receive a credit of $${
                       -billingChange.prorated_cost / 100
@@ -612,7 +612,7 @@ const ModifySubscription = () => {
               </div>
             )
           }
-          actionText="Change"
+          actionText="Confirm Changes"
           handleCancel={() => setShowChangeModal(false)}
           handleSubmit={handleChangeSubscription}
         />
