@@ -50,6 +50,7 @@ const AccountHome = () => {
   const [showConfirmSecret, setShowConfirmSecret] = useState(false);
   const [generatingSecret, setGeneratingSecret] = useState(false);
   const [webhookSecret, setWebhookSecret] = useState("");
+  const [enabledCardDetailRecord, setEnabledCardDetailRecord] = useState(false);
 
   const copyText = async ({ text, textType }) => {
     try {
@@ -132,6 +133,28 @@ const AccountHome = () => {
     }
   };
 
+  const enableCardDetailRecords = async () => {
+    try {
+      const apiKeyResponse = await axios({
+        method: 'put',
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: `/Accounts/${account_sid}`,
+        data: {
+          disable_cdrs: enabledCardDetailRecord ? 1 : 0,
+        },
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      if (apiKeyResponse.status === 204) {
+        setEnabledCardDetailRecord(!enabledCardDetailRecord);
+      }
+    } catch (err) {
+      handleErrors({ err, history, dispatch });
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
     const getData = async () => {
@@ -147,6 +170,7 @@ const AccountHome = () => {
 
         setData(userResponse.data);
         setWebhookSecret((userResponse.data.account || {}).webhook_secret);
+        setEnabledCardDetailRecord(!(userResponse.data.account || {}).disable_cdrs);
 
         if (userResponse.data.account && userResponse.data.account.registration_hook_sid) {
           const webhook_sid = userResponse.data.account.registration_hook_sid;
@@ -295,6 +319,26 @@ const AccountHome = () => {
                             type: 'button',
                             action: () => {
                               confirmGenerateNewSecret();
+                            },
+                          }
+                        ]}
+                      />
+                    </Td>
+                  </tr>
+                  <tr>
+                    <Th scope="row">Call Detail Records</Th>
+                    <Td>{enabledCardDetailRecord ? 'Enabled' : 'Disabled'}</Td>
+                    <Td containsMenuButton>
+                      <TableMenu
+                        open={currentMenu === 'account-home-call-detail-records'}
+                        handleCurrentMenu={() => setCurrentMenu('account-home-call-detail-records')}
+                        disabled={modalOpen}
+                        menuItems={[
+                          {
+                            name: `${enabledCardDetailRecord ? 'Disable' : 'Enable'} Call Detail Records`,
+                            type: 'button',
+                            action: () => {
+                              enableCardDetailRecords();
                             },
                           }
                         ]}
