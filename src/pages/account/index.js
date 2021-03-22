@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from "styled-components/macro";
 import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
 import { ModalStateContext } from '../../contexts/ModalContext';
@@ -8,18 +9,24 @@ import InternalMain from '../../components/wrappers/InternalMain';
 import AccountSetupList from '../../components/blocks/AccountSetupList';
 import Section from '../../components/blocks/Section';
 import TableMenu from '../../components/blocks/TableMenu';
+import Modal from '../../components/blocks/Modal';
 import InputGroup from '../../components/elements/InputGroup';
 import H2 from '../../components/elements/H2';
 import Button from '../../components/elements/Button';
 import Table from '../../components/elements/Table';
 import Th from '../../components/elements/Th';
 import Td from '../../components/elements/Td';
+import P from '../../components/elements/P';
 import handleErrors from '../../helpers/handleErrors';
 import maskApiToken from '../../helpers/maskApiToken';
 import Loader from '../../components/blocks/Loader';
 import Subscription from '../../components/blocks/Subscription';
 import { getPastDays } from "../../utils/parse";
 import PlanType from '../../data/PlanType';
+
+const ModalContainer = styled.div`
+  margin-top: 2rem;
+`;
 
 const AccountHome = () => {
   let history = useHistory();
@@ -40,6 +47,9 @@ const AccountHome = () => {
   const [ registrationWebhookMenuItems, setRegistrationWebhookMenuItems ] = useState([]);
   const [ showLoader,                   setShowLoader                   ] = useState(true);
   const [accountSetupCompleted, setAccountSetupCompleted] = useState(false);
+  const [showConfirmSecret, setShowConfirmSecret] = useState(false);
+  const [generatingSecret, setGeneratingSecret] = useState(false);
+  const [webhookSecret, setWebhookSecret] = useState("");
 
   const copyText = async ({ text, textType }) => {
     try {
@@ -86,6 +96,42 @@ const AccountHome = () => {
     }
   };
 
+  const confirmGenerateNewSecret = () => {
+    setShowConfirmSecret(true);
+  };
+
+  const updateWebhookSecret = async () => {
+    try {
+      const { account_sid } = data.account || {};
+
+      if (account_sid) {
+        setGeneratingSecret(true);
+        const apiKeyResponse = await axios({
+          method: 'get',
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: `/Accounts/${account_sid}/WebhookSecret?regenerate=true`,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+
+        if (apiKeyResponse.status === 200) {
+          setWebhookSecret(apiKeyResponse.data.webhook_secret);
+          dispatch({
+            type: 'ADD',
+            level: 'success',
+            message: 'Webhook signing secret was successfully generated.',
+          });
+        }
+      }
+    } catch (err) {
+      handleErrors({ err, history, dispatch });
+    } finally {
+      setGeneratingSecret(false);
+      setShowConfirmSecret(false);
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
     const getData = async () => {
@@ -100,6 +146,7 @@ const AccountHome = () => {
         });
 
         setData(userResponse.data);
+        setWebhookSecret((userResponse.data.account || {}).webhook_secret);
 
         if (userResponse.data.account && userResponse.data.account.registration_hook_sid) {
           const webhook_sid = userResponse.data.account.registration_hook_sid;
@@ -226,9 +273,55 @@ const AccountHome = () => {
                       />
                     </Td>
                   </tr>
+                  <tr>
+                    <Th scope="row">Webhook signing secret</Th>
+                    <Td>{webhookSecret}</Td>
+                    <Td containsMenuButton>
+                      <TableMenu
+                        open={currentMenu === 'account-home-webhook-signing-secret'}
+                        handleCurrentMenu={() => setCurrentMenu('account-home-webhook-signing-secret')}
+                        disabled={modalOpen}
+                        menuItems={[
+                          {
+                            name: 'Copy',
+                            type: 'button',
+                            action: () => copyText({
+                              text: webhookSecret,
+                              textType: 'Webhook signing secret',
+                            }),
+                          },
+                          {
+                            name: 'Generate new secret',
+                            type: 'button',
+                            action: () => {
+                              confirmGenerateNewSecret();
+                            },
+                          }
+                        ]}
+                      />
+                    </Td>
+                  </tr>
                 </tbody>
               </Table>
             </Section>
+          )}
+
+          {showConfirmSecret && (
+            <Modal
+              title={generatingSecret ? "" : "Generate new secret"}
+              loader={generatingSecret}
+              hideButtons={generatingSecret}
+              maskClosable={!generatingSecret}
+              actionText="OK"
+              content={
+                <ModalContainer>
+                  <P>Press OK to generate a new webhook signing secret.</P>
+                  <P>Note: this will immediately invalidate the old webhook signing secret.</P>
+                </ModalContainer>
+              }
+              handleCancel={() => setShowConfirmSecret(false)}
+              handleSubmit={updateWebhookSecret}
+            />
           )}
 
           {data.api_keys && (
