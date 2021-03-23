@@ -256,7 +256,7 @@ const AccountHome = () => {
                         disabled={modalOpen}
                         menuItems={[
                           {
-                            name: 'Edit',
+                            name: 'Change SIP Realm',
                             type: 'link',
                             url: `/account/sip-realm/edit`,
                           },
