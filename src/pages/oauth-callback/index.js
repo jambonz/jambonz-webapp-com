@@ -10,6 +10,8 @@ const OauthCallback = () => {
   const dispatch = useContext(NotificationDispatchContext);
   const { provider } = useParams();
 
+  const jwt = localStorage.getItem("jwt");
+
   useEffect(() => {
     document.title = `Authenticating... | jambonz`;
 
@@ -58,6 +60,9 @@ const OauthCallback = () => {
             oauth2_client_id,
             oauth2_redirect_uri,
           },
+          headers: previousLocation === '/account/settings/auth' ? {
+            Authorization: `Bearer ${jwt}`,
+          }: {},
         });
 
         localStorage.removeItem('oauth-state');
