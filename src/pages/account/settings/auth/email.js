@@ -155,6 +155,7 @@ const SettingsAuthEmail = () => {
       if (response.status === 200) {
         history.push("/account/settings/auth/email-verify");
         localStorage.setItem("jwt", response.data.jwt);
+        localStorage.setItem("email", email);
         localStorage.setItem("user_sid", response.data.user_sid);
         localStorage.setItem("account_sid", response.data.account_sid);
       }

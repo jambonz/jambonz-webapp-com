@@ -85,11 +85,13 @@ const OauthCallback = () => {
 
           }
 
-          dispatch({
-            type: 'ADD',
-            level: 'success',
-            message: 'Your authentication method has been changed.',
-          });
+          if (previousLocation === '/account/settings/auth') {
+            dispatch({
+              type: 'ADD',
+              level: 'success',
+              message: 'Your authentication method has been changed.',
+            });
+          }
         } else {
           throw Error('Non-200 response');
         }
@@ -108,7 +110,7 @@ const OauthCallback = () => {
 
     authenticate();
 
-  }, [history, location, dispatch, provider]);
+  }, [history, location, dispatch, provider, jwt]);
 
   return (
     <Loader height="calc(100vh - 20rem)" />
