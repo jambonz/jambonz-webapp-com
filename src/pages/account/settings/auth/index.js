@@ -105,8 +105,9 @@ const SettingsAuthIndex = () => {
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     const getAPIData = async () => {
-      let isMounted = true;
       try {
         const userDataResponse = await axios({
           method: "get",
@@ -123,8 +124,6 @@ const SettingsAuthIndex = () => {
           if (user.user) {
             setProvider(user.user.provider || "");
           }
-
-          setShowLoader(false);
         }
       } catch (err) {
         handleErrors({ err, history, dispatch });
@@ -135,6 +134,10 @@ const SettingsAuthIndex = () => {
       }
     };
     getAPIData();
+
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line
   }, []);
 
