@@ -84,6 +84,12 @@ const OauthCallback = () => {
             history.replace('/account');
 
           }
+
+          dispatch({
+            type: 'ADD',
+            level: 'success',
+            message: 'Your authentication method has been changed.',
+          });
         } else {
           throw Error('Non-200 response');
         }
