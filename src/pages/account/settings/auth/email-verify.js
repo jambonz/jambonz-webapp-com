@@ -31,6 +31,7 @@ const SettingsAuthEmailVerify = () => {
   const refCode = useRef(null);
 
   const handleSubmit = async (e) => {
+    let isMounted = true;
     try {
       e.preventDefault();
       setErrorMessage("");
@@ -71,9 +72,13 @@ const SettingsAuthEmailVerify = () => {
       });
       history.push('/account/settings');
     } catch (err) {
-      handleErrors({ err, history, dispatch, setErrorMessage });
+      if (isMounted) {
+        handleErrors({ err, history, dispatch, setErrorMessage });
+      }
     } finally {
-      setShowLoader(false);
+      if (isMounted) {
+        setShowLoader(false);
+      }
       localStorage.removeItem('email');
     }
   };
