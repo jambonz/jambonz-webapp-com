@@ -42,6 +42,7 @@ import SettingsDeleteAccount from './pages/account/settings/delete-account';
 import SettingsVerifyYourEmail from './pages/account/settings/verify-your-email';
 import SettingsAuthIndex from './pages/account/settings/auth/index';
 import SettingsAuthEmail from './pages/account/settings/auth/email';
+import SettingsAuthEmailVerify from './pages/account/settings/auth/email-verify';
 import InvalidRouteInternal from './pages/404-internal';
 import InvalidRouteExternal from './pages/404-external';
 import SubscriptionIndex from './pages/account/upgrade-subscription';
@@ -118,6 +119,7 @@ function Routes() {
               <Route exact path="/account/settings/verify-your-email"><SettingsVerifyYourEmail /></Route>
               <Route exact path="/account/settings/auth"><SettingsAuthIndex /></Route>
               <Route exact path="/account/settings/auth/email"><SettingsAuthEmail /></Route>
+              <Route exact path="/account/settings/auth/email-verify"><SettingsAuthEmailVerify /></Route>
 
               <Route exact path="/account/subscription"><SubscriptionIndex /></Route>
               <Route exact path="/account/manage-payment"><ManagePaymentInfo /></Route>

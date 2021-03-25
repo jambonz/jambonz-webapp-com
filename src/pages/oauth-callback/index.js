@@ -10,6 +10,8 @@ const OauthCallback = () => {
   const dispatch = useContext(NotificationDispatchContext);
   const { provider } = useParams();
 
+  const jwt = localStorage.getItem("jwt");
+
   useEffect(() => {
     document.title = `Authenticating... | jambonz`;
 
@@ -58,6 +60,9 @@ const OauthCallback = () => {
             oauth2_client_id,
             oauth2_redirect_uri,
           },
+          headers: previousLocation === '/account/settings/auth' ? {
+            Authorization: `Bearer ${jwt}`,
+          }: {},
         });
 
         localStorage.removeItem('oauth-state');
@@ -79,6 +84,14 @@ const OauthCallback = () => {
             history.replace('/account');
 
           }
+
+          if (previousLocation === '/account/settings/auth') {
+            dispatch({
+              type: 'ADD',
+              level: 'success',
+              message: 'Your authentication method has been changed.',
+            });
+          }
         } else {
           throw Error('Non-200 response');
         }
@@ -97,7 +110,7 @@ const OauthCallback = () => {
 
     authenticate();
 
-  }, [history, location, dispatch, provider]);
+  }, [history, location, dispatch, provider, jwt]);
 
   return (
     <Loader height="calc(100vh - 20rem)" />
