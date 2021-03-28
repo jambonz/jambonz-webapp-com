@@ -30,8 +30,6 @@ const ModalContainer = styled.div`
 
 const StyledTable = styled(Table)`
   ${props => props.theme.mobileOnly} {
-    width: 300px;
-
     tr {
       display: grid;
       grid-template-columns: 120px 1fr auto;
@@ -49,6 +47,17 @@ const StyledTable = styled(Table)`
       td {
         text-overflow: ellipsis;
       }
+    }
+  }
+`;
+
+const StyledAPIKeysTable = styled(Table)`
+  ${props => props.theme.mobileOnly} {
+    tr {
+      display: grid;
+      grid-template-columns: 150px 1fr auto;
+      align-content: center;
+      align-items: center;
     }
   }
 `;
@@ -76,6 +85,8 @@ const AccountHome = () => {
   const [generatingSecret, setGeneratingSecret] = useState(false);
   const [webhookSecret, setWebhookSecret] = useState("");
   const [enabledCardDetailRecord, setEnabledCardDetailRecord] = useState(false);
+
+  const [mobile, setMobile] = useState(false);
 
   const copyText = async ({ text, textType }) => {
     try {
@@ -180,6 +191,13 @@ const AccountHome = () => {
     }
   };
 
+  const screenSizeChanged = () => {
+    const { width } = window.screen;
+    const breakPoint = process.env.REACT_APP_MOBILE_BREAKPOINT || "500px";
+    const maxWidth = parseInt(breakPoint.replaceAll('px', ''), 10);
+    setMobile(width < maxWidth);
+  };
+
   useEffect(() => {
     let isMounted = true;
     const getData = async () => {
@@ -244,6 +262,16 @@ const AccountHome = () => {
     };
 
     getData();
+
+    window.addEventListener('resize', screenSizeChanged);
+
+    screenSizeChanged();
+
+    return () => {
+      isMounted = false;
+
+      window.removeEventListener('resize', screenSizeChanged);
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -395,7 +423,7 @@ const AccountHome = () => {
 
           {data.api_keys && (
             <Section>
-              <Table sectionTableWithHeader>
+              <StyledAPIKeysTable sectionTableWithHeader>
                 <thead>
                   <tr>
                     <Th sectionTableWithHeader>
@@ -419,7 +447,7 @@ const AccountHome = () => {
                   ) : (
                     data.api_keys.map(apiKey => (
                       <tr key={apiKey.api_key_sid}>
-                        <Th scope="row">{maskApiToken(apiKey.token)}</Th>
+                        <Th scope="row">{maskApiToken(apiKey.token, mobile)}</Th>
                         <Td>{getPastDays(apiKey.last_used)}</Td>
                         <Td containsMenuButton>
                           <TableMenu
@@ -452,7 +480,7 @@ const AccountHome = () => {
                     ))
                   )}
                 </tbody>
-              </Table>
+              </StyledAPIKeysTable>
             </Section>
           )}
 
