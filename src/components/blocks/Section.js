@@ -27,6 +27,8 @@ const StyledSection = styled.section`
   `}
 
   ${props => props.theme.mobileOnly} {
+    padding: 1rem;
+    
     ${props => props.normalTable && `
       height: 100%;
       min-width: auto;
