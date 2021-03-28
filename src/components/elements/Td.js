@@ -3,6 +3,8 @@ import styled from 'styled-components/macro';
 const Td = styled.td`
   padding: 0 2rem;
 
+  overflow: ${props => props.overflow || 'auto'}
+
   ${props => props.textAlign && `
     text-align: ${props.textAlign};
   `}

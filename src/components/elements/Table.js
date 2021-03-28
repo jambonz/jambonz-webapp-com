@@ -56,6 +56,10 @@ const Table = styled.table`
   `}
 
   ${props => props.theme.mobileOnly} {
+    min-width: calc(100% + 2rem);
+    margin-left: -1rem;
+    margin-right: -1rem;
+    
     & tbody tr:last-child {
       border-bottom: 1px solid #E0E0E0;
     }

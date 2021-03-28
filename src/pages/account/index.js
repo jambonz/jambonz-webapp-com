@@ -28,6 +28,31 @@ const ModalContainer = styled.div`
   margin-top: 2rem;
 `;
 
+const StyledTable = styled(Table)`
+  ${props => props.theme.mobileOnly} {
+    width: 300px;
+
+    tr {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      align-content: center;
+      align-items: center;
+
+      & > * {
+        padding: 0 1rem;
+      }
+
+      th {
+        white-space: normal;
+      }
+
+      td {
+        text-overflow: ellipsis;
+      }
+    }
+  }
+`;
+
 const AccountHome = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
@@ -244,11 +269,11 @@ const AccountHome = () => {
           {data.account && (
             <Section>
               <H2>Account</H2>
-              <Table>
+              <StyledTable>
                 <tbody>
                   <tr>
                     <Th scope="row">SIP Realm</Th>
-                    <Td>{data.account.sip_realm}</Td>
+                    <Td overflow="hidden">{data.account.sip_realm}</Td>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'account-home-sip-realm'}
@@ -266,7 +291,7 @@ const AccountHome = () => {
                   </tr>
                   <tr>
                     <Th scope="row">Account SID</Th>
-                    <Td>{data.account.account_sid}</Td>
+                    <Td overflow="hidden">{data.account.account_sid}</Td>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'account-home-account-sid'}
@@ -287,7 +312,7 @@ const AccountHome = () => {
                   </tr>
                   <tr>
                     <Th scope="row">Registration Webhook</Th>
-                    <Td>{registrationWebhookUrl || 'None'}</Td>
+                    <Td overflow="hidden">{registrationWebhookUrl || 'None'}</Td>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'account-home-registration-webhook'}
@@ -299,7 +324,7 @@ const AccountHome = () => {
                   </tr>
                   <tr>
                     <Th scope="row">Webhook signing secret</Th>
-                    <Td>{webhookSecret}</Td>
+                    <Td overflow="hidden">{webhookSecret}</Td>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'account-home-webhook-signing-secret'}
@@ -327,7 +352,7 @@ const AccountHome = () => {
                   </tr>
                   <tr>
                     <Th scope="row">Call Detail Records</Th>
-                    <Td>{enabledCardDetailRecord ? 'Enabled' : 'Disabled'}</Td>
+                    <Td overflow="hidden">{enabledCardDetailRecord ? 'Enabled' : 'Disabled'}</Td>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'account-home-call-detail-records'}
@@ -346,7 +371,7 @@ const AccountHome = () => {
                     </Td>
                   </tr>
                 </tbody>
-              </Table>
+              </StyledTable>
             </Section>
           )}
 
