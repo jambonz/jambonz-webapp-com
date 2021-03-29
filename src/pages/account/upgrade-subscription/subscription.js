@@ -33,6 +33,22 @@ const Form = styled.form`
     border-top: 1px solid #c6c6c6;
     grid-column: 1 / 5;
   }
+
+  ${(props) => props.theme.mobileOnly} {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    grid-row-gap: 1rem;
+
+    & > * {
+      width: 100%;
+    }
+
+    hr {
+      width: calc(100% + 3rem);
+    }
+  }
 `;
 
 const Text = styled.h3`
@@ -41,6 +57,22 @@ const Text = styled.h3`
   font-weight: ${(props) => (props.bold ? "600" : "normal")};
   color: #707070;
   text-align: ${(props) => props.textAlign || "left"};
+`;
+
+const FormHeader = styled.h3`
+  font-size: 1rem;
+  margin: 0;
+  font-weight: ${(props) => (props.bold ? "600" : "normal")};
+  color: #707070;
+  text-align: ${(props) => props.textAlign || "left"};
+
+  ${(props) => props.theme.mobileOnly} {
+    display: none;
+
+    & + hr {
+      display: none;
+    }
+  }
 `;
 
 const StyledInputGroup = styled(InputGroup)`
@@ -103,6 +135,35 @@ const LoadingContainer = styled.div`
     span {
       width: 100%;
     }
+  }
+`;
+
+const MobileContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  grid-column: 1 / 5;
+  width: 100%;
+
+  ${(props) => props.theme.mobileOnly} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+`;
+
+const LabelInDesktop = styled(Label)`
+  ${(props) => props.theme.mobileOnly} {
+    display: none;
+  }
+`;
+
+const DivInMobile = styled.div`
+  display: none;
+
+  ${(props) => props.theme.mobileOnly} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 `;
 
@@ -636,8 +697,8 @@ const Subscription = ({ elements, stripe }) => {
             <LoadingContainer direction="row">
               <Loader height="64px" />
               <Text>
-                Your subscription is being processed. Please wait and do not
-                hit the back button or leave this page
+                Your subscription is being processed. Please wait and do not hit
+                the back button or leave this page
               </Text>
             </LoadingContainer>
           )}
@@ -647,16 +708,16 @@ const Subscription = ({ elements, stripe }) => {
         <Loader height="376px" />
       ) : (
         <Form onSubmit={handleSubmit}>
-          <Text bold>Service</Text>
-          <Text bold textAlign="center">
+          <FormHeader bold>Service</FormHeader>
+          <FormHeader bold textAlign="center">
             Capacity
-          </Text>
-          <Text bold textAlign="center">
+          </FormHeader>
+          <FormHeader bold textAlign="center">
             Price
-          </Text>
-          <Text bold textAlign="center">
+          </FormHeader>
+          <FormHeader bold textAlign="center">
             Cost
-          </Text>
+          </FormHeader>
           <hr />
           {serviceData.map((service, index) => (
             <React.Fragment key={service.category}>
@@ -672,21 +733,31 @@ const Subscription = ({ elements, stripe }) => {
                 invalid={service.invalid}
                 ref={(ref) => handleRefs(service.category, ref)}
               />
-              <Label textAlign="center">{service.feesLabel}</Label>
-              <Label textAlign="center">
+              <LabelInDesktop textAlign="center">
+                {service.feesLabel}
+              </LabelInDesktop>
+              <LabelInDesktop textAlign="center">
                 {service.cost !== ""
                   ? `${CurrencySymbol[service.currency]}${service.cost}`
                   : ""}
-              </Label>
+              </LabelInDesktop>
+              <DivInMobile>
+                <Label textAlign="center">{service.feesLabel}</Label>
+                <Label textAlign="center">
+                  {service.cost !== ""
+                    ? `${CurrencySymbol[service.currency]}${service.cost}`
+                    : ""}
+                </Label>
+              </DivInMobile>
               <hr />
             </React.Fragment>
           ))}
-          <Text bold>Total Monthly Cost</Text>
-          <div />
-          <div />
-          <Text bold textAlign="center">
-            {`$${total}`}
-          </Text>
+          <MobileContainer>
+            <Text bold>Total Monthly Cost</Text>
+            <Text bold textAlign="center">
+              {`$${total}`}
+            </Text>
+          </MobileContainer>
           <hr />
           <StyledRow>
             <Text bold>Payment Information</Text>

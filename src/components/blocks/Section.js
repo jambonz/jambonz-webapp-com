@@ -32,7 +32,7 @@ const StyledSection = styled.section`
     ${props => props.normalTable && `
       height: 100%;
       min-width: auto;
-      margin: 0;
+      margin: 1rem;
       border-radius: 0;
       overflow: auto;
     `}
