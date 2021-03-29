@@ -33,9 +33,6 @@ const Form = styled.form`
     border-top: 1px solid #c6c6c6;
     grid-column: 1 / 5;
   }
-
-  & > div {
-  }
 `;
 
 const Text = styled.h3`

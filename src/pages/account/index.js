@@ -201,9 +201,8 @@ const AccountHome = () => {
 
   const screenSizeChanged = () => {
     const { width } = window.screen;
-    const breakPoint = process.env.REACT_APP_MOBILE_BREAKPOINT || "500px";
-    const maxWidth = parseInt(breakPoint.replaceAll('px', ''), 10);
-    setMobile(width < maxWidth);
+    const breakPoint = 977;
+    setMobile(width < breakPoint);
   };
 
   useEffect(() => {
@@ -455,7 +454,11 @@ const AccountHome = () => {
                   ) : (
                     data.api_keys.map(apiKey => (
                       <tr key={apiKey.api_key_sid}>
-                        <Th scope="row">{maskApiToken(apiKey.token, mobile)}</Th>
+                        <Th scope="row">
+                          <p>
+                            {maskApiToken(apiKey.token, mobile)}
+                          </p>
+                        </Th>
                         <Td>{getPastDays(apiKey.last_used)}</Td>
                         <Td containsMenuButton>
                           <TableMenu

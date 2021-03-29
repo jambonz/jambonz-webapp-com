@@ -2,7 +2,7 @@
 const maskApiToken = (token, mobile) => {
   if (mobile) {
     const maskLength = token.length - 4;
-    return `****** ${token.substring(maskLength)}`;
+    return `...****** ${token.substring(maskLength)}`;
   }
 
   const maskLength = token.length - 4;
