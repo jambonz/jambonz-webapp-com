@@ -29,6 +29,16 @@ const ModalContainer = styled.div`
 `;
 
 const StyledTable = styled(Table)`
+  tr {
+    display: grid;
+    grid-template-columns: 250px 1fr auto;
+    align-content: center;
+    align-items: center;
+
+    td {
+      text-overflow: ellipsis;
+    }
+  }
   ${props => props.theme.mobileOnly} {
     tr {
       display: grid;
@@ -53,11 +63,9 @@ const StyledTable = styled(Table)`
 
 const StyledAPIKeysTable = styled(Table)`
   ${props => props.theme.mobileOnly} {
-    tr {
-      display: grid;
-      grid-template-columns: 150px 1fr auto;
-      align-content: center;
-      align-items: center;
+    & tr > * {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
     }
   }
 `;
