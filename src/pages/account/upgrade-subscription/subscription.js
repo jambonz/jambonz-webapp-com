@@ -16,6 +16,7 @@ import InputGroup from "../../../components/elements/InputGroup";
 import Label from "../../../components/elements/Label";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
 import CurrencySymbol from "../../../data/CurrencySymbol";
+import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 
 const stripePromise = loadStripe("pk_test_EChRaX9Tjk8csZZVSeoGqNvu00lsJzjaU0");
 
@@ -81,6 +82,44 @@ const FormHeader = styled.h3`
 
 const StyledInputGroup = styled(InputGroup)`
   grid-column: 1 / 5;
+
+  @media (max-width: 575.98px) {
+    display: flex;
+
+    button {
+      flex: 2;
+      width: 100%;
+
+      span {
+        width: 100%;
+        white-space: nowrap;
+      }
+    }
+
+    a {
+      flex: 1;
+    }
+
+    a,
+    a > span {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 369.98px) {
+    display: flex;
+    flex-direction: column;
+
+    button {
+      order: 1;
+    }
+
+    a {
+      order: 2;
+      margin-left: 1rem;
+      margin-top: 1rem;
+    }
+  }
 `;
 
 const StyledFormError = styled(FormError)`
@@ -224,6 +263,7 @@ const cardElementsOptions = {
 const Subscription = ({ elements, stripe }) => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem("jwt");
+  const isMobile = useContext(ResponsiveContext);
 
   const history = useHistory();
 
@@ -829,7 +869,9 @@ const Subscription = ({ elements, stripe }) => {
               Cancel
             </Button>
             <Button disabled={disabledSubmit || !stripe}>
-              {`Pay $${total} and Upgrade to Paid Plan`}
+              {isMobile
+                ? `Upgrade to Paid Plan`
+                : `Pay $${total} and Upgrade to Paid Plan`}
             </Button>
           </StyledInputGroup>
         </Form>
