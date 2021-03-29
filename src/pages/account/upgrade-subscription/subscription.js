@@ -34,6 +34,10 @@ const Form = styled.form`
     grid-column: 1 / 5;
   }
 
+  @media (max-width: 977.98px) {
+    grid-template-columns: 100px 1fr 100px 50px;
+  }
+
   ${(props) => props.theme.mobileOnly} {
     display: flex;
     flex-direction: column;
@@ -91,12 +95,22 @@ const CardElementsWrapper = styled.div`
   display: flex;
   align-items: center;
   border: 1px solid #b6b6b6;
-  width: 100%;
   height: 36px;
   padding: 0 1rem;
+  grid-column: 2 / 5;
+  margin-right: 274px;
+  min-width: 250px;
 
   & .StripeElement {
     width: 100%;
+  }
+
+  @media (max-width: 977.98px) {
+    margin-right: 0;
+  }
+
+  ${(props) => props.theme.mobileOnly} {
+    margin-right: 0;
   }
 `;
 
@@ -144,6 +158,10 @@ const MobileContainer = styled.div`
   grid-column: 1 / 5;
   width: 100%;
 
+  @media (max-width: 977.98px) {
+    grid-template-columns: 1fr 50px;
+  }
+
   ${(props) => props.theme.mobileOnly} {
     display: flex;
     justify-content: space-between;
@@ -164,6 +182,28 @@ const DivInMobile = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+`;
+
+const CardNameInput = styled.div`
+  grid-column: 2 / 5;
+  margin-right: 274px;
+  min-width: 250px;
+
+  @media (max-width: 977.98px) {
+    margin-right: 0;
+  }
+
+  ${(props) => props.theme.mobileOnly} {
+    margin-right: 0;
+  }
+`;
+
+const CardLabel = styled(Label)`
+  text-align: right;
+
+  ${(props) => props.theme.mobileOnly} {
+    text-align: left;
   }
 `;
 
@@ -762,30 +802,26 @@ const Subscription = ({ elements, stripe }) => {
           <StyledRow>
             <Text bold>Payment Information</Text>
           </StyledRow>
-          <Label htmlFor="payment_name" textAlign="right">
-            Cardholder Name
-          </Label>
-          <Input
-            name="payment_name"
-            id="payment_name"
-            value={paymentName}
-            onChange={(e) => {
-              setPaymentName(e.target.value);
-              setPaymentNameInvalid(false);
-              setDisabledSubmit(false);
-            }}
-            placeholder=""
-            invalid={paymentNameInvalid}
-            ref={paymentNameRef}
-          />
-          <div />
-          <div />
-          <Label textAlign="right">Card</Label>
+          <CardLabel htmlFor="payment_name">Cardholder Name</CardLabel>
+          <CardNameInput>
+            <Input
+              name="payment_name"
+              id="payment_name"
+              value={paymentName}
+              onChange={(e) => {
+                setPaymentName(e.target.value);
+                setPaymentNameInvalid(false);
+                setDisabledSubmit(false);
+              }}
+              placeholder=""
+              invalid={paymentNameInvalid}
+              ref={paymentNameRef}
+            />
+          </CardNameInput>
+          <CardLabel>Card</CardLabel>
           <CardElementsWrapper>
             <CardElement options={cardElementsOptions} />
           </CardElementsWrapper>
-          <div />
-          <div />
           <hr />
           {errorMessage && <StyledFormError grid message={errorMessage} />}
           <StyledInputGroup flexEnd spaced>
