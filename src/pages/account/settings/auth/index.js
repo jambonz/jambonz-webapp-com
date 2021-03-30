@@ -12,10 +12,8 @@ import Loader from "../../../../components/blocks/Loader";
 import InputGroup from "../../../../components/elements/InputGroup";
 import Button from "../../../../components/elements/Button";
 import { NotificationDispatchContext } from "../../../../contexts/NotificationContext";
-import { ReactComponent as GithubIcon } from "../../../../images/GithubIcon.svg";
-import GoogleIcon from "../../../../images/GoogleButtonIcon.png";
-import { ReactComponent as TwitterIcon } from "../../../../images/TwitterButtonIcon.svg";
 import handleErrors from "../../../../helpers/handleErrors";
+import ContactIconButton from '../../../../components/elements/ContactIconButton';
 
 const EmailCard = styled.div`
   display: flex;
@@ -29,12 +27,16 @@ const EmailCard = styled.div`
   line-height: 24px;
   color: ${(props) => (props.selected ? "#565656" : "#ffffff")};
   background: ${(props) => (props.selected ? "#ffffff" : "#707070")};
-  width: 141px;
+  width: 140px;
   height: 48px;
   border: 3px solid #707070;
   box-sizing: border-box;
   border-radius: 4px;
   cursor: pointer;
+
+  ${props => props.theme.mobileOnly} {
+    height: 36px;
+  }
 `;
 
 const StyledP = styled(P)`
@@ -42,6 +44,7 @@ const StyledP = styled(P)`
 `;
 
 const ProviderLink = styled.a`
+  text-decoration: none;
   ${(props) =>
     props.disabled
       ? `
@@ -49,6 +52,28 @@ const ProviderLink = styled.a`
     cursor: default;
   `
       : ""}
+`;
+
+const StyledInputGroup = styled(InputGroup)`
+  margin-bottom: 1rem;
+
+  @media(max-width: 576.98px) {
+    flex-direction: column;
+
+    & > a {
+      margin-right: 0;
+      margin-bottom: 0.5rem;
+      width: 100%;
+
+      & > div {
+        width: 100%;
+      }
+    }
+
+    & > div[type='email'] {
+      width: 100%;
+    }
+  }
 `;
 
 const SettingsAuthIndex = () => {
@@ -73,6 +98,7 @@ const SettingsAuthIndex = () => {
       case "local":
         node = (
           <EmailCard
+            type="email"
             selected={method === provider}
             onClick={() => history.push("/account/settings/auth/email")}
           >
@@ -83,19 +109,23 @@ const SettingsAuthIndex = () => {
       case "github":
         node = (
           <ProviderLink href={gitHubUrl} disabled={provider === method}>
-            <GithubIcon />
+            <ContactIconButton type="github" />
           </ProviderLink>
         );
         break;
       case "google":
         node = (
           <ProviderLink href={googleUrl} disabled={provider === method}>
-            <img src={GoogleIcon} alt="google-icon" />
+            <ContactIconButton type="google" />
           </ProviderLink>
         );
         break;
       case "twitter":
-        node = <TwitterIcon />;
+        node = (
+          <ProviderLink href="#" disabled={provider === method}>
+            <ContactIconButton type="twitter" />
+          </ProviderLink>
+        );
         break;
       default:
         break;
@@ -157,13 +187,13 @@ const SettingsAuthIndex = () => {
             If you would like to sign in a different way, click an option below.
           </StyledP>
           <H3>Other ways to sign in</H3>
-          <InputGroup spaced>
+          <StyledInputGroup spaced>
             {authenticationMethods
               .filter((method) => method !== provider)
               .map((method) => (
                 <AuthMethod key={method} method={method} />
               ))}
-          </InputGroup>
+          </StyledInputGroup>
           <InputGroup flexEnd spaced>
             <Button gray="true" as={ReactRouterLink} to="/account/settings">
               Cancel
