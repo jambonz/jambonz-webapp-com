@@ -1,6 +1,7 @@
 import { useState, useRef, useContext, useEffect } from "react";
 import { useHistory, Link as ReactRouterLink } from "react-router-dom";
 import axios from "axios";
+import styled from "styled-components/macro";
 
 import InternalMain from "../../../../components/wrappers/InternalMain";
 import Section from "../../../../components/blocks/Section";
@@ -17,6 +18,35 @@ import Loader from "../../../../components/blocks/Loader";
 import { NotificationDispatchContext } from "../../../../contexts/NotificationContext";
 import { isValidEmail } from "../../../../utils/validate";
 import generateActivationCode from "../../../../helpers/generateActivationCode";
+
+const StyledInputGroup = styled(InputGroup)`
+  grid-column: 1 / 3;
+
+  @media (max-width: 575px) {
+    & > * {
+      width: 100%;
+
+      span {
+        width: 100%;
+      }
+    }
+  }
+`;
+
+const StyledForm = styled(Form)`
+  @media (max-width: 575px) {
+    display: block;
+    text-align: left;
+
+    & > div {
+      margin: 4px 0 1rem;
+    }
+  }
+`;
+
+const StyledFormError = styled(FormError)`
+  grid-column: 1 / 3;
+`;
 
 const SettingsAuthEmail = () => {
   const dispatch = useContext(NotificationDispatchContext);
@@ -214,7 +244,7 @@ const SettingsAuthEmail = () => {
               The following information is required to use your email address
               for authentication.
             </P>
-            <Form large onSubmit={handleSubmit}>
+            <StyledForm large onSubmit={handleSubmit}>
               <Label htmlFor="email">Email</Label>
               <Input
                 name="email"
@@ -247,14 +277,14 @@ const SettingsAuthEmail = () => {
                 invalid={confirmPasswordInvalid}
                 ref={refConfirmPassword}
               />
-              {errorMessage && <FormError grid message={errorMessage} />}
-              <InputGroup flexEnd spaced>
+              {errorMessage && <StyledFormError grid message={errorMessage} />}
+              <StyledInputGroup flexEnd spaced>
                 <Button gray="true" as={ReactRouterLink} to="/account/settings">
                   Cancel
                 </Button>
                 <Button>Continue</Button>
-              </InputGroup>
-            </Form>
+              </StyledInputGroup>
+            </StyledForm>
           </>
         )}
       </Section>

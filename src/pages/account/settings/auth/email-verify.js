@@ -1,6 +1,7 @@
 import { useState, useRef, useContext } from "react";
 import { useHistory, Link as ReactRouterLink } from "react-router-dom";
 import axios from "axios";
+import styled from "styled-components/macro";
 
 import InternalMain from "../../../../components/wrappers/InternalMain";
 import Section from "../../../../components/blocks/Section";
@@ -14,6 +15,31 @@ import Button from "../../../../components/elements/Button";
 import handleErrors from "../../../../helpers/handleErrors";
 import Loader from "../../../../components/blocks/Loader";
 import { NotificationDispatchContext } from "../../../../contexts/NotificationContext";
+
+const StyledInputGroup = styled(InputGroup)`
+  grid-column: 1 / 3;
+
+  @media (max-width: 575px) {
+    & > * {
+      width: 100%;
+
+      span {
+        width: 100%;
+      }
+    }
+  }
+`;
+
+const StyledForm = styled(Form)`
+  @media (max-width: 575px) {
+    display: block;
+    text-align: left;
+
+    & > div {
+      margin: 4px 0 1.5rem;
+    }
+  }
+`;
 
 const SettingsAuthEmailVerify = () => {
   const dispatch = useContext(NotificationDispatchContext);
@@ -95,7 +121,7 @@ const SettingsAuthEmailVerify = () => {
         ) : (
           <>
             <P>{`Please enter the code we just sent to ${email}`}</P>
-            <Form large wideLabel onSubmit={handleSubmit}>
+            <StyledForm large wideLabel onSubmit={handleSubmit}>
               <Label htmlFor="code">Verification Code</Label>
               <Input
                 name="code"
@@ -108,13 +134,13 @@ const SettingsAuthEmailVerify = () => {
                 ref={refCode}
               />
               {errorMessage && <FormError grid message={errorMessage} />}
-              <InputGroup flexEnd spaced>
+              <StyledInputGroup flexEnd spaced>
                 <Button gray="true" as={ReactRouterLink} to="/account/settings">
                   Cancel
                 </Button>
                 <Button>Continue</Button>
-              </InputGroup>
-            </Form>
+              </StyledInputGroup>
+            </StyledForm>
           </>
         )}
       </Section>
