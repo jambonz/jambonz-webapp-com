@@ -48,7 +48,7 @@ const ContactIcon = styled.div`
   }
   
   @media (max-width: 575px) {
-    position: absolute;
+    ${props => props.absolute ? `position: absolute;` : ''}
   }
 
   img {
@@ -71,10 +71,10 @@ const ContactTitle = styled.div`
   text-transform: capitalize;
 `;
 
-const ContactIconButton = ({ type }) => {
+const ContactIconButton = ({ type, absolute }) => {
   return (
     <ContactIconWrapper type={type}>
-      <ContactIcon type={type}>
+      <ContactIcon type={type} absolute={absolute ? 'true': ''}>
         <img src={ContactIcons[type]} alt="contact-icon" />
       </ContactIcon>
       <ContactTitle>{type}</ContactTitle>
@@ -84,10 +84,12 @@ const ContactIconButton = ({ type }) => {
 
 ContactIconButton.propTypes = {
   type: PropTypes.string,
+  absolute: PropTypes.bool,
 };
 
 ContactIconButton.defaultProps = {
   type: "github",
+  absolute: true,
 };
 
 export default ContactIconButton;

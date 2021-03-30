@@ -69,7 +69,7 @@ const SettingsAuthIndex = () => {
 
   const authenticationMethods = ["github", "google", "twitter", "local"];
 
-  const AuthMethod = ({ method }) => {
+  const AuthMethod = ({ method, absolute }) => {
     let node;
     switch (method) {
       case "local":
@@ -86,21 +86,21 @@ const SettingsAuthIndex = () => {
       case "github":
         node = (
           <ProviderLink href={gitHubUrl} disabled={provider === method}>
-            <ContactIconButton type="github" />
+            <ContactIconButton type="github" absolute={absolute} />
           </ProviderLink>
         );
         break;
       case "google":
         node = (
           <ProviderLink href={googleUrl} disabled={provider === method}>
-            <ContactIconButton type="google" />
+            <ContactIconButton type="google" absolute={absolute} />
           </ProviderLink>
         );
         break;
       case "twitter":
         node = (
           <ProviderLink href="#" disabled={provider === method}>
-            <ContactIconButton type="twitter" />
+            <ContactIconButton type="twitter" absolute={absolute} />
           </ProviderLink>
         );
         break;
@@ -159,7 +159,7 @@ const SettingsAuthIndex = () => {
       ) : (
         <Section>
           <H3>Current Authentication Method</H3>
-          <AuthMethod method={provider} />
+          <AuthMethod method={provider} absolute={false} />
           <StyledP>
             If you would like to sign in a different way, click an option below.
           </StyledP>
