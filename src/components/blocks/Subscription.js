@@ -22,6 +22,16 @@ const StyledInputGroup = styled(InputGroup)`
       }
     }
   }
+
+  @media (max-width: 575px) {
+    display: flex;
+    flex-direction: column;
+
+    & > a:first-child {
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+  }
 `;
 
 const Subscription = ({ data, hasDelete }) => {
@@ -115,7 +125,7 @@ const Subscription = ({ data, hasDelete }) => {
       <H2>Your Subscription</H2>
       <P>{description}</P>
       {planType === PlanType.PAID ? (
-        <InputGroup flexEnd spaced>
+        <StyledInputGroup flexEnd spaced>
           <Button as={ReactRouterLink} gray="true" to="/account/manage-payment">
             Manage Payment Info
           </Button>
@@ -126,7 +136,7 @@ const Subscription = ({ data, hasDelete }) => {
           >
             Modify My Subscription
           </Button>
-        </InputGroup>
+        </StyledInputGroup>
       ) : (
         <StyledInputGroup flexEnd spaced>
           {hasDelete && (

@@ -23,6 +23,34 @@ const SimpleTable = styled.table`
   border-collapse: collapse;
 `;
 
+const StyledInputGroup = styled(InputGroup)`
+  @media (max-width: 575px) {
+    a, a > span {
+      width: 100%;
+      white-space: nowrap;
+    }
+  }
+`;
+
+const StyledTR = styled.tr`
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  width: 100%;
+  align-items: center;
+
+  @media (max-width: 575px) {
+    th, td {
+      padding: 1rem;
+    }
+  }
+`;
+
+const TruncatedTd = styled(Td)`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`;
+
 const SettingsIndex = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
@@ -124,9 +152,9 @@ const SettingsIndex = () => {
             ) : (
               <p>You currently sign in with {provider}</p>
             )}
-            <InputGroup flexEnd>
+            <StyledInputGroup flexEnd>
               <Button as={ReactRouterLink} gray="true" to="/account/settings/auth">Change Authentication Method</Button>
-            </InputGroup>
+            </StyledInputGroup>
           </Section>
 
           {provider === 'local' && (
@@ -134,9 +162,9 @@ const SettingsIndex = () => {
               <H2>Your Information</H2>
               <Table>
                 <tbody>
-                  <tr>
+                  <StyledTR>
                     <Th scope="row">Name</Th>
-                    <Td>{name}</Td>
+                    <TruncatedTd>{name}</TruncatedTd>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'settings-name'}
@@ -151,10 +179,10 @@ const SettingsIndex = () => {
                         ]}
                       />
                     </Td>
-                  </tr>
-                  <tr>
+                  </StyledTR>
+                  <StyledTR>
                     <Th scope="row">Email</Th>
-                    <Td>{email}</Td>
+                    <TruncatedTd>{email}</TruncatedTd>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'settings-email'}
@@ -169,10 +197,10 @@ const SettingsIndex = () => {
                         ]}
                       />
                     </Td>
-                  </tr>
-                  <tr>
+                  </StyledTR>
+                  <StyledTR>
                     <Th scope="row">Password</Th>
-                    <Td>************</Td>
+                    <TruncatedTd>************</TruncatedTd>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'settings-password'}
@@ -187,7 +215,7 @@ const SettingsIndex = () => {
                         ]}
                       />
                     </Td>
-                  </tr>
+                  </StyledTR>
                 </tbody>
               </Table>
             </Section>
