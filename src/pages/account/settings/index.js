@@ -17,10 +17,30 @@ import Table from '../../../components/elements/Table';
 import Td from '../../../components/elements/Td';
 import Th from '../../../components/elements/Th';
 import Subscription from '../../../components/blocks/Subscription';
-import { ReactComponent as GithubIcon } from '../../../images/GithubIcon.svg';
+import ContactIconButton from '../../../components/elements/ContactIconButton';
 
 const SimpleTable = styled.table`
   border-collapse: collapse;
+
+  tr {
+    display: grid;
+    grid-template-columns: 78px 1fr;
+    width: 100%;
+    align-items: center;
+
+    td {
+      padding-bottom: 1rem;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 575px) {
+      td {
+        padding-left: 0;
+      }      
+    }
+  }
 `;
 
 const StyledInputGroup = styled(InputGroup)`
@@ -134,7 +154,9 @@ const SettingsIndex = () => {
             ) : provider === 'github' ? (
               <>
                 <p>You currently sign in with</p>
-                <div>{<GithubIcon />}</div>
+                <div>
+                  <ContactIconButton type="github" absolute={false} />
+                </div>
                 <H3>Data from GitHub</H3>
                 <SimpleTable>
                   <tbody>
