@@ -26,6 +26,18 @@ const Cell = styled.span`
   line-height: 19px;
 `;
 
+const StyledInputGroup = styled(InputGroup)`
+  @media (max-width: 575px) {
+    & > * {
+      width: 100%;
+
+      span {
+        width: 100%;
+      }
+    }
+  }
+`;
+
 const ApiKeyDetails = (props) => {
   const [data, setData] = useState({});
   const [showLoader, setShowLoader] = useState(true);
@@ -81,11 +93,11 @@ const ApiKeyDetails = (props) => {
             <Cell>Created</Cell>
             <Cell>{moment(data.created_at).format('YYYY-MM-DD')}</Cell>
           </APIKeyInfo>
-          <InputGroup flexEnd spaced>
+          <StyledInputGroup flexEnd spaced>
             <Button as={ReactRouterLink} to="/account" gray="true" disabled={true}>
               Back to Account Home
             </Button>
-          </InputGroup>
+          </StyledInputGroup>
         </Section>
       )}
     </InternalMain>
