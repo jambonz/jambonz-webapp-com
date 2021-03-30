@@ -14,30 +14,7 @@ import Button from "../../../../components/elements/Button";
 import { NotificationDispatchContext } from "../../../../contexts/NotificationContext";
 import handleErrors from "../../../../helpers/handleErrors";
 import ContactIconButton from '../../../../components/elements/ContactIconButton';
-
-const EmailCard = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-family: "WorkSans";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
-  color: ${(props) => (props.selected ? "#565656" : "#ffffff")};
-  background: ${(props) => (props.selected ? "#ffffff" : "#707070")};
-  width: 140px;
-  height: 48px;
-  border: 3px solid #707070;
-  box-sizing: border-box;
-  border-radius: 4px;
-  cursor: pointer;
-
-  ${props => props.theme.mobileOnly} {
-    height: 36px;
-  }
-`;
+import EmailIconButton from '../../../../components/elements/EmailIconButton';
 
 const StyledP = styled(P)`
   margin-top: 1rem;
@@ -97,13 +74,13 @@ const SettingsAuthIndex = () => {
     switch (method) {
       case "local":
         node = (
-          <EmailCard
+          <EmailIconButton
             type="email"
             selected={method === provider}
             onClick={() => history.push("/account/settings/auth/email")}
           >
             Email
-          </EmailCard>
+          </EmailIconButton>
         );
         break;
       case "github":
