@@ -189,6 +189,15 @@ const LoadingContainer = styled.div`
       width: 100%;
     }
   }
+
+  ${props => props.theme.mobileOnly} {
+    padding: 1rem;
+
+    a {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+  }
 `;
 
 const MobileContainer = styled.div`

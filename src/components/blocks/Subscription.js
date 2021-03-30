@@ -3,7 +3,7 @@ import { Link as ReactRouterLink } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 import moment from "moment";
-import styled from 'styled-components/macro';
+import styled from "styled-components/macro";
 
 import H2 from "../../components/elements/H2";
 import Button from "../../components/elements/Button";
@@ -13,7 +13,7 @@ import PlanType from "../../data/PlanType";
 import CurrencySymbol from "../../data/CurrencySymbol";
 
 const StyledInputGroup = styled(InputGroup)`
-  ${props => props.theme.mobileOnly} {
+  ${(props) => props.theme.mobileOnly} {
     & > * {
       width: 100%;
 
@@ -138,7 +138,11 @@ const Subscription = ({ data, hasDelete }) => {
               Delete Account
             </Button>
           )}
-          <Button as={ReactRouterLink} to="/account/subscription">
+          <Button
+            style={{ whiteSpace: "nowrap" }}
+            as={ReactRouterLink}
+            to="/account/subscription"
+          >
             Upgrade to a Paid Subscription
           </Button>
         </StyledInputGroup>
