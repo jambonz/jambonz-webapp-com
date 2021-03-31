@@ -1,6 +1,7 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { Link as ReactRouterLink, useHistory } from "react-router-dom";
 import axios from "axios";
+import styled from "styled-components/macro";
 
 import InternalMain from "../../../components/wrappers/InternalMain";
 import Form from "../../../components/elements/Form";
@@ -13,6 +14,27 @@ import Section from "../../../components/blocks/Section";
 import FormError from "../../../components/blocks/FormError";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
 import handleErrors from "../../../helpers/handleErrors";
+
+const StyledInputGroup = styled(InputGroup)`
+  @media (max-width: 575px) {
+    & > * {
+      width: 100%;
+
+      span {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (max-width: 440px) {
+    flex-direction: column;
+
+    & > *:first-child {
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+  }
+`;
 
 const SipRealmEdit = () => {
   let history = useHistory();
@@ -217,12 +239,12 @@ const SipRealmEdit = () => {
                 </P>
               )}
               {errorMessage && <FormError message={errorMessage} />}
-              <InputGroup flexEnd spaced>
+              <StyledInputGroup flexEnd spaced>
                 <Button gray="true" as={ReactRouterLink} to="/account">
                   Cancel
                 </Button>
                 <Button>Change SIP Realm</Button>
-              </InputGroup>
+              </StyledInputGroup>
             </React.Fragment>
           )}
         </Form>
