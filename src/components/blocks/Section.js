@@ -42,6 +42,7 @@ const StyledSection = styled.section`
 const Section = props => {
   return (
     <StyledSection
+      {...props}
       fullPage={props.fullPage}
       normalTable={props.normalTable}
       position={props.position}

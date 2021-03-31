@@ -16,6 +16,7 @@ import H2 from "../../../components/elements/H2";
 import InputGroup from "../../../components/elements/InputGroup";
 import Label from "../../../components/elements/Label";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
+import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 
 const stripePromise = loadStripe("pk_test_EChRaX9Tjk8csZZVSeoGqNvu00lsJzjaU0");
 
@@ -45,6 +46,24 @@ const Text = styled.h3`
 
 const StyledInputGroup = styled(InputGroup)`
   grid-column: 1 / 4;
+
+  @media (max-width: 575px) {
+    & > * {
+      width: 100%;
+
+      span {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (max-width: 399.98px) {
+    flex-direction: column;
+
+    & > *:first-child {
+      margin: 0 0 1rem 0;
+    }
+  }
 `;
 
 const StyledFormError = styled(FormError)`
@@ -58,9 +77,15 @@ const CardElementsWrapper = styled.div`
   width: 100%;
   height: 36px;
   padding: 0 1rem;
+  grid-column: 2 / 4;
+  max-width: 450px;
 
   & .StripeElement {
     width: 100%;
+  }
+
+  ${props => props.theme.mobileOnly} {
+    max-width: none;
   }
 `;
 
@@ -101,6 +126,29 @@ const LoadingContainer = styled.div`
   }
 `;
 
+const CardNameInput = styled.div`
+  grid-column: 2 / 4;
+  margin-right: 274px;
+  min-width: 250px;
+  max-width: 450px;
+  width: 100%;
+
+  ${props => props.theme.mobileOnly} {
+    max-width: none;
+  }
+`;
+
+const StyledForm = styled(Form)`
+  @media (max-width: 575px) {
+    display: block;
+    text-align: left;
+
+    & > div {
+      margin: 4px 0 1.5rem;
+    }
+  }
+`;
+
 const cardElementsOptions = {
   style: {
     base: {
@@ -117,6 +165,7 @@ const cardElementsOptions = {
 
 const NewPaymentInfo = ({ elements, stripe, edit }) => {
   const dispatch = useContext(NotificationDispatchContext);
+  const isMobile = useContext(ResponsiveContext);
   const jwt = localStorage.getItem("jwt");
 
   const history = useHistory();
@@ -273,7 +322,7 @@ const NewPaymentInfo = ({ elements, stripe, edit }) => {
   };
 
   return (
-    <Section normalTable position="relative">
+    <Section position="relative" style={isMobile ? { margin: '1rem' } : {}}>
       {paymentLoading && (
         <ProgressContainer>
           <LoadingContainer direction="row">
@@ -286,29 +335,29 @@ const NewPaymentInfo = ({ elements, stripe, edit }) => {
         </ProgressContainer>
       )}
       <H2>New payment information</H2>
-      <Form onSubmit={handleSubmit}>
+      <StyledForm onSubmit={handleSubmit}>
         <Label htmlFor="payment_name" textAlign="right">
           Cardholder Name
         </Label>
-        <Input
-          name="payment_name"
-          id="payment_name"
-          value={paymentName}
-          onChange={(e) => {
-            setPaymentName(e.target.value);
-            setPaymentNameInvalid(false);
-            setDisabledSubmit(false);
-          }}
-          placeholder=""
-          invalid={paymentNameInvalid}
-          ref={paymentNameRef}
-        />
-        <div />
+        <CardNameInput>
+          <Input
+            name="payment_name"
+            id="payment_name"
+            value={paymentName}
+            onChange={(e) => {
+              setPaymentName(e.target.value);
+              setPaymentNameInvalid(false);
+              setDisabledSubmit(false);
+            }}
+            placeholder=""
+            invalid={paymentNameInvalid}
+            ref={paymentNameRef}
+          />
+        </CardNameInput>
         <Label textAlign="right">Card</Label>
         <CardElementsWrapper>
           <CardElement options={cardElementsOptions} />
         </CardElementsWrapper>
-        <div />
         {errorMessage && <StyledFormError grid message={errorMessage} />}
         <StyledInputGroup flexEnd spaced>
           <Button gray="true" as={ReactRouterLink} to="/account">
@@ -318,7 +367,7 @@ const NewPaymentInfo = ({ elements, stripe, edit }) => {
             Save New Card
           </Button>
         </StyledInputGroup>
-      </Form>
+      </StyledForm>
     </Section>
   );
 };
