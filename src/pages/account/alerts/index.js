@@ -70,7 +70,7 @@ const AlertsIndex = () => {
       <StyledInputGroup flexEnd spaced>
         <Button gray="true" style={{ marginBotton: '1rem !important' }}>Download as CSV</Button>
       </StyledInputGroup>
-      <Section>
+      <Section normalTable>
         <TableContent
             fullWidth
             noMenuOnRows
