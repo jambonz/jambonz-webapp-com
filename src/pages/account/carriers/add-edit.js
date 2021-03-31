@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from "styled-components/macro";
+
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
@@ -15,6 +17,88 @@ import Button from '../../../components/elements/Button';
 import TrashButton from '../../../components/elements/TrashButton';
 import Loader from '../../../components/blocks/Loader';
 import sortSipGateways from '../../../helpers/sortSipGateways';
+
+const StyledForm = styled(Form)`
+  @media (max-width: 978.98px) {
+    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
+
+    & > * {
+      width: 100%;
+    }
+
+    & > hr {
+      width: calc(100% + 4rem);
+    }
+  }
+  
+  ${props => props.theme.mobileOnly} {
+    & > hr {
+      margin: 0.5rem -1rem !important;
+      width: calc(100% + 2rem);
+    }
+  }
+`;
+
+const SIPGatewaysHeader = styled.div`
+  @media (max-width: 978.98px) {
+    display: grid;
+    grid-template-columns: 1fr 80px;
+    grid-gap: 1rem;
+  }
+`;
+
+const PortLabel = styled(Label)`
+  ${props => props.mobile ? 'display: none;' : ''}
+
+  @media (max-width: 978.98px) {
+    display: ${props => props.mobile ? 'block' : 'none'};
+  }
+`;
+
+const SIPGatewaysInputGroup = styled(InputGroup)`
+  @media (max-width: 978.98px) {
+    display: grid;
+    grid-template-columns: 1fr 80px;
+    grid-gap: 1rem;
+  }
+`;
+
+const SIPGatewaysChecboxGroup = styled.div`
+  display: flex;
+
+  @media (max-width: 978.98px) {
+    grid-column: 1 / 3;
+
+    & > *:first-child {
+      margin-left: -0.5rem;
+    }
+  }
+`;
+
+const StyledButtonGroup = styled(InputGroup)`
+  @media (max-width: 576.98px) {
+    width: 100%;
+
+    & > * {
+      width: 100%;
+
+      & > * {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (max-width: 399.98px) {
+    flex-direction: column;
+
+    & > *:first-child {
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+  }
+`;
 
 const CarriersAddEdit = () => {
   const { voip_carrier_sid } = useParams();
@@ -638,7 +722,7 @@ const CarriersAddEdit = () => {
         {showLoader ? (
           <Loader height="376px" />
         ) : (
-          <Form
+          <StyledForm
             large
             onSubmit={handleSubmit}
           >
@@ -678,7 +762,6 @@ const CarriersAddEdit = () => {
             {
               !authenticate ? (
                 <>
-                  <div></div>
                   <Button
                     text
                     formLink
@@ -761,7 +844,6 @@ const CarriersAddEdit = () => {
                 </>
               ) : (
                 <>
-                  <div></div>
                   <Button
                     text
                     formLink
@@ -777,7 +859,10 @@ const CarriersAddEdit = () => {
             <hr style={{ margin: '0.5rem -2rem' }} />
 
             <div
-              style={{ whiteSpace: 'nowrap' }}
+              style={{
+                whiteSpace: 'nowrap',
+                textAlign: 'left',
+              }}
             >SIP Gateways</div>
             {
               sipGateways.length
@@ -786,8 +871,11 @@ const CarriersAddEdit = () => {
             }
             {sipGateways.map((g, i) => (
               <React.Fragment key={i}>
-                <Label htmlFor={`sipGatewaysIp[${i}]`}>IP Address</Label>
-                <InputGroup>
+                <SIPGatewaysHeader>
+                  <Label htmlFor={`sipGatewaysIp[${i}]`}>IP Address</Label>
+                  <PortLabel mobile htmlFor={`sipGatewaysPort[${i}]`}>Port</PortLabel>
+                </SIPGatewaysHeader>
+                <SIPGatewaysInputGroup>
                   <Input
                     name={`sipGatewaysIp[${i}]`}
                     id={`sipGatewaysIp[${i}]`}
@@ -797,12 +885,12 @@ const CarriersAddEdit = () => {
                     invalid={sipGateways[i].invalidIp}
                     ref={ref => refIp.current[i] = ref}
                   />
-                  <Label
+                  <PortLabel
                     middle
                     htmlFor={`sipGatewaysPort[${i}]`}
                   >
                     Port
-                  </Label>
+                  </PortLabel>
                   <Input
                     width="5rem"
                     name={`sipGatewaysPort[${i}]`}
@@ -813,29 +901,31 @@ const CarriersAddEdit = () => {
                     invalid={sipGateways[i].invalidPort}
                     ref={ref => refPort.current[i] = ref}
                   />
-                  <Checkbox
-                    id={`inbound[${i}]`}
-                    label="Inbound"
-                    tooltip="Sends us calls"
-                    checked={sipGateways[i].inbound}
-                    onChange={e => updateSipGateways(e, i, 'inbound')}
-                    invalid={sipGateways[i].invalidInbound}
-                    ref={ref => refInbound.current[i] = ref}
-                  />
-                  <Checkbox
-                    id={`outbound[${i}]`}
-                    label="Outbound"
-                    tooltip="Accepts calls from us"
-                    checked={sipGateways[i].outbound}
-                    onChange={e => updateSipGateways(e, i, 'outbound')}
-                    invalid={sipGateways[i].invalidOutbound}
-                    ref={ref => refOutbound.current[i] = ref}
-                  />
-                  <TrashButton
-                    onClick={() => removeSipGateway(i)}
-                    ref={ref => refTrash.current[i] = ref}
-                  />
-                </InputGroup>
+                  <SIPGatewaysChecboxGroup>
+                    <Checkbox
+                      id={`inbound[${i}]`}
+                      label="Inbound"
+                      tooltip="Sends us calls"
+                      checked={sipGateways[i].inbound}
+                      onChange={e => updateSipGateways(e, i, 'inbound')}
+                      invalid={sipGateways[i].invalidInbound}
+                      ref={ref => refInbound.current[i] = ref}
+                    />
+                    <Checkbox
+                      id={`outbound[${i}]`}
+                      label="Outbound"
+                      tooltip="Accepts calls from us"
+                      checked={sipGateways[i].outbound}
+                      onChange={e => updateSipGateways(e, i, 'outbound')}
+                      invalid={sipGateways[i].invalidOutbound}
+                      ref={ref => refOutbound.current[i] = ref}
+                    />
+                    <TrashButton
+                      onClick={() => removeSipGateway(i)}
+                      ref={ref => refTrash.current[i] = ref}
+                    />
+                  </SIPGatewaysChecboxGroup>
+                </SIPGatewaysInputGroup>
               </React.Fragment>
             ))}
             <Button
@@ -850,7 +940,7 @@ const CarriersAddEdit = () => {
               <FormError grid message={errorMessage} />
             )}
 
-            <InputGroup flexEnd spaced>
+            <StyledButtonGroup flexEnd spaced>
               <Button
                 gray
                 type="button"
@@ -872,8 +962,8 @@ const CarriersAddEdit = () => {
                   : 'Save'
                 }
               </Button>
-            </InputGroup>
-          </Form>
+            </StyledButtonGroup>
+          </StyledForm>
         )}
       </Section>
     </InternalMain>
