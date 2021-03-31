@@ -34,7 +34,57 @@ const Form = styled.form`
     grid-column: 1 / 5;
   }
 
-  & > div {
+  @media (max-width: 977.98px) {
+    grid-template-columns: 100px 1fr 100px 50px;
+  }
+
+  ${(props) => props.theme.mobileOnly} {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    grid-row-gap: 1rem;
+
+    & > * {
+      width: 100%;
+    }
+
+    hr {
+      width: calc(100% + 3rem);
+    }
+  }
+`;
+
+const LabelInDesktop = styled(Label)`
+  ${(props) => props.theme.mobileOnly} {
+    display: none;
+  }
+`;
+
+const DivInMobile = styled.div`
+  display: none;
+
+  ${(props) => props.theme.mobileOnly} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+`;
+
+const MobileContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  grid-column: 1 / 5;
+  width: 100%;
+
+  @media (max-width: 977.98px) {
+    grid-template-columns: 1fr 50px;
+  }
+
+  ${(props) => props.theme.mobileOnly} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 `;
 
@@ -46,8 +96,56 @@ const Text = styled.h3`
   text-align: ${(props) => props.textAlign || "left"};
 `;
 
+const FormHeader = styled.h3`
+  font-size: 1rem;
+  margin: 0;
+  font-weight: ${(props) => (props.bold ? "600" : "normal")};
+  color: #707070;
+  text-align: ${(props) => props.textAlign || "left"};
+
+  ${(props) => props.theme.mobileOnly} {
+    display: none;
+
+    & + hr {
+      display: none;
+    }
+  }
+`;
+
 const StyledInputGroup = styled(InputGroup)`
   grid-column: 1 / 5;
+
+  @media (max-width: 978.98px) {
+    flex-direction: column;
+
+    & > * {
+      width: 100%;
+
+      span {
+        width: 100%;
+      }
+    }
+  }
+`;
+
+const InnerInputGroup = styled(InputGroup)`
+  @media (max-width: 978.98px) {
+    justify-content: space-between;
+    margin-top: 1.5rem;
+
+    & > * {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 400px) {
+    flex-direction: column;
+
+    & > *:first-child {
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+  }
 `;
 
 const StyledFormError = styled(FormError)`
@@ -510,16 +608,16 @@ const ModifySubscription = () => {
           <Loader height="376px" />
         ) : (
           <Form onSubmit={handleSubmit}>
-            <Text bold>Service</Text>
-            <Text bold textAlign="center">
+            <FormHeader bold>Service</FormHeader>
+            <FormHeader bold textAlign="center">
               Capacity
-            </Text>
-            <Text bold textAlign="center">
+            </FormHeader>
+            <FormHeader bold textAlign="center">
               Price
-            </Text>
-            <Text bold textAlign="center">
+            </FormHeader>
+            <FormHeader bold textAlign="center">
               Cost
-            </Text>
+            </FormHeader>
             <hr />
             {serviceData.map((service, index) => (
               <React.Fragment key={service.category}>
@@ -535,36 +633,44 @@ const ModifySubscription = () => {
                   invalid={service.invalid}
                   ref={(ref) => handleRefs(service.category, ref)}
                 />
-                <Label textAlign="center">{service.feesLabel}</Label>
-                <Label textAlign="center">
+                <LabelInDesktop textAlign="center">{service.feesLabel}</LabelInDesktop>
+                <LabelInDesktop textAlign="center">
                   {service.cost !== ""
                     ? `${CurrencySymbol[service.currency]}${service.cost}`
                     : ""}
-                </Label>
+                </LabelInDesktop>
+                <DivInMobile>
+                  <Label textAlign="center">{service.feesLabel}</Label>
+                  <Label textAlign="center">
+                    {service.cost !== ""
+                      ? `${CurrencySymbol[service.currency]}${service.cost}`
+                      : ""}
+                  </Label>
+                </DivInMobile>
                 <hr />
               </React.Fragment>
             ))}
-            <Text bold>Total Monthly Cost</Text>
-            <div />
-            <div />
-            <Text bold textAlign="center">
-              {`$${total}`}
-            </Text>
+            <MobileContainer>
+              <Text bold>Total Monthly Cost</Text>
+              <Text bold textAlign="center">
+                {`$${total}`}
+              </Text>
+            </MobileContainer>
             <hr />
             {errorMessage && <StyledFormError grid message={errorMessage} />}
             <StyledInputGroup spaced>
-              <InputGroup spaced style={{ flex: 1 }}>
+              <InnerInputGroup spaced style={{ flex: 1 }}>
                 <StyledLink to="/account/return-to-free">
                   Return to free plan
                 </StyledLink>
                 <StyledLink to={"#"}>Delete Account</StyledLink>
-              </InputGroup>
-              <InputGroup flexEnd spaced>
+              </InnerInputGroup>
+              <InnerInputGroup flexEnd spaced>
                 <Button gray="true" as={ReactRouterLink} to="/account/settings">
                   Cancel
                 </Button>
                 <Button disabled={disableSubmit}>Review Changes</Button>
-              </InputGroup>
+              </InnerInputGroup>
             </StyledInputGroup>
           </Form>
         )}
