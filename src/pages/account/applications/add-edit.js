@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from "styled-components/macro";
+
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import handleErrors from '../../../helpers/handleErrors';
 import InternalMain from '../../../components/wrappers/InternalMain';
@@ -19,6 +21,70 @@ import SpeechRecognizerLanguageGoogle from '../../../data/SpeechRecognizerLangua
 import SpeechRecognizerLanguageAws from '../../../data/SpeechRecognizerLanguageAws';
 import Loader from '../../../components/blocks/Loader';
 import CopyableText from '../../../components/elements/CopyableText';
+
+const StyledForm = styled(Form)`
+  @media (max-width: 978.98px) {
+    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
+
+    & > * {
+      width: 100%;
+    }
+
+    & > hr {
+      width: calc(100% + 4rem);
+    }
+  }
+  
+  ${props => props.theme.mobileOnly} {
+    & > hr {
+      margin: 0 -1rem;
+      width: calc(100% + 2rem);
+    }
+  }
+`;
+
+const StyledInputGroup = styled(InputGroup)`
+  @media (max-width: 978.98px) {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+
+    & > * {
+      width: 100%;
+    }
+  }
+`;
+
+const StyledLabel = styled(Label)`
+  @media (max-width: 978.98px) {
+    margin: ${props => props.margin || '1rem 0'};
+  }
+`;
+
+const StyledButtonGroup = styled(InputGroup)`
+  @media (max-width: 576.98px) {
+    width: 100%;
+
+    & > * {
+      width: 100%;
+
+      & > * {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (max-width: 399.98px) {
+    flex-direction: column;
+
+    & > *:first-child {
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+  }
+`;
 
 const ApplicationsAddEdit = () => {
   let history = useHistory();
@@ -347,7 +413,7 @@ const ApplicationsAddEdit = () => {
             }
           />
         ) : (
-          <Form
+          <StyledForm
             large
             onSubmit={handleSubmit}
           >
@@ -373,7 +439,7 @@ const ApplicationsAddEdit = () => {
             <hr />
 
             <Label htmlFor="callWebhook">Calling Webhook</Label>
-            <InputGroup>
+            <StyledInputGroup>
               <Input
                 name="callWebhook"
                 id="callWebhook"
@@ -384,12 +450,12 @@ const ApplicationsAddEdit = () => {
                 ref={refCallWebhook}
               />
 
-              <Label
+              <StyledLabel
                 middle
                 htmlFor="callWebhookMethod"
               >
                 Method
-              </Label>
+              </StyledLabel>
               <Select
                 name="callWebhookMethod"
                 id="callWebhookMethod"
@@ -399,11 +465,11 @@ const ApplicationsAddEdit = () => {
                 <option value="POST">POST</option>
                 <option value="GET">GET</option>
               </Select>
-            </InputGroup>
+            </StyledInputGroup>
 
             {showCallAuth ? (
-              <InputGroup>
-                <Label indented htmlFor="callWebhookUser">User</Label>
+              <StyledInputGroup>
+                <StyledLabel margin="0 0 1rem" indented htmlFor="callWebhookUser">User</StyledLabel>
                 <Input
                   name="callWebhookUser"
                   id="callWebhookUser"
@@ -413,7 +479,7 @@ const ApplicationsAddEdit = () => {
                   invalid={invalidCallWebhookUser}
                   ref={refCallWebhookUser}
                 />
-                <Label htmlFor="callWebhookPass" middle>Password</Label>
+                <StyledLabel htmlFor="callWebhookPass" middle>Password</StyledLabel>
                 <PasswordInput
                   allowShowPassword
                   name="callWebhookPass"
@@ -425,7 +491,7 @@ const ApplicationsAddEdit = () => {
                   invalid={invalidCallWebhookPass}
                   ref={refCallWebhookPass}
                 />
-              </InputGroup>
+              </StyledInputGroup>
             ) : (
               <Button
                 text
@@ -440,7 +506,7 @@ const ApplicationsAddEdit = () => {
             <hr />
 
             <Label htmlFor="statusWebhook">Call Status Webhook</Label>
-            <InputGroup>
+            <StyledInputGroup>
               <Input
                 name="statusWebhook"
                 id="statusWebhook"
@@ -451,12 +517,12 @@ const ApplicationsAddEdit = () => {
                 ref={refStatusWebhook}
               />
 
-              <Label
+              <StyledLabel
                 middle
                 htmlFor="statusWebhookMethod"
               >
                 Method
-              </Label>
+              </StyledLabel>
               <Select
                 name="statusWebhookMethod"
                 id="statusWebhookMethod"
@@ -466,11 +532,11 @@ const ApplicationsAddEdit = () => {
                 <option value="POST">POST</option>
                 <option value="GET">GET</option>
               </Select>
-            </InputGroup>
+            </StyledInputGroup>
 
             {showStatusAuth ? (
-              <InputGroup>
-                <Label indented htmlFor="statusWebhookUser">User</Label>
+              <StyledInputGroup>
+                <StyledLabel margin="0 0 1rem" indented htmlFor="statusWebhookUser">User</StyledLabel>
                 <Input
                   name="statusWebhookUser"
                   id="statusWebhookUser"
@@ -480,7 +546,7 @@ const ApplicationsAddEdit = () => {
                   invalid={invalidStatusWebhookUser}
                   ref={refStatusWebhookUser}
                 />
-                <Label htmlFor="statusWebhookPass" middle>Password</Label>
+                <StyledLabel htmlFor="statusWebhookPass" middle>Password</StyledLabel>
                 <PasswordInput
                   allowShowPassword
                   name="statusWebhookPass"
@@ -492,7 +558,7 @@ const ApplicationsAddEdit = () => {
                   invalid={invalidStatusWebhookPass}
                   ref={refStatusWebhookPass}
                 />
-              </InputGroup>
+              </StyledInputGroup>
             ) : (
               <Button
                 text
@@ -507,7 +573,7 @@ const ApplicationsAddEdit = () => {
             <hr />
 
             <Label htmlFor="messagingWebhook">Messaging Webhook</Label>
-            <InputGroup>
+            <StyledInputGroup>
               <Input
                 name="messagingWebhook"
                 id="messagingWebhook"
@@ -516,12 +582,12 @@ const ApplicationsAddEdit = () => {
                 placeholder="URL that will receive SMS (optional)"
               />
 
-              <Label
+              <StyledLabel
                 middle
                 htmlFor="messagingWebhookMethod"
               >
                 Method
-              </Label>
+              </StyledLabel>
               <Select
                 name="messagingWebhookMethod"
                 id="messagingWebhookMethod"
@@ -531,11 +597,11 @@ const ApplicationsAddEdit = () => {
                 <option value="POST">POST</option>
                 <option value="GET">GET</option>
               </Select>
-            </InputGroup>
+            </StyledInputGroup>
 
             {showMessagingAuth ? (
-              <InputGroup>
-                <Label indented htmlFor="messagingWebhookUser">User</Label>
+              <StyledInputGroup>
+                <StyledLabel margin="0 0 1rem" indented htmlFor="messagingWebhookUser">User</StyledLabel>
                 <Input
                   name="messagingWebhookUser"
                   id="messagingWebhookUser"
@@ -545,7 +611,7 @@ const ApplicationsAddEdit = () => {
                   invalid={invalidMessagingWebhookUser}
                   ref={refMessagingWebhookUser}
                 />
-                <Label htmlFor="messagingWebhookPass" middle>Password</Label>
+                <StyledLabel htmlFor="messagingWebhookPass" middle>Password</StyledLabel>
                 <PasswordInput
                   allowShowPassword
                   name="messagingWebhookPass"
@@ -557,7 +623,7 @@ const ApplicationsAddEdit = () => {
                   invalid={invalidMessagingWebhookPass}
                   ref={refMessagingWebhookPass}
                 />
-              </InputGroup>
+              </StyledInputGroup>
             ) : (
               <Button
                 text
@@ -572,7 +638,7 @@ const ApplicationsAddEdit = () => {
             <hr />
 
             <Label htmlFor="speechSynthesisVendor">Speech Synthesis Vendor</Label>
-            <InputGroup>
+            <StyledInputGroup>
               <Select
                 name="speechSynthesisVendor"
                 id="speechSynthesisVendor"
@@ -620,7 +686,7 @@ const ApplicationsAddEdit = () => {
                 <option value="google">Google</option>
                 <option value="aws">AWS</option>
               </Select>
-              <Label middle htmlFor="speechSynthesisLanguage">Language</Label>
+              <StyledLabel middle htmlFor="speechSynthesisLanguage">Language</StyledLabel>
               <Select
                 name="speechSynthesisLanguage"
                 id="speechSynthesisLanguage"
@@ -659,7 +725,7 @@ const ApplicationsAddEdit = () => {
                   ))
                 )}
               </Select>
-              <Label middle htmlFor="speechSynthesisVoice">Voice</Label>
+              <StyledLabel middle htmlFor="speechSynthesisVoice">Voice</StyledLabel>
               <Select
                 name="speechSynthesisVoice"
                 id="speechSynthesisVoice"
@@ -680,12 +746,12 @@ const ApplicationsAddEdit = () => {
                       )))
                 )}
               </Select>
-            </InputGroup>
+            </StyledInputGroup>
 
             <hr />
 
             <Label htmlFor="speechRecognizerVendor">Speech Recognizer Vendor</Label>
-            <InputGroup>
+            <StyledInputGroup>
               <Select
                 name="speechRecognizerVendor"
                 id="speechRecognizerVendor"
@@ -710,7 +776,7 @@ const ApplicationsAddEdit = () => {
                 <option value="google">Google</option>
                 <option value="aws">AWS</option>
               </Select>
-              <Label middle htmlFor="speechRecognizerLanguage">Language</Label>
+              <StyledLabel middle htmlFor="speechRecognizerLanguage">Language</StyledLabel>
               <Select
                 name="speechRecognizerLanguage"
                 id="speechRecognizerLanguage"
@@ -727,13 +793,13 @@ const ApplicationsAddEdit = () => {
                   ))
                 )}
               </Select>
-            </InputGroup>
+            </StyledInputGroup>
 
             {errorMessage && (
               <FormError grid message={errorMessage} />
             )}
 
-            <InputGroup flexEnd spaced>
+            <StyledButtonGroup flexEnd spaced>
               <Button
                 gray
                 type="button"
@@ -755,8 +821,8 @@ const ApplicationsAddEdit = () => {
                   : 'Save'
                 }
               </Button>
-            </InputGroup>
-          </Form>
+            </StyledButtonGroup>
+          </StyledForm>
         )}
       </Section>
     </InternalMain>
