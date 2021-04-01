@@ -12,36 +12,16 @@ import Loader from "../../../../components/blocks/Loader";
 import InputGroup from "../../../../components/elements/InputGroup";
 import Button from "../../../../components/elements/Button";
 import { NotificationDispatchContext } from "../../../../contexts/NotificationContext";
-import { ReactComponent as GithubIcon } from "../../../../images/GithubIcon.svg";
-import GoogleIcon from "../../../../images/GoogleButtonIcon.png";
-import { ReactComponent as TwitterIcon } from "../../../../images/TwitterButtonIcon.svg";
 import handleErrors from "../../../../helpers/handleErrors";
-
-const EmailCard = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-family: "WorkSans";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
-  color: ${(props) => (props.selected ? "#565656" : "#ffffff")};
-  background: ${(props) => (props.selected ? "#ffffff" : "#707070")};
-  width: 141px;
-  height: 48px;
-  border: 3px solid #707070;
-  box-sizing: border-box;
-  border-radius: 4px;
-  cursor: pointer;
-`;
+import ContactIconButton from '../../../../components/elements/ContactIconButton';
+import EmailIconButton from '../../../../components/elements/EmailIconButton';
 
 const StyledP = styled(P)`
   margin-top: 1rem;
 `;
 
 const ProviderLink = styled.a`
+  text-decoration: none;
   ${(props) =>
     props.disabled
       ? `
@@ -49,6 +29,28 @@ const ProviderLink = styled.a`
     cursor: default;
   `
       : ""}
+`;
+
+const StyledInputGroup = styled(InputGroup)`
+  margin-bottom: 1rem;
+
+  @media(max-width: 576.98px) {
+    flex-direction: column;
+
+    & > a {
+      margin-right: 0;
+      margin-bottom: 0.5rem;
+      width: 100%;
+
+      & > div {
+        width: 100%;
+      }
+    }
+
+    & > div[type='email'] {
+      width: 100%;
+    }
+  }
 `;
 
 const SettingsAuthIndex = () => {
@@ -67,35 +69,40 @@ const SettingsAuthIndex = () => {
 
   const authenticationMethods = ["github", "google", "twitter", "local"];
 
-  const AuthMethod = ({ method }) => {
+  const AuthMethod = ({ method, absolute }) => {
     let node;
     switch (method) {
       case "local":
         node = (
-          <EmailCard
+          <EmailIconButton
+            type="email"
             selected={method === provider}
             onClick={() => history.push("/account/settings/auth/email")}
           >
             Email
-          </EmailCard>
+          </EmailIconButton>
         );
         break;
       case "github":
         node = (
           <ProviderLink href={gitHubUrl} disabled={provider === method}>
-            <GithubIcon />
+            <ContactIconButton type="github" absolute={absolute} />
           </ProviderLink>
         );
         break;
       case "google":
         node = (
           <ProviderLink href={googleUrl} disabled={provider === method}>
-            <img src={GoogleIcon} alt="google-icon" />
+            <ContactIconButton type="google" absolute={absolute} />
           </ProviderLink>
         );
         break;
       case "twitter":
-        node = <TwitterIcon />;
+        node = (
+          <ProviderLink href="#" disabled={provider === method}>
+            <ContactIconButton type="twitter" absolute={absolute} />
+          </ProviderLink>
+        );
         break;
       default:
         break;
@@ -152,18 +159,18 @@ const SettingsAuthIndex = () => {
       ) : (
         <Section>
           <H3>Current Authentication Method</H3>
-          <AuthMethod method={provider} />
+          <AuthMethod method={provider} absolute={false} />
           <StyledP>
             If you would like to sign in a different way, click an option below.
           </StyledP>
           <H3>Other ways to sign in</H3>
-          <InputGroup spaced>
+          <StyledInputGroup spaced>
             {authenticationMethods
               .filter((method) => method !== provider)
               .map((method) => (
                 <AuthMethod key={method} method={method} />
               ))}
-          </InputGroup>
+          </StyledInputGroup>
           <InputGroup flexEnd spaced>
             <Button gray="true" as={ReactRouterLink} to="/account/settings">
               Cancel

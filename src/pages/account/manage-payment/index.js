@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import styled from "styled-components/macro";
 
@@ -9,6 +9,7 @@ import Button from "../../../components/elements/Button";
 import InputGroup from "../../../components/elements/InputGroup";
 import Loader from "../../../components/blocks/Loader";
 import NewPaymentInfo from "./new-payment";
+import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 
 const PaymentInfo = styled.div`
   display: grid;
@@ -16,6 +17,23 @@ const PaymentInfo = styled.div`
   width: fit-content;
   grid-gap: 16px 30px;
   margin-bottom: 1.5rem;
+
+  ${props => props.theme.mobileOnly} {
+    grid-template-columns: 120px 1fr;
+    grid-gap: 8px 16px;
+  }
+`;
+
+const StyledInputGroup = styled(InputGroup)`
+  @media (max-width: 575px) {
+    & > * {
+      width: 100%;
+
+      span {
+        width: 100%;
+      }
+    }
+  }
 `;
 
 const Cell = styled.span`
@@ -26,6 +44,7 @@ const Cell = styled.span`
 
 const ManagePaymentInfo = () => {
   const jwt = localStorage.getItem("jwt");
+  const isMobile = useContext(ResponsiveContext);
 
   const [showLoader, setShowLoader] = useState(true);
   const [paymentInfo, setPaymentInfo] = useState({});
@@ -75,7 +94,7 @@ const ManagePaymentInfo = () => {
       title="Manage Payment Information"
       breadcrumbs={[{ name: "Back to Settings", url: "/account/settings" }]}
     >
-      <Section>
+      <Section style={isMobile ? { margin: '0 1rem' } : {}}>
         {showLoader ? (
           <Loader height="calc(100vh - 24rem)" />
         ) : (
@@ -89,9 +108,9 @@ const ManagePaymentInfo = () => {
               <Cell>Expiration</Cell>
               <Cell>{paymentInfo.exp_year ? `${paymentInfo.exp_month}/${paymentInfo.exp_year}`: ''}</Cell>
             </PaymentInfo>
-            <InputGroup flexEnd spaced>
+            <StyledInputGroup flexEnd spaced>
               <Button onClick={showPaymentEditPanel}>Change Payment Info</Button>
-            </InputGroup>
+            </StyledInputGroup>
           </>
         )}
       </Section>

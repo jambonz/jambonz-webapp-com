@@ -27,10 +27,12 @@ const StyledSection = styled.section`
   `}
 
   ${props => props.theme.mobileOnly} {
+    padding: 1rem;
+    
     ${props => props.normalTable && `
       height: 100%;
       min-width: auto;
-      margin: 0;
+      margin: 1rem;
       border-radius: 0;
       overflow: auto;
     `}
@@ -40,6 +42,7 @@ const StyledSection = styled.section`
 const Section = props => {
   return (
     <StyledSection
+      {...props}
       fullPage={props.fullPage}
       normalTable={props.normalTable}
       position={props.position}

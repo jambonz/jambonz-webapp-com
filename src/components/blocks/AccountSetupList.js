@@ -14,6 +14,10 @@ const List = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 4rem;
+
+  ${props => props.theme.mobileOnly} {
+    display: block;
+  }
 `;
 
 const TH = styled.h4`
@@ -22,6 +26,10 @@ const TH = styled.h4`
   line-height: 19px;
   color: #707070;
   margin: 0;
+
+  ${props => props.theme.mobileOnly} {
+    margin-top: 1.5rem;
+  }
 `;
 
 const Circle = styled.div`
@@ -38,6 +46,10 @@ const TaskItem = styled.div`
   display: flex;
   align-items: center;
   margin-top: 1rem;
+
+  ${props => props.theme.mobileOnly} {
+    margin-left: 10px;
+  }
 `;
 
 const AccountSetupList = ({ onComplete }) => {

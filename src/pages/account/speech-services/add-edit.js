@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from "styled-components/macro";
+
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import handleErrors from '../../../helpers/handleErrors';
 import InternalMain from '../../../components/wrappers/InternalMain';
@@ -17,6 +19,62 @@ import Code from '../../../components/elements/Code';
 import FormError from '../../../components/blocks/FormError';
 import Button from '../../../components/elements/Button';
 import Loader from '../../../components/blocks/Loader';
+
+const StyledForm = styled(Form)`
+  ${props => props.theme.mobileOnly} {
+    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
+    text-align: left;
+
+    & > * {
+      width: 100%;
+    }
+  }
+`;
+
+const VendorText = styled.span`
+  ${props => props.theme.mobileOnly} {
+    margin-bottom: -0.5rem;
+  }
+`;
+
+const Space = styled.div`
+  ${props => props.theme.mobileOnly} {
+    display: none;
+  }
+`;
+
+const StyledButtonGroup = styled(InputGroup)`
+  @media (max-width: 576.98px) {
+    width: 100%;
+
+    & > *:first-child {
+      width: 100%;
+      flex: 1;
+
+      & > * {
+        width: 100%;
+      }
+    }
+
+    & > *:last-child {
+      width: 100%;
+      flex: 1;
+
+      & > * {
+        width: 100%;
+      }
+    }
+  }
+  ${props => props.type === 'add' ? `
+    @media (max-width: 459.98px) {
+      & > *:first-child {
+        flex: 0;
+      }
+    }
+  ` : ''}
+`;
 
 const SpeechServicesAddEdit = () => {
   let history = useHistory();
@@ -400,11 +458,11 @@ const SpeechServicesAddEdit = () => {
             }
           />
         ) : (
-          <Form
+          <StyledForm
             large
             onSubmit={handleSubmit}
           >
-            <span>Vendor</span>
+            <VendorText>Vendor</VendorText>
             <InputGroup>
               <Radio
                 noLeftMargin
@@ -482,8 +540,7 @@ const SpeechServicesAddEdit = () => {
 
             {vendor === 'google' || vendor === 'aws' ? (
               <>
-                <div></div>
-
+                <Space />
                 <Checkbox
                   noLeftMargin
                   name="useForTts"
@@ -494,9 +551,7 @@ const SpeechServicesAddEdit = () => {
                   invalid={invalidUseForTts}
                   ref={refUseForTts}
                 />
-
-                <div></div>
-
+                <Space />
                 <Checkbox
                   noLeftMargin
                   name="useForStt"
@@ -516,7 +571,7 @@ const SpeechServicesAddEdit = () => {
               <FormError grid message={errorMessage} />
             )}
 
-            <InputGroup flexEnd spaced>
+            <StyledButtonGroup flexEnd spaced type={type}>
               <Button
                 gray
                 type="button"
@@ -538,8 +593,8 @@ const SpeechServicesAddEdit = () => {
                   : 'Save'
                 }
               </Button>
-            </InputGroup>
-          </Form>
+            </StyledButtonGroup>
+          </StyledForm>
         )}
       </Section>
     </InternalMain>

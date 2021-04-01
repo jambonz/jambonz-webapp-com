@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from "styled-components/macro";
+
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
@@ -13,6 +15,49 @@ import FormError from '../../../components/blocks/FormError';
 import Loader from '../../../components/blocks/Loader';
 import Button from '../../../components/elements/Button';
 import phoneNumberFormat from '../../../helpers/phoneNumberFormat';
+
+const StyledButtonGroup = styled(InputGroup)`
+  @media (max-width: 576.98px) {
+    width: 100%;
+
+    & > *:first-child {
+      width: 100%;
+      flex: 1;
+
+      & > * {
+        width: 100%;
+      }
+    }
+
+    & > *:last-child {
+      width: 100%;
+      flex: 1;
+
+      & > * {
+        width: 100%;
+      }
+    }
+  }
+  ${props => props.type === 'add' ? `
+    @media (max-width: 449.98px) {
+      & > *:first-child {
+        flex: 0;
+      }
+    }
+  ` : ''}
+`;
+
+const StyledForm = styled(Form)`
+  ${props => props.theme.mobileOnly} {
+    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
+
+    & > * {
+      width: 100%;
+    }
+  }
+`;
 
 const PhoneNumbersAddEdit = () => {
   const { phone_number_sid } = useParams();
@@ -254,7 +299,7 @@ const PhoneNumbersAddEdit = () => {
         {showLoader ? (
           <Loader height={'310px'}/>
         ) : (
-          <Form
+          <StyledForm
             large
             onSubmit={handleSubmit}
           >
@@ -322,7 +367,7 @@ const PhoneNumbersAddEdit = () => {
               <FormError grid message={errorMessage} />
             )}
 
-            <InputGroup flexEnd spaced>
+            <StyledButtonGroup flexEnd spaced type={type}>
               <Button
                 gray
                 type="button"
@@ -344,8 +389,8 @@ const PhoneNumbersAddEdit = () => {
                   : 'Save'
                 }
               </Button>
-            </InputGroup>
-          </Form>
+            </StyledButtonGroup>
+          </StyledForm>
         )}
       </Section>
     </InternalMain>

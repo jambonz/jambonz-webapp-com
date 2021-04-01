@@ -16,6 +16,7 @@ import InputGroup from "../../../components/elements/InputGroup";
 import Label from "../../../components/elements/Label";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
 import CurrencySymbol from "../../../data/CurrencySymbol";
+import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 
 const stripePromise = loadStripe("pk_test_EChRaX9Tjk8csZZVSeoGqNvu00lsJzjaU0");
 
@@ -34,7 +35,24 @@ const Form = styled.form`
     grid-column: 1 / 5;
   }
 
-  & > div {
+  @media (max-width: 977.98px) {
+    grid-template-columns: 100px 1fr 100px 50px;
+  }
+
+  ${(props) => props.theme.mobileOnly} {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    grid-row-gap: 1rem;
+
+    & > * {
+      width: 100%;
+    }
+
+    hr {
+      width: calc(100% + 3rem);
+    }
   }
 `;
 
@@ -46,8 +64,62 @@ const Text = styled.h3`
   text-align: ${(props) => props.textAlign || "left"};
 `;
 
+const FormHeader = styled.h3`
+  font-size: 1rem;
+  margin: 0;
+  font-weight: ${(props) => (props.bold ? "600" : "normal")};
+  color: #707070;
+  text-align: ${(props) => props.textAlign || "left"};
+
+  ${(props) => props.theme.mobileOnly} {
+    display: none;
+
+    & + hr {
+      display: none;
+    }
+  }
+`;
+
 const StyledInputGroup = styled(InputGroup)`
   grid-column: 1 / 5;
+
+  @media (max-width: 575.98px) {
+    display: flex;
+
+    button {
+      flex: 2;
+      width: 100%;
+
+      span {
+        width: 100%;
+        white-space: nowrap;
+      }
+    }
+
+    a {
+      flex: 1;
+    }
+
+    a,
+    a > span {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 369.98px) {
+    display: flex;
+    flex-direction: column;
+
+    button {
+      order: 1;
+    }
+
+    a {
+      order: 2;
+      margin-left: 1rem;
+      margin-top: 1rem;
+    }
+  }
 `;
 
 const StyledFormError = styled(FormError)`
@@ -62,12 +134,22 @@ const CardElementsWrapper = styled.div`
   display: flex;
   align-items: center;
   border: 1px solid #b6b6b6;
-  width: 100%;
   height: 36px;
   padding: 0 1rem;
+  grid-column: 2 / 5;
+  margin-right: 274px;
+  min-width: 250px;
 
   & .StripeElement {
     width: 100%;
+  }
+
+  @media (max-width: 977.98px) {
+    margin-right: 0;
+  }
+
+  ${(props) => props.theme.mobileOnly} {
+    margin-right: 0;
   }
 `;
 
@@ -107,6 +189,70 @@ const LoadingContainer = styled.div`
       width: 100%;
     }
   }
+
+  ${props => props.theme.mobileOnly} {
+    padding: 1rem;
+
+    a {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+  }
+`;
+
+const MobileContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  grid-column: 1 / 5;
+  width: 100%;
+
+  @media (max-width: 977.98px) {
+    grid-template-columns: 1fr 50px;
+  }
+
+  ${(props) => props.theme.mobileOnly} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+`;
+
+const LabelInDesktop = styled(Label)`
+  ${(props) => props.theme.mobileOnly} {
+    display: none;
+  }
+`;
+
+const DivInMobile = styled.div`
+  display: none;
+
+  ${(props) => props.theme.mobileOnly} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+`;
+
+const CardNameInput = styled.div`
+  grid-column: 2 / 5;
+  margin-right: 274px;
+  min-width: 250px;
+
+  @media (max-width: 977.98px) {
+    margin-right: 0;
+  }
+
+  ${(props) => props.theme.mobileOnly} {
+    margin-right: 0;
+  }
+`;
+
+const CardLabel = styled(Label)`
+  text-align: right;
+
+  ${(props) => props.theme.mobileOnly} {
+    text-align: left;
+  }
 `;
 
 const cardElementsOptions = {
@@ -126,6 +272,7 @@ const cardElementsOptions = {
 const Subscription = ({ elements, stripe }) => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem("jwt");
+  const isMobile = useContext(ResponsiveContext);
 
   const history = useHistory();
 
@@ -639,8 +786,8 @@ const Subscription = ({ elements, stripe }) => {
             <LoadingContainer direction="row">
               <Loader height="64px" />
               <Text>
-                Your subscription is being processed. Please wait and do not
-                hit the back button or leave this page
+                Your subscription is being processed. Please wait and do not hit
+                the back button or leave this page
               </Text>
             </LoadingContainer>
           )}
@@ -650,16 +797,16 @@ const Subscription = ({ elements, stripe }) => {
         <Loader height="376px" />
       ) : (
         <Form onSubmit={handleSubmit}>
-          <Text bold>Service</Text>
-          <Text bold textAlign="center">
+          <FormHeader bold>Service</FormHeader>
+          <FormHeader bold textAlign="center">
             Capacity
-          </Text>
-          <Text bold textAlign="center">
+          </FormHeader>
+          <FormHeader bold textAlign="center">
             Price
-          </Text>
-          <Text bold textAlign="center">
+          </FormHeader>
+          <FormHeader bold textAlign="center">
             Cost
-          </Text>
+          </FormHeader>
           <hr />
           {serviceData.map((service, index) => (
             <React.Fragment key={service.category}>
@@ -675,49 +822,55 @@ const Subscription = ({ elements, stripe }) => {
                 invalid={service.invalid}
                 ref={(ref) => handleRefs(service.category, ref)}
               />
-              <Label textAlign="center">{service.feesLabel}</Label>
-              <Label textAlign="center">
+              <LabelInDesktop textAlign="center">
+                {service.feesLabel}
+              </LabelInDesktop>
+              <LabelInDesktop textAlign="center">
                 {service.cost !== ""
                   ? `${CurrencySymbol[service.currency]}${service.cost}`
                   : ""}
-              </Label>
+              </LabelInDesktop>
+              <DivInMobile>
+                <Label textAlign="center">{service.feesLabel}</Label>
+                <Label textAlign="center">
+                  {service.cost !== ""
+                    ? `${CurrencySymbol[service.currency]}${service.cost}`
+                    : ""}
+                </Label>
+              </DivInMobile>
               <hr />
             </React.Fragment>
           ))}
-          <Text bold>Total Monthly Cost</Text>
-          <div />
-          <div />
-          <Text bold textAlign="center">
-            {`$${total}`}
-          </Text>
+          <MobileContainer>
+            <Text bold>Total Monthly Cost</Text>
+            <Text bold textAlign="center">
+              {`$${total}`}
+            </Text>
+          </MobileContainer>
           <hr />
           <StyledRow>
             <Text bold>Payment Information</Text>
           </StyledRow>
-          <Label htmlFor="payment_name" textAlign="right">
-            Cardholder Name
-          </Label>
-          <Input
-            name="payment_name"
-            id="payment_name"
-            value={paymentName}
-            onChange={(e) => {
-              setPaymentName(e.target.value);
-              setPaymentNameInvalid(false);
-              setDisabledSubmit(false);
-            }}
-            placeholder=""
-            invalid={paymentNameInvalid}
-            ref={paymentNameRef}
-          />
-          <div />
-          <div />
-          <Label textAlign="right">Card</Label>
+          <CardLabel htmlFor="payment_name">Cardholder Name</CardLabel>
+          <CardNameInput>
+            <Input
+              name="payment_name"
+              id="payment_name"
+              value={paymentName}
+              onChange={(e) => {
+                setPaymentName(e.target.value);
+                setPaymentNameInvalid(false);
+                setDisabledSubmit(false);
+              }}
+              placeholder=""
+              invalid={paymentNameInvalid}
+              ref={paymentNameRef}
+            />
+          </CardNameInput>
+          <CardLabel>Card</CardLabel>
           <CardElementsWrapper>
             <CardElement options={cardElementsOptions} />
           </CardElementsWrapper>
-          <div />
-          <div />
           <hr />
           {errorMessage && <StyledFormError grid message={errorMessage} />}
           <StyledInputGroup flexEnd spaced>
@@ -725,7 +878,9 @@ const Subscription = ({ elements, stripe }) => {
               Cancel
             </Button>
             <Button disabled={disabledSubmit || !stripe}>
-              {`Pay $${total} and Upgrade to Paid Plan`}
+              {isMobile
+                ? `Upgrade to Paid Plan`
+                : `Pay $${total} and Upgrade to Paid Plan`}
             </Button>
           </StyledInputGroup>
         </Form>

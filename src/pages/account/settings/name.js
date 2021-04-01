@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from "styled-components/macro";
+
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
@@ -11,6 +13,31 @@ import InputGroup from '../../../components/elements/InputGroup';
 import FormError from '../../../components/blocks/FormError';
 import Button from '../../../components/elements/Button';
 import Loader from '../../../components/blocks/Loader';
+
+const StyledInputGroup = styled(InputGroup)`
+  grid-column: 1 / 3;
+
+  @media (max-width: 575px) {
+    & > * {
+      width: 100%;
+
+      span {
+        width: 100%;
+      }
+    }
+  }
+`;
+
+const StyledForm = styled(Form)`
+  @media (max-width: 575px) {
+    display: block;
+    text-align: left;
+
+    & > div {
+      margin: 4px 0 1.5rem;
+    }
+  }
+`;
 
 const SettingsChangeName = () => {
   let history = useHistory();
@@ -165,7 +192,7 @@ const SettingsChangeName = () => {
         {showLoader ? (
           <Loader height="611px" />
         ) : (
-          <Form
+          <StyledForm
             large
             onSubmit={handleSubmit}
           >
@@ -184,7 +211,7 @@ const SettingsChangeName = () => {
               <FormError grid message={errorMessage} />
             )}
 
-            <InputGroup flexEnd spaced>
+            <StyledInputGroup flexEnd spaced>
               <Button
                 gray
                 type="button"
@@ -201,8 +228,8 @@ const SettingsChangeName = () => {
               </Button>
 
               <Button>Save</Button>
-            </InputGroup>
-          </Form>
+            </StyledInputGroup>
+          </StyledForm>
         )}
       </Section>
     </InternalMain>

@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from "styled-components/macro";
+
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalMain from '../../../components/wrappers/InternalMain';
 import FormError from '../../../components/blocks/FormError';
@@ -13,6 +15,37 @@ import Label from '../../../components/elements/Label';
 import Strong from '../../../components/elements/Strong';
 import Button from '../../../components/elements/Button';
 import PasswordInput from '../../../components/elements/PasswordInput';
+
+const StyledInputGroup = styled(InputGroup)`
+  grid-column: 1 / 3;
+
+  @media (max-width: 575px) {
+    flex-direction: column;
+
+    & > * {
+      width: 100%;
+
+      span {
+        width: 100%;
+      }
+    }
+
+    & > button:first-child {
+      margin: 0 0 1rem 0;
+    }
+  }
+`;
+
+const StyledForm = styled(Form)`
+  @media (max-width: 575px) {
+    display: block;
+    text-align: left;
+
+    & > div {
+      margin: 4px 0 1.5rem;
+    }
+  }
+`;
 
 const SettingsDeleteAccount = () => {
 
@@ -194,7 +227,7 @@ const SettingsDeleteAccount = () => {
         {showLoader ? (
           <Loader height="224px" />
         ) : (
-          <Form large onSubmit={handleSubmit}>
+          <StyledForm large onSubmit={handleSubmit}>
             <p style={{ gridColumn: '1/3', textAlign: 'left' }}>
               <Strong>Warning!</Strong> This will permantly delete all of your
               data from our database. You will not be able to restore your account. You
@@ -232,7 +265,7 @@ const SettingsDeleteAccount = () => {
               <FormError grid message={errorMessage} />
             )}
 
-            <InputGroup flexEnd spaced>
+            <StyledInputGroup flexEnd spaced>
               <Button
                 gray
                 type="button"
@@ -249,8 +282,8 @@ const SettingsDeleteAccount = () => {
               </Button>
 
               <Button>PERMANENTLY DELETE MY ACCOUNT</Button>
-            </InputGroup>
-          </Form>
+            </StyledInputGroup>
+          </StyledForm>
         )}
       </Section>
     </InternalMain>

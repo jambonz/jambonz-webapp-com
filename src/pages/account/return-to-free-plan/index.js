@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components/macro";
 
 import InternalMain from "../../../components/wrappers/InternalMain";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
@@ -62,24 +63,42 @@ const ReturnToFreePlan = () => {
     }
   };
 
+  const StyledInputGroup = styled(InputGroup)`
+    @media (max-width: 575px) {
+      flex-direction: column;
+
+      & > * {
+        width: 100%;
+
+        &:first-child {
+          margin-right: 0;
+          margin-bottom: 1rem;
+        }
+
+        span {
+          width: 100%;
+        }
+      }
+    }
+  `;
+
   return (
     <InternalMain
-      type="normalTable"
       title="Return to Free Plan"
       breadcrumbs={[{ name: "Back to Settings", url: "/account/settings" }]}
     >
-      <Section normalTable position="relative">
+      <Section position="relative">
         {showLoader ? (
           <Loader height="116px" />
         ) : (
           <>
             <P>{description}</P>
-            <InputGroup flexEnd spaced>
+            <StyledInputGroup flexEnd spaced>
               <Button gray="true" as={ReactRouterLink} to="/account/settings">
                 Cancel
               </Button>
               <Button onClick={downloadToFreePlan}>Return to Free Plan</Button>
-            </InputGroup>
+            </StyledInputGroup>
             {errorMessage && <FormError grid message={errorMessage} />}
           </>
         )}

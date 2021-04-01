@@ -28,6 +28,48 @@ const ModalContainer = styled.div`
   margin-top: 2rem;
 `;
 
+const StyledTable = styled(Table)`
+  tr {
+    display: grid;
+    grid-template-columns: 250px 1fr auto;
+    align-content: center;
+    align-items: center;
+
+    td {
+      text-overflow: ellipsis;
+    }
+  }
+  ${props => props.theme.mobileOnly} {
+    tr {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      align-content: center;
+      align-items: center;
+
+      & > * {
+        padding: 0 1rem;
+      }
+
+      th {
+        white-space: normal;
+      }
+
+      td {
+        text-overflow: ellipsis;
+      }
+    }
+  }
+`;
+
+const StyledAPIKeysTable = styled(Table)`
+  ${props => props.theme.mobileOnly} {
+    & tr > * {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+  }
+`;
+
 const AccountHome = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
@@ -51,6 +93,8 @@ const AccountHome = () => {
   const [generatingSecret, setGeneratingSecret] = useState(false);
   const [webhookSecret, setWebhookSecret] = useState("");
   const [enabledCardDetailRecord, setEnabledCardDetailRecord] = useState(false);
+
+  const [mobile, setMobile] = useState(false);
 
   const copyText = async ({ text, textType }) => {
     try {
@@ -155,6 +199,12 @@ const AccountHome = () => {
     }
   };
 
+  const screenSizeChanged = () => {
+    const { width } = window.screen;
+    const breakPoint = 977;
+    setMobile(width < breakPoint);
+  };
+
   useEffect(() => {
     let isMounted = true;
     const getData = async () => {
@@ -219,6 +269,16 @@ const AccountHome = () => {
     };
 
     getData();
+
+    window.addEventListener('resize', screenSizeChanged);
+
+    screenSizeChanged();
+
+    return () => {
+      isMounted = false;
+
+      window.removeEventListener('resize', screenSizeChanged);
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -244,11 +304,11 @@ const AccountHome = () => {
           {data.account && (
             <Section>
               <H2>Account</H2>
-              <Table>
+              <StyledTable>
                 <tbody>
                   <tr>
                     <Th scope="row">SIP Realm</Th>
-                    <Td>{data.account.sip_realm}</Td>
+                    <Td overflow="hidden">{data.account.sip_realm}</Td>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'account-home-sip-realm'}
@@ -266,7 +326,7 @@ const AccountHome = () => {
                   </tr>
                   <tr>
                     <Th scope="row">Account SID</Th>
-                    <Td>{data.account.account_sid}</Td>
+                    <Td overflow="hidden">{data.account.account_sid}</Td>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'account-home-account-sid'}
@@ -287,7 +347,7 @@ const AccountHome = () => {
                   </tr>
                   <tr>
                     <Th scope="row">Registration Webhook</Th>
-                    <Td>{registrationWebhookUrl || 'None'}</Td>
+                    <Td overflow="hidden">{registrationWebhookUrl || 'None'}</Td>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'account-home-registration-webhook'}
@@ -299,7 +359,7 @@ const AccountHome = () => {
                   </tr>
                   <tr>
                     <Th scope="row">Webhook signing secret</Th>
-                    <Td>{webhookSecret}</Td>
+                    <Td overflow="hidden">{webhookSecret}</Td>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'account-home-webhook-signing-secret'}
@@ -327,7 +387,7 @@ const AccountHome = () => {
                   </tr>
                   <tr>
                     <Th scope="row">Call Detail Records</Th>
-                    <Td>{enabledCardDetailRecord ? 'Enabled' : 'Disabled'}</Td>
+                    <Td overflow="hidden">{enabledCardDetailRecord ? 'Enabled' : 'Disabled'}</Td>
                     <Td containsMenuButton>
                       <TableMenu
                         open={currentMenu === 'account-home-call-detail-records'}
@@ -346,7 +406,7 @@ const AccountHome = () => {
                     </Td>
                   </tr>
                 </tbody>
-              </Table>
+              </StyledTable>
             </Section>
           )}
 
@@ -370,7 +430,7 @@ const AccountHome = () => {
 
           {data.api_keys && (
             <Section>
-              <Table sectionTableWithHeader>
+              <StyledAPIKeysTable sectionTableWithHeader>
                 <thead>
                   <tr>
                     <Th sectionTableWithHeader>
@@ -394,7 +454,11 @@ const AccountHome = () => {
                   ) : (
                     data.api_keys.map(apiKey => (
                       <tr key={apiKey.api_key_sid}>
-                        <Th scope="row">{maskApiToken(apiKey.token)}</Th>
+                        <Th scope="row">
+                          <p>
+                            {maskApiToken(apiKey.token, mobile)}
+                          </p>
+                        </Th>
                         <Td>{getPastDays(apiKey.last_used)}</Td>
                         <Td containsMenuButton>
                           <TableMenu
@@ -427,7 +491,7 @@ const AccountHome = () => {
                     ))
                   )}
                 </tbody>
-              </Table>
+              </StyledAPIKeysTable>
             </Section>
           )}
 

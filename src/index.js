@@ -4,6 +4,7 @@ import { ThemeProvider } from "styled-components/macro";
 import { CurrentMenuProvider } from "./contexts/CurrentMenuContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ModalProvider } from "./contexts/ModalContext";
+import { ResponsiveProvider } from "./contexts/ResponsiveContext";
 import Routes from "./Routes";
 
 const theme = {
@@ -16,7 +17,9 @@ ReactDOM.render(
     <CurrentMenuProvider>
       <NotificationProvider>
         <ModalProvider>
-          <Routes />
+          <ResponsiveProvider>
+            <Routes />
+          </ResponsiveProvider>
         </ModalProvider>
       </NotificationProvider>
     </CurrentMenuProvider>
