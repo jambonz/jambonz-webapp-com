@@ -15,6 +15,7 @@ const ContactIcons = {
 const ContactIconWrapper = styled.div`
   width: 140px;
   height: 48px;
+  position: relative;
   background: ${(props) => {
     switch (props.type) {
       case "github":
