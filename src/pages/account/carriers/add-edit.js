@@ -17,20 +17,19 @@ import Button from '../../../components/elements/Button';
 import TrashButton from '../../../components/elements/TrashButton';
 import Loader from '../../../components/blocks/Loader';
 import sortSipGateways from '../../../helpers/sortSipGateways';
+import Select from '../../../components/elements/Select';
 
 const StyledForm = styled(Form)`
-  @media (max-width: 978.98px) {
-    flex-direction: column;
-    display: flex;
-    align-items: flex-start;
+  flex-direction: column;
+  display: flex;
+  align-items: flex-start;
 
-    & > * {
-      width: 100%;
-    }
+  & > * {
+    width: 100%;
+  }
 
-    & > hr {
-      width: calc(100% + 4rem);
-    }
+  & > hr {
+    width: calc(100% + 4rem);
   }
   
   ${props => props.theme.mobileOnly} {
@@ -42,26 +41,21 @@ const StyledForm = styled(Form)`
 `;
 
 const SIPGatewaysHeader = styled.div`
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: 1fr 100px 80px 300px;
   @media (max-width: 978.98px) {
-    display: grid;
-    grid-template-columns: 1fr 80px;
-    grid-gap: 1rem;
-  }
-`;
-
-const PortLabel = styled(Label)`
-  ${props => props.mobile ? 'display: none;' : ''}
-
-  @media (max-width: 978.98px) {
-    display: ${props => props.mobile ? 'block' : 'none'};
+    grid-template-columns: 1fr 100px 80px;
   }
 `;
 
 const SIPGatewaysInputGroup = styled(InputGroup)`
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: 1fr 100px 80px 300px;
+
   @media (max-width: 978.98px) {
-    display: grid;
-    grid-template-columns: 1fr 80px;
-    grid-gap: 1rem;
+    grid-template-columns: 1fr 100px 80px;
   }
 `;
 
@@ -240,6 +234,7 @@ const CarriersAddEdit = () => {
             sip_gateway_sid: s.sip_gateway_sid,
             ip: s.ipv4,
             port: s.port,
+            netmask: s.netmask,
             inbound: s.inbound === 1,
             outbound: s.outbound === 1,
             invalidIp: false,
@@ -318,6 +313,10 @@ const CarriersAddEdit = () => {
           ? e.target.checked
           : e.target.value;
     newSipGateways[i][key] = newValue;
+
+    if (key === "outbound" && newValue === true) {
+      newSipGateways[i]["netmask"] = 32;
+    }
     setSipGateways(newSipGateways);
   };
 
@@ -612,6 +611,7 @@ const CarriersAddEdit = () => {
           const data = {
             ipv4: s.ip.trim(),
             port: s.port.toString().trim(),
+            netmask: s.netmask,
             inbound: s.inbound,
             outbound: s.outbound,
           };
@@ -768,7 +768,7 @@ const CarriersAddEdit = () => {
                     type="button"
                     onClick={e => setAuthenticate(!authenticate)}
                   >
-                    Does your carrier require authentication?
+                    Does your carrier require authentication on outbound calls?
                   </Button>
                 </>
               ) : (
@@ -850,7 +850,7 @@ const CarriersAddEdit = () => {
                     type="button"
                     onClick={e => setRequiredTechPrefix(!requiredTechPrefix)}
                   >
-                    Does your carrier require a tech prefix?
+                    Does your carrier require a tech prefix on outbound calls?
                   </Button>
                 </>
               )
@@ -869,12 +869,13 @@ const CarriersAddEdit = () => {
               ? <div>{/* for CSS grid layout */}</div>
               : null
             }
+            <SIPGatewaysHeader>
+              <Label>Network Address</Label>
+              <Label>Port</Label>
+              <Label>Netmask</Label>
+            </SIPGatewaysHeader>
             {sipGateways.map((g, i) => (
               <React.Fragment key={i}>
-                <SIPGatewaysHeader>
-                  <Label htmlFor={`sipGatewaysIp[${i}]`}>IP Address</Label>
-                  <PortLabel mobile htmlFor={`sipGatewaysPort[${i}]`}>Port</PortLabel>
-                </SIPGatewaysHeader>
                 <SIPGatewaysInputGroup>
                   <Input
                     name={`sipGatewaysIp[${i}]`}
@@ -885,12 +886,6 @@ const CarriersAddEdit = () => {
                     invalid={sipGateways[i].invalidIp}
                     ref={ref => refIp.current[i] = ref}
                   />
-                  <PortLabel
-                    middle
-                    htmlFor={`sipGatewaysPort[${i}]`}
-                  >
-                    Port
-                  </PortLabel>
                   <Input
                     width="5rem"
                     name={`sipGatewaysPort[${i}]`}
@@ -901,6 +896,17 @@ const CarriersAddEdit = () => {
                     invalid={sipGateways[i].invalidPort}
                     ref={ref => refPort.current[i] = ref}
                   />
+                  <Select
+                    name={`sipgatewaysNetmask[${i}]`}
+                    id={`sipgatewaysNetmask[${i}]`}
+                    value={sipGateways[i].netmask}
+                    disabled={sipGateways[i].outbound}
+                    onChange={e => updateSipGateways(e, i, 'netmask')}
+                  >
+                    {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
+                      <option value={item}>{item}</option>
+                    ))}
+                  </Select>
                   <SIPGatewaysChecboxGroup>
                     <Checkbox
                       id={`inbound[${i}]`}
