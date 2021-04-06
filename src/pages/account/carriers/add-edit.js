@@ -20,16 +20,18 @@ import sortSipGateways from '../../../helpers/sortSipGateways';
 import Select from '../../../components/elements/Select';
 
 const StyledForm = styled(Form)`
-  flex-direction: column;
-  display: flex;
-  align-items: flex-start;
+  @media (max-width: 978.98px) {
+    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
 
-  & > * {
-    width: 100%;
-  }
+    & > * {
+      width: 100%;
+    }
 
-  & > hr {
-    width: calc(100% + 4rem);
+    & > hr {
+      width: calc(100% + 4rem);
+    }
   }
   
   ${props => props.theme.mobileOnly} {
@@ -40,16 +42,14 @@ const StyledForm = styled(Form)`
   }
 `;
 
-const SIPGatewaysHeader = styled.div`
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: 1fr 100px 80px 300px;
+const StyledLabel = styled(Label)`
   @media (max-width: 978.98px) {
-    grid-template-columns: 1fr 100px 80px;
+    display: none;
   }
 `;
 
 const SIPGatewaysInputGroup = styled(InputGroup)`
+  grid-column: 1 / 3;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: 1fr 100px 80px 300px;
@@ -869,14 +869,13 @@ const CarriersAddEdit = () => {
               ? <div>{/* for CSS grid layout */}</div>
               : null
             }
-            <SIPGatewaysHeader>
+            <SIPGatewaysInputGroup>
               <Label>Network Address</Label>
               <Label>Port</Label>
               <Label>Netmask</Label>
-            </SIPGatewaysHeader>
-            {sipGateways.map((g, i) => (
-              <React.Fragment key={i}>
-                <SIPGatewaysInputGroup>
+              <StyledLabel />
+              {sipGateways.map((g, i) => (
+                <React.Fragment key={i}>
                   <Input
                     name={`sipGatewaysIp[${i}]`}
                     id={`sipGatewaysIp[${i}]`}
@@ -931,9 +930,9 @@ const CarriersAddEdit = () => {
                       ref={ref => refTrash.current[i] = ref}
                     />
                   </SIPGatewaysChecboxGroup>
-                </SIPGatewaysInputGroup>
-              </React.Fragment>
-            ))}
+                </React.Fragment>
+              ))}
+            </SIPGatewaysInputGroup>
             <Button
               square
               type="button"
