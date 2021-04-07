@@ -48,6 +48,10 @@ const StyledLabel = styled(Label)`
   }
 `;
 
+const StyledButton = styled(Button)`
+  grid-column: 1 / 3;
+`;
+
 const SIPGatewaysInputGroup = styled(InputGroup)`
   grid-column: 1 / 3;
   display: grid;
@@ -121,6 +125,7 @@ const CarriersAddEdit = () => {
   const [ nameInvalid,     setNameInvalid     ] = useState(false);
   const [ description,     setDescription     ] = useState('');
   const [ e164,            setE164            ] = useState(false);
+  const [ application,      setApplication    ] = useState('');
   const [ authenticate,    setAuthenticate    ] = useState(false);
   const [ register,        setRegister        ] = useState(false);
   const [ username,        setUsername        ] = useState('');
@@ -142,6 +147,8 @@ const CarriersAddEdit = () => {
       invalidOutbound: false,
     }
   ]);
+
+  const [ applicationValues, setApplicationValues ] = useState([]);
 
   const [ sipRealm,     setSipRealm     ] = useState('');
   const [ carrierSid,   setCarrierSid   ] = useState('');
@@ -169,6 +176,17 @@ const CarriersAddEdit = () => {
         const promises = [];
         promises.push(usersMePromise);
 
+        // Get Application Data
+        const applicationPromise = axios({
+          method: 'get',
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: '/Applications',
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        promises.push(applicationPromise);
+
         if (type === 'edit') {
           const carrierPromise = axios({
             method: 'get',
@@ -195,6 +213,7 @@ const CarriersAddEdit = () => {
         const promiseResponses = await Promise.all(promises);
 
         const usersMe = promiseResponses[0].data;
+        setApplicationValues(promiseResponses[1].data);
 
         if (usersMe.account) {
           setSipRealm(usersMe.account.sip_realm);
@@ -202,8 +221,8 @@ const CarriersAddEdit = () => {
 
         if (type === 'edit') {
 
-          const carrier = promiseResponses[1].data;
-          const allSipGateways = promiseResponses[2].data;
+          const carrier = promiseResponses[2].data;
+          const allSipGateways = promiseResponses[3].data;
 
           if (!carrier) {
             isMounted = false;
@@ -567,6 +586,7 @@ const CarriersAddEdit = () => {
           name: name.trim() || null,
           description: description.trim() || null,
           e164_leading_plus: e164 ? 1 : 0,
+          application_sid: application || null,
           requires_register: register ? 1 : 0,
           register_username: username ? username.trim() : null,
           register_password: password ? password : null,
@@ -757,6 +777,29 @@ const CarriersAddEdit = () => {
               onChange={e => setE164(e.target.checked)}
             />
 
+            <Label htmlFor="application">Application</Label>
+            <Select
+              name="application"
+              id="application"
+              value={application}
+              onChange={e => setApplication(e.target.value)}
+            >
+              <option value="">
+                {type === 'add'
+                  ? '-- OPTIONAL: Application to invoke on calls arriving from this carrier --'
+                  : '-- NONE --'
+                }
+              </option>
+              {applicationValues.map(a => (
+                <option
+                  key={a.application_sid}
+                  value={a.application_sid}
+                >
+                  {a.name}
+                </option>
+              ))}
+            </Select>
+
             <hr style={{ margin: '0.5rem -2rem' }} />
 
             {
@@ -779,7 +822,7 @@ const CarriersAddEdit = () => {
                     id="username"
                     value={username}
                     onChange={e => setUsername(e.target.value)}
-                    placeholder="SIP username for authentication"
+                    placeholder="SIP username for authenticating outbound calls"
                     invalid={usernameInvalid}
                     ref={refUsername}
                   />
@@ -791,7 +834,7 @@ const CarriersAddEdit = () => {
                     password={password}
                     setPassword={setPassword}
                     setErrorMessage={setErrorMessage}
-                    placeholder="SIP password for authentication"
+                    placeholder="SIP password for authenticating outbound calls"
                     invalid={passwordInvalid}
                     ref={refPassword}
                   />
@@ -800,7 +843,7 @@ const CarriersAddEdit = () => {
                     noLeftMargin
                     name="register"
                     id="register"
-                    label="Requires registration"
+                    label="Carrier requires SIP Register before sending outbound calls"
                     checked={register}
                     onChange={e => setRegister(e.target.checked)}
                   />
@@ -874,73 +917,73 @@ const CarriersAddEdit = () => {
               <Label>Port</Label>
               <Label>Netmask</Label>
               <StyledLabel />
-              {sipGateways.map((g, i) => (
-                <React.Fragment key={i}>
-                  <Input
-                    name={`sipGatewaysIp[${i}]`}
-                    id={`sipGatewaysIp[${i}]`}
-                    value={sipGateways[i].ip}
-                    onChange={e => updateSipGateways(e, i, 'ip')}
-                    placeholder={'1.2.3.4'}
-                    invalid={sipGateways[i].invalidIp}
-                    ref={ref => refIp.current[i] = ref}
-                  />
-                  <Input
-                    width="5rem"
-                    name={`sipGatewaysPort[${i}]`}
-                    id={`sipGatewaysPort[${i}]`}
-                    value={sipGateways[i].port}
-                    onChange={e => updateSipGateways(e, i, 'port')}
-                    placeholder="5060"
-                    invalid={sipGateways[i].invalidPort}
-                    ref={ref => refPort.current[i] = ref}
-                  />
-                  <Select
-                    name={`sipgatewaysNetmask[${i}]`}
-                    id={`sipgatewaysNetmask[${i}]`}
-                    value={sipGateways[i].netmask}
-                    disabled={sipGateways[i].outbound}
-                    onChange={e => updateSipGateways(e, i, 'netmask')}
-                  >
-                    {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
-                      <option value={item}>{item}</option>
-                    ))}
-                  </Select>
-                  <SIPGatewaysChecboxGroup>
-                    <Checkbox
-                      id={`inbound[${i}]`}
-                      label="Inbound"
-                      tooltip="Sends us calls"
-                      checked={sipGateways[i].inbound}
-                      onChange={e => updateSipGateways(e, i, 'inbound')}
-                      invalid={sipGateways[i].invalidInbound}
-                      ref={ref => refInbound.current[i] = ref}
-                    />
-                    <Checkbox
-                      id={`outbound[${i}]`}
-                      label="Outbound"
-                      tooltip="Accepts calls from us"
-                      checked={sipGateways[i].outbound}
-                      onChange={e => updateSipGateways(e, i, 'outbound')}
-                      invalid={sipGateways[i].invalidOutbound}
-                      ref={ref => refOutbound.current[i] = ref}
-                    />
-                    <TrashButton
-                      onClick={() => removeSipGateway(i)}
-                      ref={ref => refTrash.current[i] = ref}
-                    />
-                  </SIPGatewaysChecboxGroup>
-                </React.Fragment>
-              ))}
             </SIPGatewaysInputGroup>
-            <Button
+            {sipGateways.map((g, i) => (
+              <SIPGatewaysInputGroup key={i}>
+                <Input
+                  name={`sipGatewaysIp[${i}]`}
+                  id={`sipGatewaysIp[${i}]`}
+                  value={sipGateways[i].ip}
+                  onChange={e => updateSipGateways(e, i, 'ip')}
+                  placeholder={'1.2.3.4'}
+                  invalid={sipGateways[i].invalidIp}
+                  ref={ref => refIp.current[i] = ref}
+                />
+                <Input
+                  width="5rem"
+                  name={`sipGatewaysPort[${i}]`}
+                  id={`sipGatewaysPort[${i}]`}
+                  value={sipGateways[i].port}
+                  onChange={e => updateSipGateways(e, i, 'port')}
+                  placeholder="5060"
+                  invalid={sipGateways[i].invalidPort}
+                  ref={ref => refPort.current[i] = ref}
+                />
+                <Select
+                  name={`sipgatewaysNetmask[${i}]`}
+                  id={`sipgatewaysNetmask[${i}]`}
+                  value={sipGateways[i].netmask}
+                  disabled={sipGateways[i].outbound}
+                  onChange={e => updateSipGateways(e, i, 'netmask')}
+                >
+                  {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
+                    <option value={item} key={item}>{item}</option>
+                  ))}
+                </Select>
+                <SIPGatewaysChecboxGroup>
+                  <Checkbox
+                    id={`inbound[${i}]`}
+                    label="Inbound"
+                    tooltip="Sends us calls"
+                    checked={sipGateways[i].inbound}
+                    onChange={e => updateSipGateways(e, i, 'inbound')}
+                    invalid={sipGateways[i].invalidInbound}
+                    ref={ref => refInbound.current[i] = ref}
+                  />
+                  <Checkbox
+                    id={`outbound[${i}]`}
+                    label="Outbound"
+                    tooltip="Accepts calls from us"
+                    checked={sipGateways[i].outbound}
+                    onChange={e => updateSipGateways(e, i, 'outbound')}
+                    invalid={sipGateways[i].invalidOutbound}
+                    ref={ref => refOutbound.current[i] = ref}
+                  />
+                  <TrashButton
+                    onClick={() => removeSipGateway(i)}
+                    ref={ref => refTrash.current[i] = ref}
+                  />
+                </SIPGatewaysChecboxGroup>
+              </SIPGatewaysInputGroup>
+            ))}
+            <StyledButton
               square
               type="button"
               onClick={addSipGateway}
               ref={refAdd}
             >
               +
-            </Button>
+            </StyledButton>
             {errorMessage && (
               <FormError grid message={errorMessage} />
             )}
