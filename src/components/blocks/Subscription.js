@@ -13,7 +13,30 @@ import PlanType from "../../data/PlanType";
 import CurrencySymbol from "../../data/CurrencySymbol";
 
 const StyledInputGroup = styled(InputGroup)`
-  ${(props) => props.theme.mobileOnly} {
+  ${(props) =>
+    props.hasDelete
+      ? `
+    @media (max-width: 850px) {
+      display: flex;
+      flex-direction: column;
+
+      & > a {
+        width: 100%;
+
+        span {
+          width: 100%;
+        }
+
+        &:first-child {
+          margin-right: 0;
+          margin-bottom: 1rem;
+        }
+      }
+    }
+  `
+      : ""}
+
+  @media (max-width: 767px) {
     & > * {
       width: 100%;
 
@@ -34,8 +57,32 @@ const StyledInputGroup = styled(InputGroup)`
   }
 `;
 
+const Footer = styled.div`
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100%;
+  margin-top: -0.5rem;
+
+  & > p {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: ${(props) =>
+      props.hasDelete ? "1199.98px" : "977.98px"}) {
+    flex-direction: column;
+    align-items: flex-start !important;
+
+    & > div {
+      width: 100%;
+      margin-top: 1rem;
+    }
+  }
+`;
+
 const Subscription = ({ data, hasDelete }) => {
   const [description, setDescription] = useState("");
+  const [otherDescription, setOtherDescription] = useState("");
   const [planType, setPlanType] = useState("");
   const [invoiceData, setInvoiceData] = useState({});
   const jwt = localStorage.getItem("jwt");
@@ -51,23 +98,23 @@ const Subscription = ({ data, hasDelete }) => {
     const apiCallRecord =
       products.find((item) => item.name === "api call") || {};
     let description = "";
+    let otherDescription = "";
     const { trial_end_date } = data.account || {};
 
     switch (pType) {
       case PlanType.TRIAL:
-        description = `You are currently on the Free plan (trial period). You are limited to ${
-          callSessionRecord.quantity
-        } simultaneous calls and ${
-          registeredDeviceRecord.quantity
-        } registered devices${
-          trial_end_date
-            ? ".<br /><br /> Your free trial will end on " +
-              moment(trial_end_date).format("MMMM DD, YYYY")
-            : ""
-        }.`;
+        description = `You are currently on the Free plan (trial period). You are limited to ${callSessionRecord.quantity} simultaneous calls and ${registeredDeviceRecord.quantity} registered devices.`;
+        if (trial_end_date) {
+          otherDescription = `Your free trial will end on ${moment(
+            trial_end_date
+          ).format("MMMM DD, YYYY")}.`;
+        } else {
+          otherDescription = "";
+        }
         break;
       case PlanType.FREE:
         description = `You are currently on the Free plan (trial period expired). You are limited to ${callSessionRecord.quantity} simultaneous calls and ${registeredDeviceRecord.quantity} registered devices`;
+        otherDescription = "";
         break;
       case PlanType.PAID:
         description = `Your paid subscription includes capacity for ${
@@ -81,12 +128,14 @@ const Subscription = ({ data, hasDelete }) => {
         }${invoiceData.total || 0} on ${
           invoiceData.next_payment_attempt || ""
         }.`;
+        otherDescription = "";
         break;
       default:
         break;
     }
 
     setDescription(description);
+    setOtherDescription(otherDescription);
   }, [data, invoiceData]);
 
   useEffect(() => {
@@ -133,7 +182,7 @@ const Subscription = ({ data, hasDelete }) => {
   return (
     <>
       <H2>Your Subscription</H2>
-      <P dangerouslySetInnerHTML={{ __html: description }} />
+      <P>{description}</P>
       {planType === PlanType.PAID ? (
         <StyledInputGroup flexEnd spaced>
           <Button as={ReactRouterLink} gray="true" to="/account/manage-payment">
@@ -148,24 +197,27 @@ const Subscription = ({ data, hasDelete }) => {
           </Button>
         </StyledInputGroup>
       ) : (
-        <StyledInputGroup flexEnd spaced>
-          {hasDelete && (
+        <Footer hasDelete={hasDelete ? "true" : ""}>
+          <P>{otherDescription}</P>
+          <StyledInputGroup flexEnd spaced hasDelete={hasDelete ? "true" : ""}>
+            {hasDelete && (
+              <Button
+                gray="true"
+                as={ReactRouterLink}
+                to="/account/settings/delete-account"
+              >
+                Delete Account
+              </Button>
+            )}
             <Button
-              gray="true"
+              style={{ whiteSpace: "nowrap" }}
               as={ReactRouterLink}
-              to="/account/settings/delete-account"
+              to="/account/subscription"
             >
-              Delete Account
+              Upgrade to a Paid Subscription
             </Button>
-          )}
-          <Button
-            style={{ whiteSpace: "nowrap" }}
-            as={ReactRouterLink}
-            to="/account/subscription"
-          >
-            Upgrade to a Paid Subscription
-          </Button>
-        </StyledInputGroup>
+          </StyledInputGroup>
+        </Footer>
       )}
     </>
   );
