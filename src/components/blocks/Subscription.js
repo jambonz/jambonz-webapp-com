@@ -61,7 +61,7 @@ const Subscription = ({ data, hasDelete }) => {
           registeredDeviceRecord.quantity
         } registered devices${
           trial_end_date
-            ? " Your free trial will end on " +
+            ? ".<br /><br /> Your free trial will end on " +
               moment(trial_end_date).format("MMMM DD, YYYY")
             : ""
         }.`;
@@ -133,7 +133,7 @@ const Subscription = ({ data, hasDelete }) => {
   return (
     <>
       <H2>Your Subscription</H2>
-      <P>{description}</P>
+      <P dangerouslySetInnerHTML={{ __html: description }} />
       {planType === PlanType.PAID ? (
         <StyledInputGroup flexEnd spaced>
           <Button as={ReactRouterLink} gray="true" to="/account/manage-payment">

@@ -140,7 +140,7 @@ const CarriersAddEdit = () => {
       ip: '',
       port: 5060,
       inbound: true,
-      outbound: true,
+      outbound: false,
       invalidIp: false,
       invalidPort: false,
       invalidInbound: false,
@@ -244,6 +244,7 @@ const CarriersAddEdit = () => {
           setName(carrier.name || '');
           setDescription(carrier.description || '');
           setE164(carrier.e164_leading_plus === 1);
+          setApplication(carrier.application_sid || '');
           setAuthenticate(carrier.register_username ? true : false);
           setRegister(carrier.requires_register === 1);
           setUsername(carrier.register_username || '');
@@ -304,7 +305,7 @@ const CarriersAddEdit = () => {
         ip: '',
         port: 5060,
         inbound: true,
-        outbound: true,
+        outbound: false,
         invalidIp: false,
         invalidPort: false,
         invalidInbound: false,
