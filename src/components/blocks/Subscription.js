@@ -51,10 +51,20 @@ const Subscription = ({ data, hasDelete }) => {
     const apiCallRecord =
       products.find((item) => item.name === "api call") || {};
     let description = "";
+    const { trial_end_date } = data.account || {};
 
     switch (pType) {
       case PlanType.TRIAL:
-        description = `You are currently on the Free plan (trial period). You are limited to ${callSessionRecord.quantity} simultaneous calls and ${registeredDeviceRecord.quantity} registered devices`;
+        description = `You are currently on the Free plan (trial period). You are limited to ${
+          callSessionRecord.quantity
+        } simultaneous calls and ${
+          registeredDeviceRecord.quantity
+        } registered devices${
+          trial_end_date
+            ? ".<br /><br /> Your free trial will end on " +
+              moment(trial_end_date).format("MMMM DD, YYYY")
+            : ""
+        }.`;
         break;
       case PlanType.FREE:
         description = `You are currently on the Free plan (trial period expired). You are limited to ${callSessionRecord.quantity} simultaneous calls and ${registeredDeviceRecord.quantity} registered devices`;
@@ -123,7 +133,7 @@ const Subscription = ({ data, hasDelete }) => {
   return (
     <>
       <H2>Your Subscription</H2>
-      <P>{description}</P>
+      <P dangerouslySetInnerHTML={{ __html: description }} />
       {planType === PlanType.PAID ? (
         <StyledInputGroup flexEnd spaced>
           <Button as={ReactRouterLink} gray="true" to="/account/manage-payment">
