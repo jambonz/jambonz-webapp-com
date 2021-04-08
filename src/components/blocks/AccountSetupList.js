@@ -53,8 +53,6 @@ const TaskItem = styled.div`
 `;
 
 const AccountSetupList = ({ onComplete }) => {
-  const [phoneNumbers, setPhoneNumbers] = useState([]);
-  const [applications, setApplications] = useState([]);
   const [carriors, setCarriors] = useState([]);
   const [speeches, setSpeeches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,8 +129,6 @@ const AccountSetupList = ({ onComplete }) => {
       ]);
 
       if (isMounted) {
-        setPhoneNumbers(phoneNumbersData.data);
-        setApplications(applicationsData.data);
         setCarriors(carriersData.data);
         setSpeeches(speechData.data);
         setLoading(false);
