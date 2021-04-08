@@ -36,6 +36,7 @@ const StyledReactRouterLink = styled(FilteredLink)`
   &:hover > span {
     box-shadow: 0 0.125rem 0;
     border-radius: 0;
+    color: #D91C5C;
   }
 
   &:active > span {}
@@ -62,6 +63,7 @@ const StyledReactRouterLink = styled(FilteredLink)`
       background: #E3E3E3;
       box-shadow: none;
       border-radius: 0.25rem;
+      color: #565656;
     }
 
     &:focus > span {
