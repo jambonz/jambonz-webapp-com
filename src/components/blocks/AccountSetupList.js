@@ -80,24 +80,6 @@ const AccountSetupList = ({ onComplete }) => {
       ),
       isCompleted: () => speeches && speeches.length > 0,
     },
-    {
-      node: () => (
-        <span>
-          Create an <Link to="/account/applications">application</Link> to
-          handle call routing
-        </span>
-      ),
-      isCompleted: () => applications && applications.length > 0,
-    },
-    {
-      node: () => (
-        <span>
-          Add a <Link to="/account/phone-numbers">phone number</Link> to receive
-          calls
-        </span>
-      ),
-      isCompleted: () => phoneNumbers && phoneNumbers.length > 0,
-    },
   ];
 
   useEffect(() => {

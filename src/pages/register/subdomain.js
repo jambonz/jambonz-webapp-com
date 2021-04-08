@@ -1,12 +1,38 @@
 import { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from "styled-components/macro";
 import ExternalMain from '../../components/wrappers/ExternalMain';
 import Form from '../../components/elements/Form';
 import Button from '../../components/elements/Button';
 import Input from '../../components/elements/Input';
 import FormError from '../../components/blocks/FormError';
 import Loader from '../../components/blocks/Loader';
+
+const DomainInput = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  input {
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+`;
+
+const RootDomain = styled.div`
+  height: 36px;
+  border: 1px solid #B6B6B6;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-right-radius: 0.125rem;
+  border-bottom-right-radius: 0.125rem;
+  margin-bottom: 1rem;
+  background-color: rgb(232, 240, 254);
+`;
 
 const RegisterChooseSubdomain = () => {
   let history = useHistory();
@@ -158,24 +184,22 @@ const RegisterChooseSubdomain = () => {
               send calls, and where you can register devices
               to. This can be changed at any time.
             </p>
-            <Input
-              fullWidth
-              type="text"
-              name="subdomain"
-              id="subdomain"
-              placeholder="your-name-here"
-              value={subdomain}
-              onChange={handleChange}
-              ref={refSubdomain}
-              invalid={invalidSubdomain}
-              quickValid={quickValid}
-              autoFocus
-            />
-            {subdomain &&
-              <p>
-                FQDN: {subdomain}.{root_domain}
-              </p>
-            }
+            <DomainInput>
+              <Input
+                fullWidth
+                type="text"
+                name="subdomain"
+                id="subdomain"
+                placeholder="your-name-here"
+                value={subdomain}
+                onChange={handleChange}
+                ref={refSubdomain}
+                invalid={invalidSubdomain}
+                quickValid={quickValid}
+                autoFocus
+              />
+              <RootDomain>{`.${root_domain}`}</RootDomain>
+            </DomainInput>
             {errorMessage && (
               <FormError message={errorMessage} />
             )}

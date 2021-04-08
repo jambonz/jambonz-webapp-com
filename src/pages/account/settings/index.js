@@ -149,7 +149,7 @@ const SettingsIndex = () => {
             {provider === 'local' ? (
               <p>
                 You currently sign in with an email and password. Other
-                options for authentication are GitHub, Google, Twitter.
+                options for authentication are GitHub, Google.
               </p>
             ) : provider === 'github' ? (
               <>

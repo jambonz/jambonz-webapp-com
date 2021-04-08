@@ -296,7 +296,7 @@ const AccountHome = () => {
 
           {!accountSetupCompleted && (
             <Section>
-              <H2>Account Setup</H2>
+              <H2>Finish Account Setup</H2>
               <AccountSetupList onComplete={setAccountSetupCompleted}/>
             </Section>
           )}

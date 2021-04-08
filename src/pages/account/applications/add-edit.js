@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styled from "styled-components/macro";
@@ -151,6 +151,8 @@ const ApplicationsAddEdit = () => {
   const toggleMessagingAuth = () => setShowMessagingAuth(!showMessagingAuth);
 
   const [ applicationSid, setApplicationSid ] = useState([]);
+
+  const showMessagingHook = false;
 
   useEffect(() => {
     const getAPIData = async () => {
@@ -571,71 +573,73 @@ const ApplicationsAddEdit = () => {
             )}
 
             <hr />
+            {showMessagingHook && (
+              <React.Fragment>
+                <Label htmlFor="messagingWebhook">Messaging Webhook</Label>
+                <StyledInputGroup>
+                  <Input
+                    name="messagingWebhook"
+                    id="messagingWebhook"
+                    value={messagingWebhook}
+                    onChange={e => setMessagingWebhook(e.target.value)}
+                    placeholder="URL that will receive SMS (optional)"
+                  />
 
-            <Label htmlFor="messagingWebhook">Messaging Webhook</Label>
-            <StyledInputGroup>
-              <Input
-                name="messagingWebhook"
-                id="messagingWebhook"
-                value={messagingWebhook}
-                onChange={e => setMessagingWebhook(e.target.value)}
-                placeholder="URL that will receive SMS (optional)"
-              />
-
-              <StyledLabel
-                middle
-                htmlFor="messagingWebhookMethod"
-              >
-                Method
-              </StyledLabel>
-              <Select
-                name="messagingWebhookMethod"
-                id="messagingWebhookMethod"
-                value={messagingWebhookMethod}
-                onChange={e => setMessagingWebhookMethod(e.target.value)}
-              >
-                <option value="POST">POST</option>
-                <option value="GET">GET</option>
-              </Select>
-            </StyledInputGroup>
-
-            {showMessagingAuth ? (
-              <StyledInputGroup>
-                <StyledLabel margin="0 0 1rem" indented htmlFor="messagingWebhookUser">User</StyledLabel>
-                <Input
-                  name="messagingWebhookUser"
-                  id="messagingWebhookUser"
-                  value={messagingWebhookUser}
-                  onChange={e => setMessagingWebhookUser(e.target.value)}
-                  placeholder="Optional"
-                  invalid={invalidMessagingWebhookUser}
-                  ref={refMessagingWebhookUser}
-                />
-                <StyledLabel htmlFor="messagingWebhookPass" middle>Password</StyledLabel>
-                <PasswordInput
-                  allowShowPassword
-                  name="messagingWebhookPass"
-                  id="messagingWebhookPass"
-                  password={messagingWebhookPass}
-                  setPassword={setMessagingWebhookPass}
-                  setErrorMessage={setErrorMessage}
-                  placeholder="Optional"
-                  invalid={invalidMessagingWebhookPass}
-                  ref={refMessagingWebhookPass}
-                />
-              </StyledInputGroup>
-            ) : (
-              <Button
-                text
-                formLink
-                type="button"
-                onClick={toggleMessagingAuth}
-              >
-                Use HTTP Basic Authentication
-              </Button>
+                  <StyledLabel
+                    middle
+                    htmlFor="messagingWebhookMethod"
+                  >
+                    Method
+                  </StyledLabel>
+                  <Select
+                    name="messagingWebhookMethod"
+                    id="messagingWebhookMethod"
+                    value={messagingWebhookMethod}
+                    onChange={e => setMessagingWebhookMethod(e.target.value)}
+                  >
+                    <option value="POST">POST</option>
+                    <option value="GET">GET</option>
+                  </Select>
+                </StyledInputGroup>
+                {showMessagingAuth ? (
+                  <StyledInputGroup>
+                    <StyledLabel margin="0 0 1rem" indented htmlFor="messagingWebhookUser">User</StyledLabel>
+                    <Input
+                      name="messagingWebhookUser"
+                      id="messagingWebhookUser"
+                      value={messagingWebhookUser}
+                      onChange={e => setMessagingWebhookUser(e.target.value)}
+                      placeholder="Optional"
+                      invalid={invalidMessagingWebhookUser}
+                      ref={refMessagingWebhookUser}
+                    />
+                    <StyledLabel htmlFor="messagingWebhookPass" middle>Password</StyledLabel>
+                    <PasswordInput
+                      allowShowPassword
+                      name="messagingWebhookPass"
+                      id="messagingWebhookPass"
+                      password={messagingWebhookPass}
+                      setPassword={setMessagingWebhookPass}
+                      setErrorMessage={setErrorMessage}
+                      placeholder="Optional"
+                      invalid={invalidMessagingWebhookPass}
+                      ref={refMessagingWebhookPass}
+                    />
+                  </StyledInputGroup>
+                ) : (
+                  <Button
+                    text
+                    formLink
+                    type="button"
+                    onClick={toggleMessagingAuth}
+                  >
+                    Use HTTP Basic Authentication
+                  </Button>
+                )}
+                <hr />
+              </React.Fragment>
             )}
 
-            <hr />
 
             <Label htmlFor="speechSynthesisVendor">Speech Synthesis Vendor</Label>
             <StyledInputGroup>
