@@ -272,7 +272,7 @@ const cardElementsOptions = {
 const Subscription = ({ elements, stripe }) => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem("jwt");
-  const isMobile = useContext(ResponsiveContext);
+  const { isMobile } = useContext(ResponsiveContext);
 
   const history = useHistory();
 

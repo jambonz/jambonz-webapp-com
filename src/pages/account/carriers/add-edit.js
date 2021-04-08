@@ -18,6 +18,7 @@ import TrashButton from '../../../components/elements/TrashButton';
 import Loader from '../../../components/blocks/Loader';
 import sortSipGateways from '../../../helpers/sortSipGateways';
 import Select from '../../../components/elements/Select';
+import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 
 const StyledForm = styled(Form)`
   @media (max-width: 978.98px) {
@@ -43,9 +44,7 @@ const StyledForm = styled(Form)`
 `;
 
 const StyledLabel = styled(Label)`
-  @media (max-width: 978.98px) {
-    display: none;
-  }
+  grid-column: 1 / 3;
 `;
 
 const StyledButton = styled(Button)`
@@ -56,9 +55,21 @@ const SIPGatewaysInputGroup = styled(InputGroup)`
   grid-column: 1 / 3;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: 1fr 100px 80px 300px;
+  grid-template-columns: 1fr 80px 80px auto;
 
   @media (max-width: 978.98px) {
+    grid-template-columns: 1fr 80px 80px auto;
+  }
+
+  @media (max-width: 899.98px) {
+    grid-template-columns: 1fr 100px 80px;
+  }
+
+  @media (max-width: 767.98px) {
+    grid-template-columns: 1fr 80px 80px auto;
+  }
+
+  @media (max-width: 549.98px) {
     grid-template-columns: 1fr 100px 80px;
   }
 `;
@@ -67,11 +78,13 @@ const SIPGatewaysChecboxGroup = styled.div`
   display: flex;
 
   @media (max-width: 978.98px) {
-    grid-column: 1 / 3;
-
     & > *:first-child {
       margin-left: -0.5rem;
     }
+  }
+
+  @media (max-width: 549.98px) {
+    grid-column: 1 / 3;
   }
 `;
 
@@ -99,6 +112,7 @@ const StyledButtonGroup = styled(InputGroup)`
 `;
 
 const CarriersAddEdit = () => {
+  const { width } = useContext(ResponsiveContext);
   const { voip_carrier_sid } = useParams();
   const type = voip_carrier_sid ? 'edit' : 'add';
   const pageTitle = type === 'edit' ? 'Edit Carrier' : 'Add Carrier';
@@ -914,10 +928,7 @@ const CarriersAddEdit = () => {
               : null
             }
             <SIPGatewaysInputGroup>
-              <Label>Network Address</Label>
-              <Label>Port</Label>
-              <Label>Netmask</Label>
-              <StyledLabel />
+              <StyledLabel>{`Network Address / Port / Netmask`}</StyledLabel>
             </SIPGatewaysInputGroup>
             {sipGateways.map((g, i) => (
               <SIPGatewaysInputGroup key={i}>
@@ -954,7 +965,7 @@ const CarriersAddEdit = () => {
                 <SIPGatewaysChecboxGroup>
                   <Checkbox
                     id={`inbound[${i}]`}
-                    label="Inbound"
+                    label={width > 1100 ? "Inbound" : "In"}
                     tooltip="Sends us calls"
                     checked={sipGateways[i].inbound}
                     onChange={e => updateSipGateways(e, i, 'inbound')}
@@ -963,7 +974,7 @@ const CarriersAddEdit = () => {
                   />
                   <Checkbox
                     id={`outbound[${i}]`}
-                    label="Outbound"
+                    label={width > 1100 ? "Outbound" : "Out"}
                     tooltip="Accepts calls from us"
                     checked={sipGateways[i].outbound}
                     onChange={e => updateSipGateways(e, i, 'outbound')}

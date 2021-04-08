@@ -44,7 +44,7 @@ const Cell = styled.span`
 
 const ManagePaymentInfo = () => {
   const jwt = localStorage.getItem("jwt");
-  const isMobile = useContext(ResponsiveContext);
+  const { isMobile } = useContext(ResponsiveContext);
 
   const [showLoader, setShowLoader] = useState(true);
   const [paymentInfo, setPaymentInfo] = useState({});

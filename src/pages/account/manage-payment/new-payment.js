@@ -165,7 +165,7 @@ const cardElementsOptions = {
 
 const NewPaymentInfo = ({ elements, stripe, edit }) => {
   const dispatch = useContext(NotificationDispatchContext);
-  const isMobile = useContext(ResponsiveContext);
+  const { isMobile } = useContext(ResponsiveContext);
   const jwt = localStorage.getItem("jwt");
 
   const history = useHistory();
