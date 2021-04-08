@@ -137,7 +137,6 @@ const CarriersAddEdit = () => {
   // Form inputs
   const [ name,            setName            ] = useState('');
   const [ nameInvalid,     setNameInvalid     ] = useState(false);
-  const [ description,     setDescription     ] = useState('');
   const [ e164,            setE164            ] = useState(false);
   const [ application,      setApplication    ] = useState('');
   const [ authenticate,    setAuthenticate    ] = useState(false);
@@ -256,7 +255,6 @@ const CarriersAddEdit = () => {
           sortSipGateways(currentSipGateways);
 
           setName(carrier.name || '');
-          setDescription(carrier.description || '');
           setE164(carrier.e164_leading_plus === 1);
           setApplication(carrier.application_sid || '');
           setAuthenticate(carrier.register_username ? true : false);
@@ -599,7 +597,6 @@ const CarriersAddEdit = () => {
         },
         data: {
           name: name.trim() || null,
-          description: description.trim() || null,
           e164_leading_plus: e164 ? 1 : 0,
           application_sid: application || null,
           requires_register: register ? 1 : 0,
@@ -771,15 +768,6 @@ const CarriersAddEdit = () => {
               invalid={nameInvalid}
               autoFocus
               ref={refName}
-            />
-
-            <Label htmlFor="description">Description</Label>
-            <Input
-              name="description"
-              id="description"
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              placeholder="Optional"
             />
 
             <Label htmlFor="e164">E.164 Syntax</Label>
