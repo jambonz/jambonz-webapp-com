@@ -89,6 +89,7 @@ const RecentCallsIndex = () => {
   // Filter values
   const [attemptedAt, setAttemptedAt] = useState("-");
   const [dirFilter, setDirFilter] = useState("-");
+  const [answered, setAnswered] = useState(false);
 
   // width
   const { height } = window.screen;
@@ -204,6 +205,36 @@ const RecentCallsIndex = () => {
       );
     },
   });
+  const getStatusFilter = () => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <DirectionFilterContainer>
+        <Checkbox
+          noLeftMargin
+          id="answered"
+          label="answered"
+          checked={selectedKeys.includes("answered")}
+          onChange={(e) => {
+            setSelectedKeys(e.target.checked ? ["answered"] : []);
+            confirm();
+            setAnswered(e.target.checked);
+          }}
+        />
+      </DirectionFilterContainer>
+    ),
+    filterIcon: (filtered) => {
+      let iconValue = filtered && answered ? "A" : "-";
+      return (
+        <DateFilterIcon>
+          <DateFilterValue>{iconValue}</DateFilterValue>
+        </DateFilterIcon>
+      );
+    },
+  });
   const Columns = [
     {
       title: "Date",
@@ -236,6 +267,7 @@ const RecentCallsIndex = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      ...getStatusFilter(),
     },
     {
       title: "Duration",
