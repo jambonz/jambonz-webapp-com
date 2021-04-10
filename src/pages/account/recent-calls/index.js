@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import moment from "moment";
 import styled from "styled-components/macro";
 import DatePicker from "antd/lib/date-picker";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
 import InternalMain from "../../../components/wrappers/InternalMain";
 import Section from "../../../components/blocks/Section";
-import TableContent from "../../../components/blocks/TableContent";
 import AntdTable from "../../../components/blocks/AntdTable";
 import phoneNumberFormat from "../../../helpers/phoneNumberFormat";
 import timeFormat from "../../../helpers/timeFormat";
@@ -14,6 +14,7 @@ import Radio from "../../../components/elements/Radio";
 import InputGroup from "../../../components/elements/InputGroup";
 import Button from "../../../components/elements/Button";
 import Checkbox from "../../../components/elements/Checkbox";
+import handleErrors from "../../../helpers/handleErrors";
 
 const { RangePicker } = DatePicker;
 const Directions = [
@@ -82,11 +83,15 @@ const RecentCallsIndex = () => {
   // Table props
   const [recentCallsData, setRecentCallsData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [rowCount, setRowCount] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
 
   // Filter values
   const [attemptedAt, setAttemptedAt] = useState("-");
   const [dirFilter, setDirFilter] = useState("-");
+
+  // width
+  const { height } = window.screen;
 
   //=============================================================================
   // Define Table props
@@ -128,9 +133,6 @@ const RecentCallsIndex = () => {
         </InputGroup>
       </DateFilterContainer>
     ),
-    onFilter: (value, record) => {
-      return true;
-    },
     filterIcon: (filtered) => {
       const Periods = {
         seven: "7",
@@ -188,7 +190,6 @@ const RecentCallsIndex = () => {
         </InputGroup>
       </DirectionFilterContainer>
     ),
-    onFilter: (value, record) => record.direction === value,
     filterIcon: (filtered) => {
       let iconValue = "-";
       if (filtered) {
@@ -241,85 +242,63 @@ const RecentCallsIndex = () => {
       dataIndex: "duration",
       key: "duration",
     },
-    {
-      title: "Call-ID",
-      dataIndex: "sip_callid",
-      key: "sip_callid",
-    },
   ];
 
   //=============================================================================
   // Get recent calls
   //=============================================================================
-  const getRecentCalls = async () => {
-    try {
-      const recentCalls = await axios({
-        method: "get",
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: `/Accounts/${account_sid}/CallBillingRecords`,
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-
-      const simplifiedRecentCalls = recentCalls.data.map((call) => {
-        return {
-          sid: call.call_billing_record_sid,
-          date: call.started_at,
-          direction: call.direction,
-          from: phoneNumberFormat(call.from),
-          to: phoneNumberFormat(call.to),
-          status: call.status,
-          duration: timeFormat(call.duration),
-          call_sid: call.call_sid,
-        };
-      });
-      return simplifiedRecentCalls;
-    } catch (err) {
-      if (err.response && err.response.status === 401) {
-        localStorage.clear();
-        sessionStorage.clear();
-        history.push("/");
-        dispatch({
-          type: "ADD",
-          level: "error",
-          message: "Your session has expired. Please log in and try again.",
-        });
-      } else {
-        dispatch({
-          type: "ADD",
-          level: "error",
-          message:
-            (err.response && err.response.data && err.response.data.msg) ||
-            "Unable to get recent call data",
-        });
-        console.error(err.response || err);
-      }
-    }
-  };
-
   const handleTableChange = (pagination, filters, sorter) => {
     console.log("**** pagination ", pagination);
     console.log("**** filters ", filters);
     console.log("**** sorter ", sorter);
   };
 
-  useEffect(() => {
+  const getRecentCallsData = async () => {
     let isMounted = true;
 
-    const getRecentCallsData = async () => {
-      const data = await getRecentCalls();
+    try {
+      const result = await axios({
+        method: "get",
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: `/Accounts/${account_sid}/RecentCalls`,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+        params: {
+          page: currentPage,
+          count: rowCount,
+          // days: 7,
+          // start: 11111,
+          // end: 22222,
+          // direction: 'inbound',
+        },
+      });
+
+      const { total, data } = result.data;
+
+      const recentCalls = data.map((item, index) => ({
+        key: index,
+        ...item,
+        attempted_at: item.attempted_at
+          ? moment(item.attempted_at).format("YYYY MM DD")
+          : "",
+        from: phoneNumberFormat(item.from),
+        to: phoneNumberFormat(item.to),
+        status: item.answered ? "answered" : item.termination_reason,
+        duration: timeFormat(item.duration),
+      }));
 
       if (isMounted) {
-        setRecentCallsData(data);
+        setRecentCallsData(recentCalls);
+        setTotalCount(total);
       }
-    };
+    } catch (err) {
+      handleErrors({ err, history, dispatch });
+    }
+  };
 
+  useEffect(() => {
     getRecentCallsData();
-
-    return () => {
-      isMounted = false;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -332,31 +311,17 @@ const RecentCallsIndex = () => {
         <AntdTable
           dataSource={recentCallsData}
           columns={Columns}
-          rowKey="call_sid"
+          rowKey="key"
           pagination={{
             showTotal: (total) => `Total: ${total}`,
             current: currentPage,
             total: totalCount,
-            pageSize: 25,
+            pageSize: rowCount,
             pageSizeOptions: [25, 50, 100],
             showSizeChanger: true,
           }}
+          scroll={{ y: Math.max(height - 490, 200) }}
           onChange={handleTableChange}
-        />
-        <TableContent
-          fullWidth
-          noMenuOnRows
-          condensed
-          name="recent call"
-          getContent={getRecentCalls}
-          columns={[
-            { header: "Date", key: "date" },
-            { header: "Direction", key: "direction" },
-            { header: "From", key: "from" },
-            { header: "To", key: "to" },
-            { header: "Status", key: "status" },
-            { header: "Duration", key: "duration", textAlign: "right" },
-          ]}
         />
       </Section>
     </InternalMain>
