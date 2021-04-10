@@ -8,16 +8,18 @@ const StyledTable = styled(Table)`
   margin: -2rem;
   width: calc(100% + 4rem);
   max-width: calc(100% + 4rem);
+  margin-top: -2rem !important;
 
   table {
     border-top: 1px solid #e0e0e0;
 
     tr, th, td {
       border-bottom: 1px solid #e0e0e0;
+      font-size: 16px;
     }
 
-    tr {
-      height: 40px;
+    th, td {
+      padding: 0.5rem 2rem;
     }
   }
 
