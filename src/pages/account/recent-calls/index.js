@@ -16,7 +16,6 @@ import Button from "../../../components/elements/Button";
 import Checkbox from "../../../components/elements/Checkbox";
 import handleErrors from "../../../helpers/handleErrors";
 
-const { RangePicker } = DatePicker;
 const Directions = [
   {
     label: "Inbound",
@@ -48,7 +47,7 @@ const DateFilters = [
 
 const DateFilterContainer = styled.div`
   padding: 1rem;
-  width: 280px;
+  width: 200px;
 `;
 
 const DirectionFilterContainer = styled.div`
@@ -74,6 +73,19 @@ const DateFilterValue = styled.div`
   align-items: center;
 `;
 
+const DateContainer = styled.div`
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  grid-gap: 0.5rem;
+  margin: 0.5rem 0;
+`;
+
+const DateLabel = styled.span`
+  color: #767676;
+  text-align: right;
+  font-size: 14px;
+`;
+
 const RecentCallsIndex = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
@@ -90,6 +102,8 @@ const RecentCallsIndex = () => {
   const [attemptedAt, setAttemptedAt] = useState("-");
   const [dirFilter, setDirFilter] = useState("-");
   const [answered, setAnswered] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   // width
   const { height } = window.screen;
@@ -97,7 +111,7 @@ const RecentCallsIndex = () => {
   //=============================================================================
   // Define Table props
   //=============================================================================
-  const getFilterProps = (dataIndex) => ({
+  const getDateFilter = () => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -117,7 +131,14 @@ const RecentCallsIndex = () => {
             }
           />
         ))}
-        {selectedKeys.includes("custom") && <RangePicker size="small" />}
+        {selectedKeys.includes("custom") && (
+          <DateContainer>
+            <DateLabel>Start:</DateLabel>
+            <DatePicker size="small" onChange={setStartDate} />
+            <DateLabel>End:</DateLabel>
+            <DatePicker size="small" onChange={setEndDate} />
+          </DateContainer>
+        )}
         <InputGroup flexEnd space>
           <Button text gray onClick={clearFilters}>
             Reset
@@ -128,6 +149,7 @@ const RecentCallsIndex = () => {
               setAttemptedAt(selectedKeys);
               confirm();
             }}
+            disabled={selectedKeys.includes("custom") && !startDate && !endDate}
           >
             Ok
           </Button>
@@ -240,7 +262,7 @@ const RecentCallsIndex = () => {
       title: "Date",
       dataIndex: "attempted_at",
       key: "attempted_at",
-      ...getFilterProps("attempted_at"),
+      ...getDateFilter(),
     },
     {
       title: "Direction",
@@ -285,7 +307,7 @@ const RecentCallsIndex = () => {
     console.log("**** sorter ", sorter);
   };
 
-  const getRecentCallsData = async () => {
+  const getRecentCallsData = async (filter = {}) => {
     let isMounted = true;
 
     try {
@@ -299,10 +321,7 @@ const RecentCallsIndex = () => {
         params: {
           page: currentPage,
           count: rowCount,
-          // days: 7,
-          // start: 11111,
-          // end: 22222,
-          // direction: 'inbound',
+          ...filter,
         },
       });
 
