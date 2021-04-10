@@ -263,38 +263,45 @@ const RecentCallsIndex = () => {
       dataIndex: "attempted_at",
       key: "attempted_at",
       ...getDateFilter(),
+      width: 160,
     },
     {
       title: "Direction",
       dataIndex: "direction",
       key: "direction",
       ...getDirectionFilter(),
+      width: 150,
     },
     {
       title: "From",
       dataIndex: "from",
       key: "from",
+      width: 200,
     },
     {
       title: "To",
       dataIndex: "to",
       key: "to",
+      width: 200,
     },
     {
       title: "Trunk",
       dataIndex: "trunk",
       key: "trunk",
+      width: 150,
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       ...getStatusFilter(),
+      width: 200,
     },
     {
       title: "Duration",
       dataIndex: "duration",
       key: "duration",
+      width: 150,
     },
   ];
 
@@ -331,7 +338,7 @@ const RecentCallsIndex = () => {
         key: index,
         ...item,
         attempted_at: item.attempted_at
-          ? moment(item.attempted_at).format("YYYY MM DD")
+          ? moment(item.attempted_at).format("YYYY MM.DD")
           : "",
         from: phoneNumberFormat(item.from),
         to: phoneNumberFormat(item.to),
