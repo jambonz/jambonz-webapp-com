@@ -111,6 +111,12 @@ const ExpandedSection = styled.div`
   padding: 1rem;
 `;
 
+const StyledButton = styled(Button)`
+  & > span {
+    height: 2rem;
+  }
+`;
+
 const RecentCallsIndex = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
@@ -479,6 +485,25 @@ const RecentCallsIndex = () => {
     </ExpandedSection>
   );
 
+  const renderPagination = (page, type, originElement) => {
+    let node = originElement;
+
+    switch (type) {
+      case "page":
+        node = <StyledButton gray={currentPage !== page}>{page}</StyledButton>;
+        break;
+      case "prev":
+        node = <StyledButton>{`<`}</StyledButton>;
+        break;
+      case "next":
+        node = <StyledButton>{`>`}</StyledButton>;
+        break;
+      default:
+    }
+
+    return node;
+  };
+
   useEffect(() => {
     handleFilterChange();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -521,6 +546,7 @@ const RecentCallsIndex = () => {
             pageSize: rowCount,
             pageSizeOptions: [25, 50, 100],
             showSizeChanger: true,
+            itemRender: renderPagination,
           }}
           scroll={{ y: Math.max(height - 490, 200) }}
           expandable={{

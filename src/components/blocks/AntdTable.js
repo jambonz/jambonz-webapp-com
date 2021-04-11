@@ -26,6 +26,10 @@ const StyledTable = styled(Table)`
   .ant-pagination {
     margin-right: 2rem;
   }
+
+  .ant-pagination-item {
+    border: none;
+  }
 `;
 
 const AntdTable = ({ dataSource, columns, ...rest }) => {
