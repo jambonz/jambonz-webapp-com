@@ -128,6 +128,8 @@ const RecentCallsIndex = () => {
   const [attemptedAt, setAttemptedAt] = useState("-");
   const [dirFilter, setDirFilter] = useState(null);
   const [answered, setAnswered] = useState(false);
+  const [filterStartDate, setFilterStartDate] = useState(null);
+  const [filterEndDate, setFilterEndDate] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
@@ -160,21 +162,37 @@ const RecentCallsIndex = () => {
         {selectedKeys.includes("custom") && (
           <DateContainer>
             <DateLabel>Start:</DateLabel>
-            <DatePicker size="small" onChange={setStartDate} />
+            <DatePicker
+              size="small"
+              value={startDate}
+              onChange={setStartDate}
+            />
             <DateLabel>End:</DateLabel>
-            <DatePicker size="small" onChange={setEndDate} />
+            <DatePicker size="small" value={endDate} onChange={setEndDate} />
           </DateContainer>
         )}
         <InputGroup flexEnd space>
-          <Button text gray onClick={clearFilters}>
+          <Button
+            text
+            gray
+            onClick={() => {
+              setAttemptedAt([]);
+              setFilterStartDate(null);
+              setFilterEndDate(null);
+              setStartDate(null);
+              setEndDate(null);
+              clearFilters();
+            }}
+          >
             Reset
           </Button>
           <Button
             text
             onClick={() => {
               setAttemptedAt(selectedKeys);
+              setFilterStartDate(startDate);
+              setFilterEndDate(endDate);
               confirm();
-              // handleFilterChange();
             }}
             disabled={selectedKeys.includes("custom") && !startDate && !endDate}
           >
@@ -225,7 +243,14 @@ const RecentCallsIndex = () => {
           />
         ))}
         <InputGroup flexEnd space>
-          <Button text gray onClick={clearFilters}>
+          <Button
+            text
+            gray
+            onClick={() => {
+              setDirFilter(null);
+              clearFilters();
+            }}
+          >
             Reset
           </Button>
           <Button
@@ -233,7 +258,6 @@ const RecentCallsIndex = () => {
             onClick={() => {
               setDirFilter(selectedKeys);
               confirm();
-              // handleFilterChange();
             }}
           >
             Ok
@@ -297,7 +321,6 @@ const RecentCallsIndex = () => {
             onClick={() => {
               setAnswered(selectedKeys.join(""));
               confirm();
-              // handleFilterChange();
             }}
           >
             Ok
@@ -370,7 +393,10 @@ const RecentCallsIndex = () => {
   // Get recent calls
   //=============================================================================
   const handleFilterChange = () => {
-    let filter = {};
+    let filter = {
+      page: currentPage,
+      count: rowCount,
+    };
     if (attemptedAt && attemptedAt.length > 0) {
       const days = DateFilters.find((item) => item.value === attemptedAt[0]);
 
@@ -384,57 +410,19 @@ const RecentCallsIndex = () => {
     }
 
     if (answered) {
-      filter.answered =
-        answered.length && answered[0] === "answered" ? "true" : "false";
+      filter.answered = answered === "answered" ? "true" : "false";
     }
 
-    if (startDate) {
-      filter.start = startDate.toISOString();
+    if (filterStartDate) {
+      filter.start = filterStartDate.toISOString();
     }
 
-    if (endDate) {
-      filter.end = endDate.toISOString();
+    if (filterEndDate) {
+      filter.end = filterEndDate.toISOString();
     }
 
-    console.log("***** filter ", filter);
     getRecentCallsData(filter);
   };
-  // const handleTableChange = (pagination, filters, sorter) => {
-  //   console.log("****** handleTableChange ", pagination, filters);
-  //   setCurrentPage(pagination.current);
-  //   setRowCount(pagination.pageSize);
-
-  //   const { attempted_at, direction, status } = filters || {};
-  //   let filter = {};
-
-  //   if (attempted_at && attempted_at.length > 0) {
-  //     const days = DateFilters.find((item) => item.value === attempted_at[0]);
-
-  //     if (days) {
-  //       filter.days = days.days;
-  //     }
-  //   }
-
-  //   if (direction && direction.length === 1) {
-  //     filter.direction = direction[0];
-  //   }
-
-  //   if (status) {
-  //     filter.answered =
-  //       status.length && status[0] === "answered" ? "true" : "false";
-  //   }
-
-  //   if (startDate) {
-  //     filter.start = startDate.toISOString();
-  //   }
-
-  //   if (endDate) {
-  //     filter.end = endDate.toISOString();
-  //   }
-
-  //   console.log("***** filter ", filter);
-  //   getRecentCallsData(filter);
-  // };
 
   const getRecentCallsData = async (filter = {}) => {
     let isMounted = true;
@@ -449,8 +437,6 @@ const RecentCallsIndex = () => {
           Authorization: `Bearer ${jwt}`,
         },
         params: {
-          page: currentPage,
-          count: rowCount,
           ...filter,
         },
       });
@@ -496,12 +482,15 @@ const RecentCallsIndex = () => {
   useEffect(() => {
     handleFilterChange();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, rowCount]);
-
-  useEffect(() => {
-    getRecentCallsData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    currentPage,
+    rowCount,
+    attemptedAt,
+    dirFilter,
+    answered,
+    filterStartDate,
+    filterEndDate,
+  ]);
 
   //=============================================================================
   // Render
@@ -523,8 +512,8 @@ const RecentCallsIndex = () => {
           }}
           pagination={{
             onChange: (page, size) => {
-              setRowCount(size);
               setCurrentPage(page);
+              setRowCount(size);
             },
             showTotal: (total) => `Total: ${total}`,
             current: currentPage,
