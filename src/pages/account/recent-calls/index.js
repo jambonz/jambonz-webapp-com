@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
@@ -11,6 +11,7 @@ import AntdTable from "../../../components/blocks/AntdTable";
 import phoneNumberFormat from "../../../helpers/phoneNumberFormat";
 import timeFormat from "../../../helpers/timeFormat";
 import Radio from "../../../components/elements/Radio";
+import Label from "../../../components/elements/Label";
 import InputGroup from "../../../components/elements/InputGroup";
 import Button from "../../../components/elements/Button";
 import Checkbox from "../../../components/elements/Checkbox";
@@ -100,6 +101,14 @@ const StyledLoader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const ExpandedSection = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
 `;
 
 const RecentCallsIndex = () => {
@@ -446,30 +455,43 @@ const RecentCallsIndex = () => {
         },
       });
 
-      const { total, data } = result.data;
-
-      const recentCalls = data.map((item, index) => ({
-        key: index,
-        ...item,
-        attempted_at: item.attempted_at
-          ? moment(item.attempted_at).format("YYYY MM.DD")
-          : "",
-        from: phoneNumberFormat(item.from),
-        to: phoneNumberFormat(item.to),
-        status: item.answered ? "answered" : item.termination_reason,
-        duration: timeFormat(item.duration),
-      }));
-
       if (isMounted) {
+        const { total, data } = result.data;
+
+        const recentCalls = data.map((item, index) => ({
+          key: index,
+          ...item,
+          attempted_at: item.attempted_at
+            ? moment(item.attempted_at).format("YYYY MM.DD")
+            : "",
+          from: phoneNumberFormat(item.from),
+          to: phoneNumberFormat(item.to),
+          status: item.answered ? "answered" : item.termination_reason,
+          duration: timeFormat(item.duration),
+        }));
+
         setRecentCallsData(recentCalls);
         setTotalCount(total);
       }
     } catch (err) {
       handleErrors({ err, history, dispatch });
     } finally {
-      setLoading(false);
+      if (isMounted) {
+        setLoading(false);
+      }
     }
   };
+
+  const renderExpandedRow = (data) => (
+    <ExpandedSection>
+      {Object.keys(data).map((field, index) => (
+        <React.Fragment key={index}>
+          <Label textAlign="right">{`${field}:`}</Label>
+          <Label>{data[field]}</Label>
+        </React.Fragment>
+      ))}
+    </ExpandedSection>
+  );
 
   useEffect(() => {
     handleFilterChange();
@@ -512,6 +534,9 @@ const RecentCallsIndex = () => {
             showSizeChanger: true,
           }}
           scroll={{ y: Math.max(height - 490, 200) }}
+          expandable={{
+            expandedRowRender: renderExpandedRow,
+          }}
         />
       </Section>
     </InternalMain>
