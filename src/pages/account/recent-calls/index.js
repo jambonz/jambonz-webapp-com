@@ -10,86 +10,20 @@ import Section from "../../../components/blocks/Section";
 import AntdTable from "../../../components/blocks/AntdTable";
 import phoneNumberFormat from "../../../helpers/phoneNumberFormat";
 import timeFormat from "../../../helpers/timeFormat";
-import Radio from "../../../components/elements/Radio";
 import Label from "../../../components/elements/Label";
 import InputGroup from "../../../components/elements/InputGroup";
 import Button from "../../../components/elements/Button";
-import Checkbox from "../../../components/elements/Checkbox";
+import Select from "../../../components/elements/Select";
+import Form from "../../../components/elements/Form";
 import Loader from "../../../components/blocks/Loader";
 import handleErrors from "../../../helpers/handleErrors";
 
-const Directions = [
-  {
-    label: "Inbound",
-    value: "inbound",
-  },
-  {
-    label: "Outbound",
-    value: "outbound",
-  },
-];
-const DateFilters = [
-  {
-    label: "Last 7 days",
-    value: "seven",
-    days: 7,
-  },
-  {
-    label: "Last 14 days",
-    value: "fourteen",
-    days: 14,
-  },
-  {
-    label: "Last 30 days",
-    value: "thirty",
-    days: 30,
-  },
-  {
-    label: "Custom",
-    value: "custom",
-    days: null,
-  },
-];
-
-const DateFilterContainer = styled.div`
-  padding: 1rem;
-  width: 200px;
-`;
-
-const DirectionFilterContainer = styled.div`
-  padding: 1rem;
-`;
-
-const DateFilterIcon = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-`;
-
-const DateFilterValue = styled.div`
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.12);
-  background: #bfbfbf;
-  color: #fff !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const DateContainer = styled.div`
-  display: grid;
-  grid-template-columns: 40px 1fr;
-  grid-gap: 0.5rem;
-  margin: 0.5rem 0;
-`;
-
-const DateLabel = styled.span`
+const FilterLabel = styled.span`
   color: #767676;
   text-align: right;
   font-size: 14px;
+  margin-left: 1rem;
+  margin-right: 0.5rem;
 `;
 
 const StyledLoader = styled.div`
@@ -117,6 +51,20 @@ const StyledButton = styled(Button)`
   }
 `;
 
+const StyledForm = styled(Form)`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledDatePicker = styled(DatePicker)`
+  height: 2.25rem;
+  margin-right: ${(props) => props.marginRight || ""};
+
+  & input {
+    margin-bottom: 0 !important;
+  }
+`;
+
 const RecentCallsIndex = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
@@ -125,17 +73,16 @@ const RecentCallsIndex = () => {
 
   // Table props
   const [recentCallsData, setRecentCallsData] = useState([]);
+  const [rawData, setRawData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowCount, setRowCount] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
   // Filter values
-  const [attemptedAt, setAttemptedAt] = useState("-");
-  const [dirFilter, setDirFilter] = useState(null);
-  const [answered, setAnswered] = useState(false);
-  const [filterStartDate, setFilterStartDate] = useState(null);
-  const [filterEndDate, setFilterEndDate] = useState(null);
+  const [attemptedAt, setAttemptedAt] = useState("today");
+  const [dirFilter, setDirFilter] = useState("io");
+  const [answered, setAnswered] = useState("all");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
@@ -145,221 +92,17 @@ const RecentCallsIndex = () => {
   //=============================================================================
   // Define Table props
   //=============================================================================
-  const getDateFilter = () => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
-      <DateFilterContainer>
-        {DateFilters.map((date) => (
-          <Radio
-            noLeftMargin
-            key={date.value}
-            id={date.value}
-            label={date.label}
-            checked={selectedKeys.includes(date.value)}
-            onChange={(e) =>
-              setSelectedKeys(e.target.checked ? [date.value] : [])
-            }
-          />
-        ))}
-        {selectedKeys.includes("custom") && (
-          <DateContainer>
-            <DateLabel>Start:</DateLabel>
-            <DatePicker
-              size="small"
-              value={startDate}
-              onChange={setStartDate}
-            />
-            <DateLabel>End:</DateLabel>
-            <DatePicker size="small" value={endDate} onChange={setEndDate} />
-          </DateContainer>
-        )}
-        <InputGroup flexEnd space>
-          <Button
-            text
-            gray
-            onClick={() => {
-              setAttemptedAt([]);
-              setFilterStartDate(null);
-              setFilterEndDate(null);
-              setStartDate(null);
-              setEndDate(null);
-              clearFilters();
-            }}
-          >
-            Reset
-          </Button>
-          <Button
-            text
-            onClick={() => {
-              setAttemptedAt(selectedKeys);
-              setFilterStartDate(startDate);
-              setFilterEndDate(endDate);
-              confirm();
-            }}
-            disabled={selectedKeys.includes("custom") && !startDate && !endDate}
-          >
-            Ok
-          </Button>
-        </InputGroup>
-      </DateFilterContainer>
-    ),
-    filterIcon: (filtered) => {
-      const Periods = {
-        seven: "7",
-        fourteen: "14",
-        thirty: "30",
-        custom: "C",
-      };
-      const key = Object.keys(Periods).find((key) => attemptedAt.includes(key));
-      return (
-        <DateFilterIcon>
-          <DateFilterValue>
-            {filtered ? (key ? Periods[key] : "-") : "-"}
-          </DateFilterValue>
-        </DateFilterIcon>
-      );
-    },
-  });
-  const getDirectionFilter = () => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
-      <DirectionFilterContainer>
-        {Directions.map((dir) => (
-          <Checkbox
-            noLeftMargin
-            key={dir.value}
-            id={dir.value}
-            label={dir.label}
-            checked={selectedKeys.includes(dir.value)}
-            onChange={(e) =>
-              setSelectedKeys(
-                e.target.checked
-                  ? [...selectedKeys, dir.value]
-                  : selectedKeys.filter((item) => item !== dir.value)
-              )
-            }
-          />
-        ))}
-        <InputGroup flexEnd space>
-          <Button
-            text
-            gray
-            onClick={() => {
-              setDirFilter(null);
-              clearFilters();
-            }}
-          >
-            Reset
-          </Button>
-          <Button
-            text
-            onClick={() => {
-              setDirFilter(selectedKeys);
-              confirm();
-            }}
-          >
-            Ok
-          </Button>
-        </InputGroup>
-      </DirectionFilterContainer>
-    ),
-    filterIcon: (filtered) => {
-      let iconValue = "-";
-      if (filtered) {
-        iconValue = dirFilter
-          .map((item) => item.slice(0, 1).toUpperCase())
-          .join("");
-      }
-      return (
-        <DateFilterIcon>
-          <DateFilterValue>{iconValue}</DateFilterValue>
-        </DateFilterIcon>
-      );
-    },
-  });
-  const getStatusFilter = () => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
-      <DirectionFilterContainer>
-        <Radio
-          noLeftMargin
-          id="answered"
-          label="answered"
-          checked={selectedKeys.includes("answered")}
-          onChange={(e) =>
-            setSelectedKeys(e.target.checked ? ["answered"] : [])
-          }
-        />
-        <Radio
-          noLeftMargin
-          id="no-answered"
-          label="no answered"
-          checked={selectedKeys.includes("no-answered")}
-          onChange={(e) =>
-            setSelectedKeys(e.target.checked ? ["no-answered"] : [])
-          }
-        />
-        <InputGroup flexEnd space>
-          <Button
-            text
-            gray
-            onClick={() => {
-              setAnswered(null);
-              clearFilters();
-            }}
-          >
-            Reset
-          </Button>
-          <Button
-            text
-            onClick={() => {
-              setAnswered(selectedKeys.join(""));
-              confirm();
-            }}
-          >
-            Ok
-          </Button>
-        </InputGroup>
-      </DirectionFilterContainer>
-    ),
-    filterIcon: (filtered) => {
-      let iconValue = "-";
-      if (filtered) {
-        iconValue = answered === "answered" ? "A" : "N";
-      }
-
-      return (
-        <DateFilterIcon>
-          <DateFilterValue>{iconValue}</DateFilterValue>
-        </DateFilterIcon>
-      );
-    },
-  });
   const Columns = [
     {
       title: "Date",
       dataIndex: "attempted_at",
       key: "attempted_at",
-      ...getDateFilter(),
-      width: 160,
+      width: 250,
     },
     {
       title: "Direction",
       dataIndex: "direction",
       key: "direction",
-      ...getDirectionFilter(),
       width: 150,
     },
     {
@@ -381,13 +124,6 @@ const RecentCallsIndex = () => {
       width: 150,
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      ...getStatusFilter(),
-      width: 200,
-    },
-    {
       title: "Duration",
       dataIndex: "duration",
       key: "duration",
@@ -403,28 +139,40 @@ const RecentCallsIndex = () => {
       page: currentPage,
       count: rowCount,
     };
-    if (attemptedAt && attemptedAt.length > 0) {
-      const days = DateFilters.find((item) => item.value === attemptedAt[0]);
-
-      if (days) {
-        filter.days = days.days;
+    if (attemptedAt) {
+      switch (attemptedAt) {
+        case "today":
+          filter.start = moment().startOf("date").toISOString();
+          break;
+        case "7d":
+          filter.days = 7;
+          break;
+        case "14d":
+          filter.days = 14;
+          break;
+        case "30d":
+          filter.days = 30;
+          break;
+        default:
       }
     }
 
-    if (dirFilter && dirFilter.length === 1) {
-      filter.direction = dirFilter[0];
+    if (dirFilter === "inbound") {
+      filter.direction = "inbound";
+    } else if (dirFilter === "outbound") {
+      filter.direction = "outbound";
     }
 
-    if (answered) {
+    if (answered && answered !== "all") {
       filter.answered = answered === "answered" ? "true" : "false";
     }
 
-    if (filterStartDate) {
-      filter.start = filterStartDate.toISOString();
+    if (startDate) {
+      filter.start = startDate.startOf("date").toISOString();
     }
 
-    if (filterEndDate) {
-      filter.end = filterEndDate.toISOString();
+    if (endDate) {
+      filter.end = endDate.endOf("date").toISOString();
     }
 
     getRecentCallsData(filter);
@@ -450,11 +198,13 @@ const RecentCallsIndex = () => {
       if (isMounted) {
         const { total, data } = result.data;
 
+        setRawData([...data]);
+
         const recentCalls = data.map((item, index) => ({
           key: index,
           ...item,
           attempted_at: item.attempted_at
-            ? moment(item.attempted_at).format("YYYY MM.DD")
+            ? moment(item.attempted_at).format("YYYY MM.DD hh:mm a")
             : "",
           from: phoneNumberFormat(item.from),
           to: phoneNumberFormat(item.to),
@@ -474,16 +224,43 @@ const RecentCallsIndex = () => {
     }
   };
 
-  const renderExpandedRow = (data) => (
-    <ExpandedSection>
-      {Object.keys(data).map((field, index) => (
-        <React.Fragment key={index}>
-          <Label textAlign="right">{`${field}:`}</Label>
-          <Label>{data[field]}</Label>
-        </React.Fragment>
-      ))}
-    </ExpandedSection>
-  );
+  const renderExpandedRow = (data) => {
+    const fields = [
+      "direction",
+      "attempted_at",
+      "answered_at",
+      "terminated_at",
+      "duration",
+      "answered",
+      "from",
+      "to",
+      "termination_reason",
+      "call_sid",
+      "sip_callid",
+      "host",
+      "remote_host",
+      "sip_status",
+      "trunk",
+    ];
+
+    return (
+      <ExpandedSection>
+        {fields.map((field, index) => {
+          let label = rawData[data.key][field];
+
+          if (typeof label === "boolean") {
+            label = label ? "true" : "false";
+          }
+          return (
+            <React.Fragment key={index}>
+              <Label>{`${field}:`}</Label>
+              <Label>{label}</Label>
+            </React.Fragment>
+          );
+        })}
+      </ExpandedSection>
+    );
+  };
 
   const renderPagination = (page, type, originElement) => {
     let node = originElement;
@@ -504,18 +281,19 @@ const RecentCallsIndex = () => {
     return node;
   };
 
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      handleFilterChange();
+    } catch (err) {
+      handleErrors({ err, history, dispatch });
+    }
+  };
+
   useEffect(() => {
     handleFilterChange();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    currentPage,
-    rowCount,
-    attemptedAt,
-    dirFilter,
-    answered,
-    filterStartDate,
-    filterEndDate,
-  ]);
+  }, [currentPage, rowCount]);
 
   //=============================================================================
   // Render
@@ -523,6 +301,54 @@ const RecentCallsIndex = () => {
   return (
     <InternalMain type="fullWidthTable" title="Recent Calls">
       <Section fullPage>
+        <StyledForm onSubmit={handleSubmit}>
+          <FilterLabel htmlFor="daterange">Date:</FilterLabel>
+          <Select
+            name="daterange"
+            id="daterange"
+            value={attemptedAt}
+            onChange={(e) => setAttemptedAt(e.target.value)}
+          >
+            <option value="today">today</option>
+            <option value="7d">last 7d</option>
+            <option value="14d">last 14d</option>
+            <option value="30d">last 30d</option>
+            <option value="custom">custom</option>
+          </Select>
+          <FilterLabel htmlFor="direction">Direction:</FilterLabel>
+          <Select
+            name="direction"
+            id="direction"
+            value={dirFilter}
+            onChange={(e) => setDirFilter(e.target.value)}
+          >
+            <option value="io">inbound+outbound</option>
+            <option value="inbound">inbound only</option>
+            <option value="outbound">outbound only</option>
+          </Select>
+          <FilterLabel htmlFor="status">Status:</FilterLabel>
+          <Select
+            name="status"
+            id="status"
+            value={answered}
+            onChange={(e) => setAnswered(e.target.value)}
+          >
+            <option value="all">all</option>
+            <option value="answered">answered</option>
+            <option value="not-answered">not answered</option>
+          </Select>
+          <FilterLabel>Start:</FilterLabel>
+          <StyledDatePicker value={startDate} onChange={setStartDate} />
+          <FilterLabel>End:</FilterLabel>
+          <StyledDatePicker
+            marginRight="1rem"
+            value={endDate}
+            onChange={setEndDate}
+          />
+          <InputGroup spaced>
+            <Button>Search</Button>
+          </InputGroup>
+        </StyledForm>
         <AntdTable
           dataSource={recentCallsData}
           columns={Columns}
@@ -536,19 +362,21 @@ const RecentCallsIndex = () => {
             ),
           }}
           pagination={{
+            position: ["bottomCenter"],
             onChange: (page, size) => {
               setCurrentPage(page);
               setRowCount(size);
             },
-            showTotal: (total) => `Total: ${total}`,
+            showTotal: (total) => `Total: ${total} records`,
             current: currentPage,
             total: totalCount,
             pageSize: rowCount,
             pageSizeOptions: [25, 50, 100],
             showSizeChanger: true,
             itemRender: renderPagination,
+            showLessItems: true,
           }}
-          scroll={{ y: Math.max(height - 490, 200) }}
+          scroll={{ y: Math.max(height - 580, 200) }}
           expandable={{
             expandedRowRender: renderExpandedRow,
           }}
