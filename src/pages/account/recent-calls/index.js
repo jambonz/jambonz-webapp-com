@@ -62,6 +62,7 @@ const RecentCallsIndex = () => {
   const [rowCount, setRowCount] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   // Filter values
   const [attemptedAt, setAttemptedAt] = useState("today");
@@ -187,6 +188,7 @@ const RecentCallsIndex = () => {
 
         setRecentCallsData(recentCalls);
         setTotalCount(total);
+        setExpandedRowKeys([]);
       }
     } catch (err) {
       handleErrors({ err, history, dispatch });
@@ -255,6 +257,16 @@ const RecentCallsIndex = () => {
     }
 
     return node;
+  };
+
+  const handleExpandChange = (expanded, record) => {
+    if (expanded) {
+      setExpandedRowKeys((prev) => [...prev, record.key]);
+    } else {
+      setExpandedRowKeys((prev) => [
+        ...prev.filter((item) => item !== record.key),
+      ]);
+    }
   };
 
   useEffect(() => {
@@ -344,6 +356,8 @@ const RecentCallsIndex = () => {
           expandable={{
             expandedRowRender: renderExpandedRow,
           }}
+          expandedRowKeys={expandedRowKeys}
+          onExpand={handleExpandChange}
         />
       </Section>
     </InternalMain>
