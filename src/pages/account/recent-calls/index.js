@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import styled from "styled-components/macro";
-import DatePicker from "antd/lib/date-picker";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
 import InternalMain from "../../../components/wrappers/InternalMain";
 import Section from "../../../components/blocks/Section";
@@ -11,10 +10,9 @@ import AntdTable from "../../../components/blocks/AntdTable";
 import phoneNumberFormat from "../../../helpers/phoneNumberFormat";
 import timeFormat from "../../../helpers/timeFormat";
 import Label from "../../../components/elements/Label";
-import InputGroup from "../../../components/elements/InputGroup";
 import Button from "../../../components/elements/Button";
+import InputGroup from "../../../components/elements/InputGroup";
 import Select from "../../../components/elements/Select";
-import Form from "../../../components/elements/Form";
 import Loader from "../../../components/blocks/Loader";
 import handleErrors from "../../../helpers/handleErrors";
 
@@ -51,20 +49,6 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const StyledForm = styled(Form)`
-  display: flex;
-  align-items: center;
-`;
-
-const StyledDatePicker = styled(DatePicker)`
-  height: 2.25rem;
-  margin-right: ${(props) => props.marginRight || ""};
-
-  & input {
-    margin-bottom: 0 !important;
-  }
-`;
-
 const RecentCallsIndex = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
@@ -83,9 +67,6 @@ const RecentCallsIndex = () => {
   const [attemptedAt, setAttemptedAt] = useState("today");
   const [dirFilter, setDirFilter] = useState("io");
   const [answered, setAnswered] = useState("all");
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-
   // width
   const { height } = window.screen;
 
@@ -167,14 +148,6 @@ const RecentCallsIndex = () => {
       filter.answered = answered === "answered" ? "true" : "false";
     }
 
-    if (startDate) {
-      filter.start = startDate.startOf("date").toISOString();
-    }
-
-    if (endDate) {
-      filter.end = endDate.endOf("date").toISOString();
-    }
-
     getRecentCallsData(filter);
   };
 
@@ -246,6 +219,9 @@ const RecentCallsIndex = () => {
     return (
       <ExpandedSection>
         {fields.map((field, index) => {
+          if (!rawData || !rawData[data.key]) {
+            return null;
+          }
           let label = rawData[data.key][field];
 
           if (typeof label === "boolean") {
@@ -281,14 +257,14 @@ const RecentCallsIndex = () => {
     return node;
   };
 
-  const handleSubmit = async (e) => {
-    try {
-      e.preventDefault();
+  useEffect(() => {
+    if (currentPage === 1) {
       handleFilterChange();
-    } catch (err) {
-      handleErrors({ err, history, dispatch });
+    } else {
+      setCurrentPage(1);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attemptedAt, dirFilter, answered]);
 
   useEffect(() => {
     handleFilterChange();
@@ -301,7 +277,7 @@ const RecentCallsIndex = () => {
   return (
     <InternalMain type="fullWidthTable" title="Recent Calls">
       <Section fullPage>
-        <StyledForm onSubmit={handleSubmit}>
+        <InputGroup flexEnd space>
           <FilterLabel htmlFor="daterange">Date:</FilterLabel>
           <Select
             name="daterange"
@@ -313,7 +289,6 @@ const RecentCallsIndex = () => {
             <option value="7d">last 7d</option>
             <option value="14d">last 14d</option>
             <option value="30d">last 30d</option>
-            <option value="custom">custom</option>
           </Select>
           <FilterLabel htmlFor="direction">Direction:</FilterLabel>
           <Select
@@ -322,7 +297,7 @@ const RecentCallsIndex = () => {
             value={dirFilter}
             onChange={(e) => setDirFilter(e.target.value)}
           >
-            <option value="io">inbound+outbound</option>
+            <option value="io">either</option>
             <option value="inbound">inbound only</option>
             <option value="outbound">outbound only</option>
           </Select>
@@ -337,18 +312,7 @@ const RecentCallsIndex = () => {
             <option value="answered">answered</option>
             <option value="not-answered">not answered</option>
           </Select>
-          <FilterLabel>Start:</FilterLabel>
-          <StyledDatePicker value={startDate} onChange={setStartDate} />
-          <FilterLabel>End:</FilterLabel>
-          <StyledDatePicker
-            marginRight="1rem"
-            value={endDate}
-            onChange={setEndDate}
-          />
-          <InputGroup spaced>
-            <Button>Search</Button>
-          </InputGroup>
-        </StyledForm>
+        </InputGroup>
         <AntdTable
           dataSource={recentCallsData}
           columns={Columns}
