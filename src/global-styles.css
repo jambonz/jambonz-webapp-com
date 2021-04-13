@@ -40,6 +40,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: unset;
+  font-size: 16px;
 }
 
 code {
@@ -66,6 +68,12 @@ pre {
 
 a {
   background-color: transparent;
+  color: rgb(0, 0, 238);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: unset;
 }
 
 code,

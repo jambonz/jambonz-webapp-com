@@ -1,89 +1,196 @@
-import { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
-import axios from 'axios';
-import styled from 'styled-components/macro';
-import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/wrappers/InternalMain';
-import Button from '../../../components/elements/Button';
-import InputGroup from '../../../components/elements/InputGroup';
-import Section from '../../../components/blocks/Section';
-import TableContent from '../../../components/blocks/TableContent';
-import dateTimeFormat from '../../../helpers/dateTimeFormat';
-import alertType from '../../../helpers/alertType';
+import { useContext, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
+import moment from "moment";
+import styled from "styled-components/macro";
+import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
+import InternalMain from "../../../components/wrappers/InternalMain";
+import Button from "../../../components/elements/Button";
+import InputGroup from "../../../components/elements/InputGroup";
+import Label from "../../../components/elements/Label";
+import Select from "../../../components/elements/Select";
+import Section from "../../../components/blocks/Section";
+import AntdTable from "../../../components/blocks/AntdTable";
+import handleErrors from "../../../helpers/handleErrors";
 
 const StyledInputGroup = styled(InputGroup)`
   margin: 0 2rem 1.5rem;
 `;
 
+const StyledButton = styled(Button)`
+  & > span {
+    height: 2rem;
+  }
+`;
+
 const AlertsIndex = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
-  const jwt = localStorage.getItem('jwt');
-  const account_sid = localStorage.getItem('account_sid');
+  const jwt = localStorage.getItem("jwt");
+  const account_sid = localStorage.getItem("account_sid");
+
+  // Table props
+  const [alertsData, setAlertsData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowCount, setRowCount] = useState(25);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  // Filter values
+  const [attemptedAt, setAttemptedAt] = useState("today");
+
+  //=============================================================================
+  // Define Table props
+  //=============================================================================
+  const Columns = [
+    {
+      title: "Date",
+      dataIndex: "time",
+      key: "time",
+      width: 250,
+    },
+    {
+      title: "Message",
+      dataIndex: "message",
+      key: "message",
+    },
+  ];
+  const { height } = window.screen;
+
+  const renderPagination = (page, type, originElement) => {
+    let node = originElement;
+
+    switch (type) {
+      case "page":
+        node = <StyledButton gray={currentPage !== page}>{page}</StyledButton>;
+        break;
+      case "prev":
+        node = <StyledButton>{`<`}</StyledButton>;
+        break;
+      case "next":
+        node = <StyledButton>{`>`}</StyledButton>;
+        break;
+      default:
+    }
+
+    return node;
+  };
   //=============================================================================
   // Get alerts
   //=============================================================================
   const getAlerts = async () => {
+    let isMounted = true;
     try {
+      let filter = {
+        page: currentPage,
+        count: rowCount,
+      };
+
+      setLoading(true);
+
+      switch (attemptedAt) {
+        case "today":
+          filter.start = moment().startOf("date").toISOString();
+          break;
+        case "7d":
+          filter.days = 7;
+          break;
+        default:
+      }
+
       const alerts = await axios({
-        method: 'get',
+        method: "get",
         baseURL: process.env.REACT_APP_API_BASE_URL,
         url: `/Accounts/${account_sid}/Alerts`,
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
+        params: {
+          ...filter,
+        },
       });
 
-      const simplififedAlerts = alerts.data.map(alert => ({
-        sid: alert.alert_sid,
-        type: alertType(alert.alert_type),
-        call_sid: alert.call_sid,
-        date: dateTimeFormat(alert.occurred_at, 'YYYY-MM-DD h:mm:ss'),
-        description: '',
-        details: '',
-      }));
+      if (isMounted) {
+        const { total, data } = alerts.data;
+        const simplififedAlerts = data.map((alert, index) => ({
+          ...alert,
+          id: index,
+          time: alert.time
+            ? moment(alert.time).format("YYYY MM.DD hh:mm a")
+            : "",
+          message: alert.message,
+        }));
 
-      return simplififedAlerts;
+        setAlertsData(simplififedAlerts);
+        setTotalCount(total);
+      }
     } catch (err) {
-      if (err.response && err.response.status === 401) {
-        localStorage.clear();
-        sessionStorage.clear();
-        history.push('/');
-        dispatch({
-          type: 'ADD',
-          level: 'error',
-          message: 'Your session has expired. Please log in and try again.',
-        });
-      } else {
-        dispatch({
-          type: 'ADD',
-          level: 'error',
-          message: (err.response && err.response.data && err.response.data.msg) || 'Unable to get recent call data',
-        });
-        console.error(err.response || err);
+      handleErrors({ err, history, dispatch });
+    } finally {
+      if (isMounted) {
+        setLoading(false);
       }
     }
   };
 
+  useEffect(() => {
+    if (currentPage === 1) {
+      getAlerts();
+    } else {
+      setCurrentPage(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attemptedAt]);
+
+  useEffect(() => {
+    getAlerts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, rowCount]);
+
   return (
     <InternalMain type="fullWidthTable" title="Alerts">
       <StyledInputGroup flexEnd spaced>
-        <Button gray="true" style={{ marginBotton: '1rem !important' }}>Download as CSV</Button>
+        <Button gray="true" style={{ marginBotton: "1rem !important" }}>
+          Download as CSV
+        </Button>
       </StyledInputGroup>
       <Section normalTable>
-        <TableContent
-            fullWidth
-            noMenuOnRows
-            condensed
-            name="alerts"
-            getContent={getAlerts}
-            columns={[
-              { header: 'Date',           key: 'date',      },
-              { header: 'Type',           key: 'type'       },
-              { header: 'Description',    key: 'description'},
-              { header: 'Details',        key: 'details'    },
-            ]}
-          />
+        <InputGroup flexEnd space>
+          <Label indented htmlFor="daterange">
+            Date
+          </Label>
+          <Select
+            name="daterange"
+            id="daterange"
+            value={attemptedAt}
+            onChange={(e) => setAttemptedAt(e.target.value)}
+          >
+            <option value="today">today</option>
+            <option value="7d">last 7d</option>
+          </Select>
+        </InputGroup>
+        <AntdTable
+          dataSource={alertsData}
+          columns={Columns}
+          rowKey="id"
+          loading={loading}
+          pagination={{
+            position: ["bottomCenter"],
+            onChange: (page, size) => {
+              setCurrentPage(page);
+              setRowCount(size);
+            },
+            showTotal: (total) => `Total: ${total} records`,
+            current: currentPage,
+            total: totalCount,
+            pageSize: rowCount,
+            pageSizeOptions: [25, 50, 100],
+            showSizeChanger: true,
+            itemRender: renderPagination,
+            showLessItems: true,
+          }}
+          scroll={{ y: Math.max(height - 660, 200) }}
+        />
       </Section>
     </InternalMain>
   );
