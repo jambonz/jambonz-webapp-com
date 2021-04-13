@@ -13,7 +13,6 @@ import Label from "../../../components/elements/Label";
 import Button from "../../../components/elements/Button";
 import InputGroup from "../../../components/elements/InputGroup";
 import Select from "../../../components/elements/Select";
-import Loader from "../../../components/blocks/Loader";
 import handleErrors from "../../../helpers/handleErrors";
 
 const FilterLabel = styled.span`
@@ -22,17 +21,6 @@ const FilterLabel = styled.span`
   font-size: 14px;
   margin-left: 1rem;
   margin-right: 0.5rem;
-`;
-
-const StyledLoader = styled.div`
-  height: 100%;
-  width: 100%;
-  position: relative !important;
-  top: 0 !important;
-  left: 0 !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 const ExpandedSection = styled.div`
@@ -329,14 +317,7 @@ const RecentCallsIndex = () => {
           dataSource={recentCallsData}
           columns={Columns}
           rowKey="key"
-          loading={{
-            spinning: loading,
-            indicator: (
-              <StyledLoader>
-                <Loader />
-              </StyledLoader>
-            ),
-          }}
+          loading={loading}
           pagination={{
             position: ["bottomCenter"],
             onChange: (page, size) => {

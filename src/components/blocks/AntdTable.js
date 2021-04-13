@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components/macro";
 import PropTypes from "prop-types";
 
+import Loader from "../../components/blocks/Loader";
+
 import Table from "antd/lib/table";
 
 const StyledTable = styled(Table)`
@@ -35,17 +37,50 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const AntdTable = ({ dataSource, columns, ...rest }) => {
-  return <StyledTable {...rest} dataSource={dataSource} columns={columns} />;
+const StyledLoader = styled.div`
+  height: 100%;
+  width: 100%;
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const AntdTable = ({ dataSource, columns, loading, ...rest }) => {
+  let props = {
+    ...rest,
+    dataSource,
+    columns,
+  };
+
+  if (loading) {
+    props = {
+      ...props,
+      loading: {
+        spinning: true,
+        indicator: (
+          <StyledLoader>
+            <Loader />
+          </StyledLoader>
+        ),
+      },
+    };
+  }
+
+  return <StyledTable {...props} />;
 };
 
 AntdTable.propTypes = {
   dataSource: PropTypes.array,
+  loading: PropTypes.bool,
   columns: PropTypes.array,
 };
 
 AntdTable.defaultProps = {
   dataSource: [],
+  loading: false,
   columns: [],
 };
 
