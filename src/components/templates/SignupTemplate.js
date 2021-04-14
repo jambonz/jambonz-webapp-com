@@ -21,8 +21,9 @@ const SignupTemplateContainer = styled.div`
 `;
 
 const PageContainer = styled.div`
-  width: ${props => props.theme.externalMaxWidth};
+  width: 640px;
   max-width: 100%;
+  margin: 6rem 0 6rem;
 `;
 
 const Footer = styled.div`
@@ -112,7 +113,7 @@ const SignupTemplate = (props) => (
       topRight={[
         {
           type: "link",
-          text: "Sign In to existing account",
+          text: "Sign In",
           url: "/sign-in",
           desktopOnly: true,
         },
