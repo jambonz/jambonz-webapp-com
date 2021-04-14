@@ -118,11 +118,42 @@ const SignupTemplate = (props) => (
           desktopOnly: true,
         },
       ]}
-      drawer={[]}
+      drawer={[
+        { type: "linkExternal", text: "Home", url: "https://www.jambonz.org" },
+        {
+          type: "linkExternal",
+          text: "Why jambonz",
+          url: "https://www.jambonz.org/docs",
+        },
+        {
+          type: "linkExternal",
+          text: "For Developers",
+          url: "https://www.jambonz.org/docs",
+        },
+        {
+          type: "linkExternal",
+          text: "Pricing",
+          url: "https://www.jambonz.org/pricing",
+        },
+        { type: "link", text: "Register", url: "/register" },
+        { type: "link", text: "Sign In", url: "/sign-in" },
+        { type: "horizontal-rule" },
+        { type: "linkExternal", text: "View on Github", url: "#" },
+        { type: "linkExternal", text: "Join us on Slack", url: "#" },
+        { type: "linkExternal", text: "Privacy Policy", url: "#" },
+        {
+          type: "linkExternal",
+          text: "Terms of Service",
+          url: "https://www.jambonz.org/docs/terms-of-service",
+        },
+        {
+          type: "linkExternal",
+          text: "support@jambonz.org",
+          url: "mailto:support@jambonz.org",
+        },
+      ]}
     />
-    <PageContainer>
-      {props.children}
-    </PageContainer>
+    <PageContainer>{props.children}</PageContainer>
     <Footer>
       <FooterLinkContainer>
         {FooterLinks.map((link, index) => (
