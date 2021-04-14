@@ -14,7 +14,6 @@ const StyledNav = styled.nav`
   z-index: 50;
   padding: 0.5rem 1rem;
   background: #fff;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.12);
 `;
 
 const NavSection = styled.div`

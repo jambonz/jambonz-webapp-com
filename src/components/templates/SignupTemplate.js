@@ -23,7 +23,7 @@ const SignupTemplateContainer = styled.div`
 const PageContainer = styled.div`
   width: 640px;
   max-width: 100%;
-  margin: 6rem 0 6rem;
+  margin: 3rem 0 6rem;
 `;
 
 const Footer = styled.div`
@@ -162,7 +162,9 @@ const SignupTemplate = (props) => (
           </FooterLink>
         ))}
       </FooterLinkContainer>
-      <RoundButton href={`mailto:support@jambonz.com`}>
+      <RoundButton
+        href={`mailto:support@jambonz.com?subject=Requesting invitation to the beta`}
+      >
         support@jambonz.com
       </RoundButton>
     </Footer>

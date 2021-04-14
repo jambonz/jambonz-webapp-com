@@ -8,7 +8,6 @@ import Link from "../../components/elements/Link";
 import Modal from "../../components/blocks/Modal";
 import Input from "../../components/elements/Input";
 import FormError from "../../components/blocks/FormError";
-import ExternalMain from "../../components/wrappers/ExternalMain";
 
 const InviteConfirmContainer = styled.div`
   display: flex;
@@ -47,6 +46,7 @@ const H3 = styled.h3`
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
+  line-height: 1;
   letter-spacing: -0.02px;
   text-align: center;
   color: #231f20;
@@ -77,8 +77,13 @@ const ALink = styled.a`
 `;
 
 const SignupButtonsWrapper = styled.div`
-  pointer-events: none;
-  opacity: 0.5;
+  ${(props) =>
+    props.show
+      ? `opacity: 1;`
+      : `
+    pointer-events: none;
+    opacity: 0.5;
+  `}
   margin-top: 6rem;
 `;
 
@@ -138,14 +143,16 @@ const Register = (props) => {
         localStorage.setItem("register-code", code);
       }
     } catch (err) {
-      setErrorMessage("Something went wrong, please try again.");
+      const errorMessage =
+        "Hmm, looks like that code was taken.  Please try again.";
+      setErrorMessage(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    localStorage.removeItem('register-code');
+    localStorage.removeItem("register-code");
   }, []);
 
   return (
@@ -179,53 +186,51 @@ const Register = (props) => {
           normalButtonPadding
         />
       )}
+
+      <HeaderTitle>
+        jambonz will launch soon, but currently we are running a private beta.
+      </HeaderTitle>
+      <Description>
+        If you would like to participate in the private beta, and are willing to
+        share your feedback and actively participate, email us at{" "}
+        <ALink href="mailto:support@jambonz.com?subject=Requesting invitation to the beta">
+          support@jambonz.com
+        </ALink>{" "}
+        to request an invite code.
+      </Description>
       {codeConfirmed ? (
-        <ExternalMain title="Register">
-          <H3>
-            Sign up with <ALink href={gitHubUrl}>Github</ALink>
-          </H3>
-          <H3>
-            Sign up with <ALink href={googleUrl}>Google</ALink>
-          </H3>
-          <H3>
-            Sign up with your <Link to="/register/email">email</Link>
-          </H3>
-        </ExternalMain>
+        <RoundButton
+          fill="transparent"
+          color="#231f20"
+          border="transparent"
+          width="320px"
+          fontSize="24px"
+        >
+          You're in!
+        </RoundButton>
       ) : (
-        <>
-          <HeaderTitle>
-            jambonz will launch soon, but currently we are running a private
-            beta.
-          </HeaderTitle>
-          <Description>
-            If you would like to participate in the private beta, and are
-            willing to share your feedback and actively participate, email us at{" "}
-            <ALink href="mailto:support@jambonz.com">support@jambonz.com</ALink>{" "}
-            for an invite code.
-          </Description>
-          <RoundButton
-            fill="transparent"
-            color="#231f20"
-            border="#231f20"
-            width="320px"
-            fontSize="18px"
-            onClick={() => setShowConfirmModal(true)}
-          >
-            Enter invite code
-          </RoundButton>
-          <SignupButtonsWrapper>
-            <H3>
-              Sign up with <ALink href={gitHubUrl}>Github</ALink>
-            </H3>
-            <H3>
-              Sign up with <ALink href={googleUrl}>Google</ALink>
-            </H3>
-            <H3>
-              Sign up with your <Link to="/register/email">email</Link>
-            </H3>
-          </SignupButtonsWrapper>
-        </>
+        <RoundButton
+          fill="transparent"
+          color="#231f20"
+          border="#231f20"
+          width="320px"
+          fontSize="18px"
+          onClick={() => setShowConfirmModal(true)}
+        >
+          Enter invite code
+        </RoundButton>
       )}
+      <SignupButtonsWrapper show={codeConfirmed}>
+        <H3>
+          Sign up with <ALink href={gitHubUrl}>Github</ALink>
+        </H3>
+        <H3>
+          Sign up with <ALink href={googleUrl}>Google</ALink>
+        </H3>
+        <H3>
+          Sign up with your <Link to="/register/email">email</Link>
+        </H3>
+      </SignupButtonsWrapper>
     </InviteConfirmContainer>
   );
 };
