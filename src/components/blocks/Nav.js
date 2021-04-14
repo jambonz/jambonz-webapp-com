@@ -14,43 +14,22 @@ const StyledNav = styled.nav`
   z-index: 50;
   padding: 0.5rem 1rem;
   background: #fff;
-  ${(props) =>
-    !props.noShadow
-      ? `box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.12);`
-      : ""}
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.12);
 `;
 
 const NavSection = styled.div`
   display: flex;
   align-items: center;
-
-  ${(props) =>
-    props.center
-      ? `
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  `
-      : ""}
 `;
 
 const Nav = (props) => {
   return (
-    <StyledNav noShadow={props.noShadow}>
+    <StyledNav>
       <NavSection>
         {props.topLeft.map((item, i) => (
           <NavItem navMain={i === 0} item={item} key={i} />
         ))}
       </NavSection>
-
-      {props.topCenter && (
-        <NavSection center>
-          {props.topCenter.map((item, i) => (
-            <NavItem item={item} key={i} />
-          ))}
-        </NavSection>
-      )}
 
       <NavSection>
         {props.topRight.map((item, i) => (

@@ -12,6 +12,8 @@ const SignupTemplateContainer = styled.div`
   align-items: center;
   background: white;
   padding-top: 64px;
+  overflow: auto;
+  height: 100vh;
 
   &::-webkit-scrollbar {
     display: none;
@@ -19,7 +21,8 @@ const SignupTemplateContainer = styled.div`
 `;
 
 const PageContainer = styled.div`
-  width: 100%;
+  width: ${props => props.theme.externalMaxWidth};
+  max-width: 100%;
 `;
 
 const Footer = styled.div`
@@ -28,6 +31,7 @@ const Footer = styled.div`
   align-items: center;
   padding: 65px 0 205px;
   background: #da1c5c;
+  width: 100%;
 
   @media (max-width: 575.98px) {
     display: none;
@@ -97,8 +101,7 @@ const FooterLinks = [
 const SignupTemplate = (props) => (
   <SignupTemplateContainer>
     <Nav
-      topLeft={[]}
-      topCenter={[
+      topLeft={[
         {
           type: "image-link",
           url: "/",
@@ -114,23 +117,23 @@ const SignupTemplate = (props) => (
           desktopOnly: true,
         },
       ]}
-      noShadow
+      drawer={[]}
     />
     <PageContainer>
       {props.children}
-      <Footer>
-        <FooterLinkContainer>
-          {FooterLinks.map((link, index) => (
-            <FooterLink key={index} href={link.url}>
-              {link.label}
-            </FooterLink>
-          ))}
-        </FooterLinkContainer>
-        <RoundButton href={`mailto:support@jambonz.com`}>
-          support@jambonz.com
-        </RoundButton>
-      </Footer>
     </PageContainer>
+    <Footer>
+      <FooterLinkContainer>
+        {FooterLinks.map((link, index) => (
+          <FooterLink key={index} href={link.url}>
+            {link.label}
+          </FooterLink>
+        ))}
+      </FooterLinkContainer>
+      <RoundButton href={`mailto:support@jambonz.com`}>
+        support@jambonz.com
+      </RoundButton>
+    </Footer>
   </SignupTemplateContainer>
 );
 
