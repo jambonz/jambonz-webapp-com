@@ -49,6 +49,7 @@ import SubscriptionIndex from './pages/account/upgrade-subscription';
 import ManagePaymentInfo from './pages/account/manage-payment';
 import ModifySubscription from './pages/account/modify-subscription';
 import ReturnToFreeSection from './pages/account/return-to-free-plan';
+import InviteConfirm from './pages/invite-confirm';
 
 //===============================================
 // Component Imports
@@ -56,6 +57,7 @@ import ReturnToFreeSection from './pages/account/return-to-free-plan';
 import Notification from './components/blocks/Notification';
 import ExternalTemplate from './components/templates/ExternalTemplate';
 import InternalTemplate from './components/templates/InternalTemplate';
+import SignupTemplate from './components/templates/SignupTemplate';
 
 //===============================================
 // Routes Component
@@ -132,6 +134,14 @@ function Routes() {
               <Route path="/account"><InvalidRouteInternal /></Route>
             </Switch>
           </InternalTemplate>
+        </Route>
+
+        <Route path="/invite">
+          <SignupTemplate>
+            <Switch>
+              <Route exact path="/invite"><InviteConfirm /></Route>
+            </Switch>
+          </SignupTemplate>
         </Route>
 
         {/*******************/}
