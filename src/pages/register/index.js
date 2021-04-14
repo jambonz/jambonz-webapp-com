@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import styled from "styled-components/macro";
 import { v4 as uuid } from "uuid";
@@ -135,6 +135,7 @@ const Register = (props) => {
       if (result.status === 204) {
         setCodeConfirmed(true);
         setShowConfirmModal(false);
+        localStorage.setItem("register-code", code);
       }
     } catch (err) {
       setErrorMessage("Something went wrong, please try again.");
@@ -142,6 +143,10 @@ const Register = (props) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    localStorage.removeItem('register-code');
+  }, []);
 
   return (
     <InviteConfirmContainer>
