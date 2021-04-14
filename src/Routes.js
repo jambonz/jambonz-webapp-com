@@ -49,7 +49,6 @@ import SubscriptionIndex from './pages/account/upgrade-subscription';
 import ManagePaymentInfo from './pages/account/manage-payment';
 import ModifySubscription from './pages/account/modify-subscription';
 import ReturnToFreeSection from './pages/account/return-to-free-plan';
-import InviteConfirm from './pages/invite-confirm';
 
 //===============================================
 // Component Imports
@@ -136,10 +135,16 @@ function Routes() {
           </InternalTemplate>
         </Route>
 
-        <Route path="/invite">
+        <Route path="/register">
           <SignupTemplate>
             <Switch>
-              <Route exact path="/invite"><InviteConfirm /></Route>
+              {/****************/}
+              {/* Registration */}
+              {/****************/}
+              <Route exact path="/register"><Register /></Route>
+              <Route exact path="/register/email"><RegisterWithEmail /></Route>
+              <Route exact path="/register/verify-your-email"><RegisterWithEmailVerify /></Route>
+              <Route exact path="/register/choose-a-subdomain"><RegisterChooseSubdomain /></Route>
             </Switch>
           </SignupTemplate>
         </Route>
@@ -159,14 +164,6 @@ function Routes() {
               <Route exact path="/sign-in/email"><SignInEmail /></Route>
               <Route exact path="/sign-in/forgot-password"><ForgotPassword /></Route>
               <Route exact path="/reset-password/:id"><ResetPassword /></Route>
-
-              {/****************/}
-              {/* Registration */}
-              {/****************/}
-              <Route exact path="/register"><Register /></Route>
-              <Route exact path="/register/email"><RegisterWithEmail /></Route>
-              <Route exact path="/register/verify-your-email"><RegisterWithEmailVerify /></Route>
-              <Route exact path="/register/choose-a-subdomain"><RegisterChooseSubdomain /></Route>
 
               {/******************/}
               {/* OAuth Callback */}

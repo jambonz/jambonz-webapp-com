@@ -143,6 +143,8 @@ const NavItem = ({ navMain, item }) => {
           </Submenu>
         )}
       </SubmenuContainer>
+    ) : item.type === 'image-link' ? (
+      <img src={item.image} alt="link-img" />
     ) : (
       <span>{item.text}</span>
     )

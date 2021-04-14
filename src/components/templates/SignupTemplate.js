@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components/macro";
 
-import RoundButton from '../elements/RoundButton';
+import Nav from "../blocks/Nav";
+import RoundButton from "../elements/RoundButton";
 
 import LogoJambong from "../../images/logo-jambong.svg";
 
@@ -10,18 +11,11 @@ const SignupTemplateContainer = styled.div`
   flex-direction: column;
   align-items: center;
   background: white;
-  
+  padding-top: 64px;
+
   &::-webkit-scrollbar {
     display: none;
   }
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem 0;
-  height: 74px;
 `;
 
 const PageContainer = styled.div`
@@ -34,6 +28,10 @@ const Footer = styled.div`
   align-items: center;
   padding: 65px 0 205px;
   background: #da1c5c;
+
+  @media (max-width: 575.98px) {
+    display: none;
+  }
 `;
 
 const FooterLinkContainer = styled.div`
@@ -44,7 +42,7 @@ const FooterLinkContainer = styled.div`
 `;
 
 const FooterLink = styled.a`
-  font-family: 'Objectivity';
+  font-family: "Objectivity";
   font-size: 16px;
   font-weight: 500;
   line-height: 3;
@@ -98,9 +96,26 @@ const FooterLinks = [
 
 const SignupTemplate = (props) => (
   <SignupTemplateContainer>
-    <Header>
-      <img src={LogoJambong} alt="logo-jambomg" />
-    </Header>
+    <Nav
+      topLeft={[]}
+      topCenter={[
+        {
+          type: "image-link",
+          url: "/",
+          image: LogoJambong,
+          desktopOnly: false,
+        },
+      ]}
+      topRight={[
+        {
+          type: "link",
+          text: "Sign In to existing account",
+          url: "/sign-in",
+          desktopOnly: true,
+        },
+      ]}
+      noShadow
+    />
     <PageContainer>
       {props.children}
       <Footer>
