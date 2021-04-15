@@ -111,6 +111,24 @@ const StyledButtonGroup = styled(InputGroup)`
   }
 `;
 
+const NameFieldWrapper = styled.div`
+  ${(props) => props.hasDropdown ? `
+    display: grid;
+    grid-template-columns: 75%  25%;
+    align-items: center;
+  ` : `
+    width: 100%;
+  `}
+`;
+
+const CarrierSelect = styled.div`
+  margin-left: 1rem;
+
+  & > * {
+    width: 100%;
+  }
+`;
+
 const CarriersAddEdit = () => {
   const { width } = useContext(ResponsiveContext);
   const { voip_carrier_sid } = useParams();
@@ -133,6 +151,7 @@ const CarriersAddEdit = () => {
   const refTrash = useRef([]);
   const refAdd = useRef(null);
   const refTechPrefix = useRef(null);
+  const refSelectCarrier = useRef(null);
 
   // Form inputs
   const [ name,            setName            ] = useState('');
@@ -173,6 +192,20 @@ const CarriersAddEdit = () => {
   const [techPrefixInvalid, setTechPrefixInvalid ] = useState(false);
   const [suportSIP, setSupportSIP] = useState(false);
   const [diversion, setDiversion] = useState("");
+
+  const [showCarrierList, setShowCarrierList] = useState(false);
+  const [predefinedCarriers, setPredefinedCarriers] = useState([]);
+
+  const handleClickOutside = (e) => {
+    if (
+      refSelectCarrier &&
+      refSelectCarrier.current &&
+      !refSelectCarrier.current.contains(e.target) &&
+      showCarrierList
+    ) {
+      setShowCarrierList(false);
+    }
+  };
 
   useEffect(() => {
     const getAPIData = async () => {
@@ -281,6 +314,13 @@ const CarriersAddEdit = () => {
           setRequiredTechPrefix(carrier.tech_prefix ? true : false);
           setSupportSIP(carrier.diversion ? true : false);
           setDiversion(carrier.diversion || '');
+        } else {
+          const result = await axios({
+            method: 'get',
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url: `/PredefinedCarriers`,
+          });
+          setPredefinedCarriers(result.data);
         }
 
       } catch (err) {
@@ -312,6 +352,15 @@ const CarriersAddEdit = () => {
     getAPIData();
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showCarrierList]);
 
   const addSipGateway = () => {
     const newSipGateways = [
@@ -746,6 +795,8 @@ const CarriersAddEdit = () => {
     }
   };
 
+  const pickupCarrier = (e) => {};
+
   return (
     <InternalMain
       type="form"
@@ -764,16 +815,40 @@ const CarriersAddEdit = () => {
             onSubmit={handleSubmit}
           >
             <Label htmlFor="name">Name</Label>
-            <Input
-              name="name"
-              id="name"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="Carrier name"
-              invalid={nameInvalid}
-              autoFocus
-              ref={refName}
-            />
+            <NameFieldWrapper hasDropdown={type === 'add'}>
+              <Input
+                name="name"
+                id="name"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Carrier name"
+                invalid={nameInvalid}
+                autoFocus
+                ref={refName}
+              />
+              {type === 'add' && (
+                <CarrierSelect>
+                  {showCarrierList ? (
+                    <Select onChange={pickupCarrier} ref={refSelectCarrier}>
+                      {predefinedCarriers.map((item, index) => (
+                        <option key={item.predefined_carrier_sid} value={item.predefined_carrier_sid}>
+                          {item.requires_static_ip ? `${item.name}-${item.requires_static_ip}`: item.name}
+                        </option>
+                      ))}
+                    </Select>
+                  ) : (
+                    <Button
+                      text
+                      formLink
+                      type="button"
+                      onClick={() => setShowCarrierList(!showCarrierList)}
+                    >
+                      Select from list
+                    </Button>
+                  )}
+                </CarrierSelect>
+              )}
+            </NameFieldWrapper>
 
             <Label htmlFor="e164">E.164 Syntax</Label>
             <Checkbox
