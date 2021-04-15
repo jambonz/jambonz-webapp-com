@@ -5,6 +5,7 @@ import { NotificationDispatchContext } from '../../contexts/NotificationContext'
 import handleErrors from '../../helpers/handleErrors';
 import Nav from '../blocks/Nav';
 import SideMenu from '../blocks/SideMenu';
+import LogoJambong from "../../images/logo-jambong.svg";
 
 const InternalTemplate = props => {
   const history = useHistory();
@@ -82,7 +83,12 @@ const InternalTemplate = props => {
     <>
       <Nav
         topLeft={[
-          { type: 'link', text: 'jambonz', url: '/account' },
+          {
+            type: "image-link",
+            url: "/account",
+            image: LogoJambong,
+            desktopOnly: false,
+          },
         ]}
         topRight={[
           {

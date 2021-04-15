@@ -16,7 +16,6 @@ const StyledButton = styled.a`
   display: inline-block;
   font-family: Objectivity;
   font-weight: bold;
-  font-family: "Objectivity";
   cursor: pointer;
   display: flex;
   justify-content: center;

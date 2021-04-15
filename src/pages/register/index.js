@@ -100,6 +100,16 @@ const StyledInput = styled(Input)`
   }
 `;
 
+const SuccessAlarm = styled.p`
+  color: #231f20;
+  font-family: Objectivity;
+  font-weight: bold;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 0;
+  height: 60px;
+`;
+
 const Register = (props) => {
   const state = uuid();
   localStorage.setItem("location-before-oauth", "/register");
@@ -199,7 +209,7 @@ const Register = (props) => {
         to request an invite code.
       </Description>
       {codeConfirmed ? (
-        <RoundButton
+        <SuccessAlarm
           fill="transparent"
           color="#231f20"
           border="transparent"
@@ -207,7 +217,9 @@ const Register = (props) => {
           fontSize="24px"
         >
           You're in!
-        </RoundButton>
+          <br />
+          Sign up using one of the options below
+        </SuccessAlarm>
       ) : (
         <RoundButton
           fill="transparent"
