@@ -56,6 +56,7 @@ import ReturnToFreeSection from './pages/account/return-to-free-plan';
 import Notification from './components/blocks/Notification';
 import ExternalTemplate from './components/templates/ExternalTemplate';
 import InternalTemplate from './components/templates/InternalTemplate';
+import SignupTemplate from './components/templates/SignupTemplate';
 
 //===============================================
 // Routes Component
@@ -134,6 +135,20 @@ function Routes() {
           </InternalTemplate>
         </Route>
 
+        <Route path="/register">
+          <SignupTemplate>
+            <Switch>
+              {/****************/}
+              {/* Registration */}
+              {/****************/}
+              <Route exact path="/register"><Register /></Route>
+              <Route exact path="/register/email"><RegisterWithEmail /></Route>
+              <Route exact path="/register/verify-your-email"><RegisterWithEmailVerify /></Route>
+              <Route exact path="/register/choose-a-subdomain"><RegisterChooseSubdomain /></Route>
+            </Switch>
+          </SignupTemplate>
+        </Route>
+
         {/*******************/}
         {/* EXTERNAL ROUTES */}
         {/*******************/}
@@ -149,14 +164,6 @@ function Routes() {
               <Route exact path="/sign-in/email"><SignInEmail /></Route>
               <Route exact path="/sign-in/forgot-password"><ForgotPassword /></Route>
               <Route exact path="/reset-password/:id"><ResetPassword /></Route>
-
-              {/****************/}
-              {/* Registration */}
-              {/****************/}
-              <Route exact path="/register"><Register /></Route>
-              <Route exact path="/register/email"><RegisterWithEmail /></Route>
-              <Route exact path="/register/verify-your-email"><RegisterWithEmailVerify /></Route>
-              <Route exact path="/register/choose-a-subdomain"><RegisterChooseSubdomain /></Route>
 
               {/******************/}
               {/* OAuth Callback */}

@@ -17,6 +17,7 @@ const StyledReactRouterLink = styled(FilteredLink)`
   color: #D91C5C;
   font-weight: 500;
   text-decoration: none;
+  font-family: Objectivity;
 
   & > span {
     display: flex;

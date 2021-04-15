@@ -19,6 +19,23 @@
   font-weight: 600;
 }
 
+@font-face {
+  font-family: 'Objectivity';
+  src: local('Objectivity'), url(./fonts/Objectivity-Regular.otf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Objectivity';
+  src: local('Objectivity'), url(./fonts/Objectivity-Medium.otf) format('truetype');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Objectivity';
+  src: local('Objectivity'), url(./fonts/Objectivity-Bold.otf) format('truetype');
+  font-weight: 700;
+}
+
 /*===========================================================================*/
 /* Global Styles */
 /*===========================================================================*/
@@ -33,7 +50,7 @@ html {
 
 body {
   margin: 0;
-  background: #F3F3F3;
+  background: #FFF;
   color: #565656;
   font-family: WorkSans, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

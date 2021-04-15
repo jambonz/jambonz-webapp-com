@@ -1,6 +1,8 @@
 import Nav from '../blocks/Nav';
 import styled from 'styled-components/macro';
 
+import LogoJambong from "../../images/logo-jambong.svg";
+
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -26,7 +28,12 @@ const ExternalTemplate = props => (
   <>
     <Nav
       topLeft={[
-        { type: 'linkExternal', text: 'jambonz',  url: 'https://www.jambonz.org',         desktopOnly: false },
+        {
+          type: "image-link",
+          url: "/",
+          image: LogoJambong,
+          desktopOnly: false,
+        },
       ]}
       topRight={[
         { type: 'linkExternal', text: 'Pricing',  url: 'https://www.jambonz.org/pricing', desktopOnly: true  },

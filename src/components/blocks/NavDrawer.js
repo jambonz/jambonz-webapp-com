@@ -7,7 +7,7 @@ import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../conte
 const ButtonLine = styled.span`
   width: 16px;
   height: 2px;
-  background: #565656;
+  background: #fff;
 `;
 
 const DrawerOverlay = styled.div`
@@ -52,6 +52,17 @@ const CloseSpan2 = styled.span`
   transform: rotate(-45deg);
 `;
 
+const RoundButton = styled(Button)`
+  border-radius: 50%;
+  background: #da1c5c;
+  color: white;
+
+  & > span {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+`;
+
 const NavMenuButton = props => {
   const currentMenu = useContext(CurrentMenuStateContext);
   const setCurrentMenu = useContext(CurrentMenuDispatchContext);
@@ -63,7 +74,7 @@ const NavMenuButton = props => {
 
   return (
     <>
-      <Button
+      <RoundButton
         navMenuButton
         gray
         text
@@ -72,7 +83,7 @@ const NavMenuButton = props => {
         <ButtonLine />
         <ButtonLine />
         <ButtonLine />
-      </Button>
+      </RoundButton>
       {currentMenu === 'nav-drawer' && (
         <DrawerOverlay onClick={() => setCurrentMenu(null)}>
           <Drawer drawerAlignment={props.drawerAlignment} onClick={e => e.stopPropagation()}>

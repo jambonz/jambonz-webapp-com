@@ -1,4 +1,5 @@
 import { useEffect, useContext, useRef } from 'react';
+import { Link as ReactRouterLink } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import styled from 'styled-components/macro';
 import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
@@ -143,6 +144,10 @@ const NavItem = ({ navMain, item }) => {
           </Submenu>
         )}
       </SubmenuContainer>
+    ) : item.type === 'image-link' ? (
+      <ReactRouterLink to={item.url}>
+        <img src={item.image} alt="link-img" />
+      </ReactRouterLink>
     ) : (
       <span>{item.text}</span>
     )

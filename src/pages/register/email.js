@@ -18,6 +18,8 @@ const RegisterWithEmail = props => {
   localStorage.removeItem('oauth-state');
   localStorage.removeItem('location-before-oauth');
 
+  const code = localStorage.getItem("register-code");
+
   // Refs
   const refName = useRef(null);
   const refEmail = useRef(null);
@@ -129,6 +131,7 @@ const RegisterWithEmail = props => {
           email,
           password,
           email_activation_code,
+          inviteCode: code,
         },
       });
 
