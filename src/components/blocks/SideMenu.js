@@ -111,8 +111,8 @@ const SideMenu = () => {
 
       <StyledH2>Bring Your Own Services</StyledH2>
       <MenuLink to="/account/carriers"        name="Carriers"         icon={<CarriersIcon     />} />
-      <MenuLink to="/account/phone-numbers"   name="Phone Numbers"    icon={<PhoneNumbersIcon />} />
       <MenuLink to="/account/speech-services" name="Speech"           icon={<SpeechIcon       />} />
+      <MenuLink to="/account/phone-numbers"   name="Phone Numbers"    icon={<PhoneNumbersIcon />} />
     </StyledSideMenu>
   );
 };

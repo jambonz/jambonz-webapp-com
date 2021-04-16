@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styled from "styled-components/macro";
+import { Menu, Dropdown } from "antd";
 
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalMain from '../../../components/wrappers/InternalMain';
@@ -19,6 +20,7 @@ import Loader from '../../../components/blocks/Loader';
 import sortSipGateways from '../../../helpers/sortSipGateways';
 import Select from '../../../components/elements/Select';
 import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
+import handleErrors from "../../../helpers/handleErrors";
 
 const StyledForm = styled(Form)`
   @media (max-width: 978.98px) {
@@ -111,7 +113,36 @@ const StyledButtonGroup = styled(InputGroup)`
   }
 `;
 
-const CarriersAddEdit = () => {
+const NameFieldWrapper = styled.div`
+  ${(props) => props.hasDropdown ? `
+    display: grid;
+    grid-template-columns: 75%  25%;
+    align-items: center;
+  ` : `
+    width: 100%;
+  `}
+`;
+
+const CarrierSelect = styled.div`
+  margin-left: 1rem;
+
+  & > * {
+    width: 100%;
+    justify-content: flex-end;
+  }
+`;
+
+const CarrierItem = styled.div`
+  font-family: Objectivity;
+  font-size: 16px;
+  font-weight: 400;
+  color: #565656;
+  padding: 0.25rem 0.5rem;
+
+  ${(props) => props.disabled ? 'opacity: 0.5;' : ''}
+`;
+
+const CarriersAddEdit = ({ mode }) => {
   const { width } = useContext(ResponsiveContext);
   const { voip_carrier_sid } = useParams();
   const type = voip_carrier_sid ? 'edit' : 'add';
@@ -120,6 +151,7 @@ const CarriersAddEdit = () => {
   const history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem('jwt');
+  const accountSid = localStorage.getItem('account_sid');
 
   // Refs
   const refName = useRef(null);
@@ -170,7 +202,13 @@ const CarriersAddEdit = () => {
 
   const [requiredTechPrefix, setRequiredTechPrefix] = useState(false);
   const [techPrefix, setTechPrefix] = useState('');
-  const [ techPrefixInvalid, setTechPrefixInvalid ] = useState(false);
+  const [techPrefixInvalid, setTechPrefixInvalid ] = useState(false);
+  const [suportSIP, setSupportSIP] = useState(false);
+  const [diversion, setDiversion] = useState("");
+  const [carrierActive, setCarrierActive] = useState(false);
+
+  const [predefinedCarriers, setPredefinedCarriers] = useState([]);
+  const [staticIPs, setStaticIPs] = useState(null);
 
   useEffect(() => {
     const getAPIData = async () => {
@@ -230,6 +268,7 @@ const CarriersAddEdit = () => {
 
         if (usersMe.account) {
           setSipRealm(usersMe.account.sip_realm);
+          setStaticIPs(usersMe.account.static_ips || null);
         }
 
         if (type === 'edit') {
@@ -277,6 +316,26 @@ const CarriersAddEdit = () => {
           setCarrierSid(carrier.voip_carrier_sid);
           setTechPrefix(carrier.tech_prefix || '');
           setRequiredTechPrefix(carrier.tech_prefix ? true : false);
+          setSupportSIP(carrier.diversion ? true : false);
+          setDiversion(carrier.diversion || '');
+          setCarrierActive(carrier.is_active === 1);
+        } else {
+          const result = await axios({
+            method: 'get',
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url: `/PredefinedCarriers`,
+          });
+          setPredefinedCarriers(
+            result.data
+              .map((item) => ({
+                ...item,
+                value: item.predefined_carrier_sid,
+                text: item.requires_static_ip
+                  ? `${item.name} - requires static IP`
+                  : item.name,
+              }))
+              .sort((a, b) => a.text.localeCompare(b.text))
+          );
         }
 
       } catch (err) {
@@ -307,7 +366,7 @@ const CarriersAddEdit = () => {
     };
     getAPIData();
     // eslint-disable-next-line
-  }, []);
+  }, [mode]);
 
   const addSipGateway = () => {
     const newSipGateways = [
@@ -604,6 +663,8 @@ const CarriersAddEdit = () => {
           register_password: password ? password : null,
           register_sip_realm: register ? realm.trim() : null,
           tech_prefix: techPrefix ? techPrefix.trim() : null,
+          diversion: diversion ? diversion.trim() : null,
+          is_active: carrierActive ? 1 : 0,
         },
       });
       const voip_carrier_sid = voipCarrier.data.sid;
@@ -741,11 +802,50 @@ const CarriersAddEdit = () => {
     }
   };
 
+  const pickupCarrier = async (value) => {
+    let isMounted = true;
+    try {
+      setShowLoader(true);
+      setErrorMessage("");
+
+      const result = await axios({
+        method: 'post',
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: `/Accounts/${accountSid}/PredefinedCarriers/${value}`,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      const { sid } = result.data;
+
+      history.push(`/account/carriers/${sid}/edit`);
+    } catch (err) {
+      handleErrors({ err, history, dispatch, setErrorMessage });
+    } finally {
+      if (isMounted) {
+        setShowLoader(false);
+      }
+    }
+  };
+
+  const getSubTitle = () => {
+    let title = <>&nbsp;</>;
+    if (sipRealm) {
+      title = staticIPs
+        ? `Have your carrier send your calls to your static IP(s): ${staticIPs.join(
+            ", "
+          )}`
+        : `Have your carrier send calls to ${sipRealm}`;
+    }
+    return title;
+  };
+
   return (
     <InternalMain
       type="form"
       title={pageTitle}
-      subtitle={sipRealm ? `Have your carrier send calls to ${sipRealm}` : <>&nbsp;</>}
+      subtitle={getSubTitle()}
       breadcrumbs={[
         { name: 'Back to Carriers', url: '/account/carriers' },
       ]}
@@ -759,15 +859,56 @@ const CarriersAddEdit = () => {
             onSubmit={handleSubmit}
           >
             <Label htmlFor="name">Name</Label>
-            <Input
-              name="name"
-              id="name"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="Carrier name"
-              invalid={nameInvalid}
-              autoFocus
-              ref={refName}
+            <NameFieldWrapper hasDropdown={type === 'add'}>
+              <Input
+                name="name"
+                id="name"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Carrier name"
+                invalid={nameInvalid}
+                autoFocus
+                ref={refName}
+              />
+              {type === 'add' && (
+                <CarrierSelect>
+                  <Dropdown
+                    placement="bottomRight"
+                    trigger="click"
+                    overlay={
+                      <Menu>
+                        {predefinedCarriers.map((item) => {
+                          const disabled = !staticIPs && item.requires_static_ip;
+                          return (
+                            <Menu.Item key={item.value} disabled={disabled}>
+                              <CarrierItem
+                                disabled={disabled}
+                                onClick={() => !disabled && pickupCarrier(item.value)}
+                              >
+                                {item.text}
+                              </CarrierItem>
+                            </Menu.Item>
+                          );
+                        })}
+                      </Menu>
+                    }
+                  >
+                    <Button text formLink type="button">
+                      Select from list
+                    </Button>
+                  </Dropdown>
+                </CarrierSelect>
+              )}
+            </NameFieldWrapper>
+
+            <Label htmlFor="e164">active</Label>
+            <Checkbox
+              noLeftMargin
+              name="active"
+              id="active"
+              label=""
+              checked={carrierActive}
+              onChange={e => setCarrierActive(e.target.checked)}
             />
 
             <Label htmlFor="e164">E.164 Syntax</Label>
@@ -897,6 +1038,34 @@ const CarriersAddEdit = () => {
                     onClick={e => setRequiredTechPrefix(!requiredTechPrefix)}
                   >
                     Does your carrier require a tech prefix on outbound calls?
+                  </Button>
+                </>
+              )
+            }
+
+            <hr style={{ margin: '0.5rem -2rem' }} />
+
+            {
+              suportSIP ? (
+                <>
+                  <Label htmlFor="diversion">Diversion</Label>
+                  <Input
+                    name="diversion"
+                    id="diversion"
+                    value={diversion}
+                    onChange={e => setDiversion(e.target.value)}
+                    placeholder="Phone number or SIP URI"
+                  />
+                </>
+              ) : (
+                <>
+                  <Button
+                    text
+                    formLink
+                    type="button"
+                    onClick={() => setSupportSIP(!suportSIP)}
+                  >
+                    Does your carrier support the SIP Diversion header for authenticating the calling number?
                   </Button>
                 </>
               )

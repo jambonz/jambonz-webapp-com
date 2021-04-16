@@ -14,6 +14,7 @@ const CarriersIndex = () => {
 
   const [ carriers, setCarriers ] = useState('');
   const [ sipRealm, setSipRealm ] = useState('');
+  const [staticIPs, setStaticIPs] = useState(null);
 
   //=============================================================================
   // Get carriers
@@ -62,25 +63,52 @@ const CarriersIndex = () => {
 
       setCarriers(carriersResults.data);
 
+      // get application data
+      let applicationSids = carriersResults.data
+        .filter((item) => !!item.application_sid)
+        .map((item) => item.application_sid);
+      const applicationPromise = await Promise.all(
+        applicationSids.map((apl) => {
+          return axios({
+            method: 'get',
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url: `/Applications/${apl}`,
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+        })
+      );
+
+      const applicationData = applicationPromise.map(item => item.data[0]);
+
       if (usersMe && usersMe.data && usersMe.data.account) {
         setSipRealm(usersMe.data.account.sip_realm);
+        setStaticIPs(usersMe.data.account.static_ips || null);
       }
 
       // Add appropriate gateways to each carrier
       const carriersWithGateways = carriersResults.data.map(t => {
         const gateways = gatewayResults.data.filter(g => t.voip_carrier_sid === g.voip_carrier_sid);
+        const application = applicationData.find(item => item.application_sid === t.application_sid);
         sortSipGateways(gateways);
         return {
           ...t,
           gateways,
+          application,
         };
       });
 
       const simplifiedCarriers = carriersWithGateways.map(t => ({
         sid:            t.voip_carrier_sid,
         name:           t.name,
-        description:    t.description,
-        gatewaysConcat: t.gateways.map(g => `${g.ipv4}:${g.port}`).join(', '),
+        status:    t.is_active === 1 ? "active" : "inactive",
+        application: t.application ? t.application.name || null : null,
+        gatewaysConcat: `${
+          t.gateways.filter((item) => item.inbound === 1).length
+        } inbound, ${
+          t.gateways.filter((item) => item.inbound === 0).length
+        } outbound`,
         gatewaysList:   t.gateways.map(g => `${g.ipv4}:${g.port}`),
         gatewaysSid:    t.gateways.map(g => g.sip_gateway_sid),
       }));
@@ -111,15 +139,14 @@ const CarriersIndex = () => {
   //=============================================================================
   const formatCarrierToDelete = carrier => {
     const gatewayName = carrier.gatewaysList.length > 1
-      ? 'SIP Gateways:'
-      : 'SIP Gateway:';
-    const gatewayContent = carrier.gatewaysList.length > 1
-      ? carrier.gatewaysList
-      : carrier.gatewaysList[0];
+      ? 'Gateways:'
+      : 'Gateway:';
+
     return [
-      { name: 'Name:',        content: carrier.name        || '[none]' },
-      { name: 'Description:', content: carrier.description || '[none]' },
-      { name: gatewayName,    content: gatewayContent    || '[none]' },
+      { name: 'Name:', content: carrier.name || '[none]' },
+      { name: 'Status:', content: carrier.status || '[none]' },
+      { name: 'Application:', content: carrier.application || '[none]' },
+      { name: gatewayName, content: carrier.gatewaysConcat || '[none]' },
     ];
   };
 
@@ -172,6 +199,18 @@ const CarriersIndex = () => {
     }
   };
 
+  const getSubTitle = () => {
+    let title = <>&nbsp;</>;
+    if (sipRealm) {
+      title = staticIPs
+        ? `Have your carrier${carriers.length > 1 ? 's' : ''} send calls to your static IP(s): ${staticIPs.join(
+            ", "
+          )}`
+        :  `Have your carrier${carriers.length > 1 ? 's' : ''} send calls to ${sipRealm}`;
+    }
+    return title;
+  };
+
   //=============================================================================
   // Render
   //=============================================================================
@@ -181,7 +220,7 @@ const CarriersIndex = () => {
       title="Carriers"
       addButtonText="Add a Carriers"
       addButtonLink="/account/carriers/add"
-      subtitle={sipRealm ? `Have your carrier${carriers.length > 1 ? 's' : ''} send calls to ${sipRealm}` : <>&nbsp;</>}
+      subtitle={getSubTitle()}
     >
       <Section normalTable>
         <TableContent
@@ -190,9 +229,10 @@ const CarriersIndex = () => {
           urlParam="carriers"
           getContent={getCarriers}
           columns={[
-            { header: 'Name',         key: 'name',           bold: true },
-            { header: 'Description',  key: 'description',               },
-            { header: 'SIP Gateways', key: 'gatewaysConcat',            },
+            { header: 'Name', key: 'name', bold: true },
+            { header: 'Status', key: 'status' },
+            { header: 'Default Application', key: 'application' },
+            { header: 'Gateways', key: 'gatewaysConcat' },
           ]}
           formatContentToDelete={formatCarrierToDelete}
           deleteContent={deleteCarrier}

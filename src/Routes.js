@@ -95,10 +95,10 @@ function Routes() {
               <Route exact path="/account/alerts/:id"><AlertsDetails /></Route>
 
               <Route exact path="/account/carriers"><CarriersIndex /></Route>
-              <Route exact path="/account/carriers/add"><CarriersAddEdit /></Route>
+              <Route exact path="/account/carriers/add"><CarriersAddEdit mode="add" /></Route>
 
               <Route exact path="/account/carriers"><CarriersIndex /></Route>
-              <Route exact path="/account/carriers/:voip_carrier_sid/edit"><CarriersAddEdit /></Route>
+              <Route exact path="/account/carriers/:voip_carrier_sid/edit"><CarriersAddEdit mode="edit" /></Route>
 
               <Route exact path="/account/phone-numbers"><PhoneNumbersIndex /></Route>
               <Route exact path="/account/phone-numbers/add"><PhoneNumbersAddEdit /></Route>
