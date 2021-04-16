@@ -329,7 +329,7 @@ const CarriersAddEdit = ({ mode }) => {
                 ...item,
                 value: item.predefined_carrier_sid,
                 text: item.requires_static_ip
-                  ? `${item.name}-${item.requires_static_ip}`
+                  ? `${item.name} - requires static IP`
                   : item.name,
               }))
               .sort((a, b) => a.text.localeCompare(b.text))
