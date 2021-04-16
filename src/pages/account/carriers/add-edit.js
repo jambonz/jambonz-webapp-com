@@ -205,6 +205,7 @@ const CarriersAddEdit = ({ mode }) => {
   const [diversion, setDiversion] = useState("");
 
   const [predefinedCarriers, setPredefinedCarriers] = useState([]);
+  const [staticIPs, setStaticIPs] = useState(null);
 
   useEffect(() => {
     const getAPIData = async () => {
@@ -264,6 +265,7 @@ const CarriersAddEdit = ({ mode }) => {
 
         if (usersMe.account) {
           setSipRealm(usersMe.account.sip_realm);
+          setStaticIPs(usersMe.account.static_ips || null);
         }
 
         if (type === 'edit') {
@@ -821,11 +823,23 @@ const CarriersAddEdit = ({ mode }) => {
     }
   };
 
+  const getSubTitle = () => {
+    let title = <>&nbsp;</>;
+    if (sipRealm) {
+      title = staticIPs
+        ? `Have your carrier send your calls to your static IP(s): ${staticIPs.join(
+            ", "
+          )}`
+        : `Have your carrier send calls to ${sipRealm}`;
+    }
+    return title;
+  };
+
   return (
     <InternalMain
       type="form"
       title={pageTitle}
-      subtitle={sipRealm ? `Have your carrier send calls to ${sipRealm}` : <>&nbsp;</>}
+      subtitle={getSubTitle()}
       breadcrumbs={[
         { name: 'Back to Carriers', url: '/account/carriers' },
       ]}
