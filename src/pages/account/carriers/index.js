@@ -14,6 +14,7 @@ const CarriersIndex = () => {
 
   const [ carriers, setCarriers ] = useState('');
   const [ sipRealm, setSipRealm ] = useState('');
+  const [staticIPs, setStaticIPs] = useState(null);
 
   //=============================================================================
   // Get carriers
@@ -64,6 +65,7 @@ const CarriersIndex = () => {
 
       if (usersMe && usersMe.data && usersMe.data.account) {
         setSipRealm(usersMe.data.account.sip_realm);
+        setStaticIPs(usersMe.data.account.static_ips || null);
       }
 
       // Add appropriate gateways to each carrier
@@ -172,6 +174,18 @@ const CarriersIndex = () => {
     }
   };
 
+  const getSubTitle = () => {
+    let title = <>&nbsp;</>;
+    if (sipRealm) {
+      title = staticIPs
+        ? `Have your carrier${carriers.length > 1 ? 's' : ''} send calls to your static IP(s): ${staticIPs.join(
+            ", "
+          )}`
+        :  `Have your carrier${carriers.length > 1 ? 's' : ''} send calls to ${sipRealm}`;
+    }
+    return title;
+  };
+
   //=============================================================================
   // Render
   //=============================================================================
@@ -181,7 +195,7 @@ const CarriersIndex = () => {
       title="Carriers"
       addButtonText="Add a Carriers"
       addButtonLink="/account/carriers/add"
-      subtitle={sipRealm ? `Have your carrier${carriers.length > 1 ? 's' : ''} send calls to ${sipRealm}` : <>&nbsp;</>}
+      subtitle={getSubTitle()}
     >
       <Section normalTable>
         <TableContent
