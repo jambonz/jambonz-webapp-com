@@ -19,6 +19,7 @@ import Loader from '../../../components/blocks/Loader';
 import sortSipGateways from '../../../helpers/sortSipGateways';
 import Select from '../../../components/elements/Select';
 import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
+import handleErrors from "../../../helpers/handleErrors";
 
 const StyledForm = styled(Form)`
   @media (max-width: 978.98px) {
@@ -129,7 +130,7 @@ const CarrierSelect = styled.div`
   }
 `;
 
-const CarriersAddEdit = () => {
+const CarriersAddEdit = ({ mode }) => {
   const { width } = useContext(ResponsiveContext);
   const { voip_carrier_sid } = useParams();
   const type = voip_carrier_sid ? 'edit' : 'add';
@@ -138,6 +139,7 @@ const CarriersAddEdit = () => {
   const history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem('jwt');
+  const accountSid = localStorage.getItem('account_sid');
 
   // Refs
   const refName = useRef(null);
@@ -320,7 +322,17 @@ const CarriersAddEdit = () => {
             baseURL: process.env.REACT_APP_API_BASE_URL,
             url: `/PredefinedCarriers`,
           });
-          setPredefinedCarriers(result.data);
+          setPredefinedCarriers(
+            result.data
+              .map((item) => ({
+                ...item,
+                value: item.predefined_carrier_sid,
+                text: item.requires_static_ip
+                  ? `${item.name}-${item.requires_static_ip}`
+                  : item.name,
+              }))
+              .sort((a, b) => a.text.localeCompare(b.text))
+          );
         }
 
       } catch (err) {
@@ -351,7 +363,7 @@ const CarriersAddEdit = () => {
     };
     getAPIData();
     // eslint-disable-next-line
-  }, []);
+  }, [mode]);
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutside);
@@ -795,7 +807,32 @@ const CarriersAddEdit = () => {
     }
   };
 
-  const pickupCarrier = (e) => {};
+  const pickupCarrier = async (e) => {
+    let isMounted = true;
+    try {
+      setShowLoader(true);
+
+      const result = await axios({
+        method: 'post',
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: `/Accounts/${accountSid}/PredefinedCarriers/${e.target.value}`,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      const { sid } = result.data;
+
+      history.push(`/account/carriers/${sid}/edit`);
+    } catch (err) {
+      handleErrors({ err, history, dispatch, setErrorMessage });
+    } finally {
+      if (isMounted) {
+        setShowLoader(false);
+        setShowCarrierList(false);
+      }
+    }
+  };
 
   return (
     <InternalMain
@@ -830,9 +867,10 @@ const CarriersAddEdit = () => {
                 <CarrierSelect>
                   {showCarrierList ? (
                     <Select onChange={pickupCarrier} ref={refSelectCarrier}>
-                      {predefinedCarriers.map((item, index) => (
-                        <option key={item.predefined_carrier_sid} value={item.predefined_carrier_sid}>
-                          {item.requires_static_ip ? `${item.name}-${item.requires_static_ip}`: item.name}
+                      <option value="...">...</option>
+                      {predefinedCarriers.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.text}
                         </option>
                       ))}
                     </Select>
