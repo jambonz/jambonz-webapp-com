@@ -138,6 +138,8 @@ const CarrierItem = styled.div`
   font-weight: 400;
   color: #565656;
   padding: 0.25rem 0.5rem;
+
+  ${(props) => props.disabled ? 'opacity: 0.5;' : ''}
 `;
 
 const CarriersAddEdit = ({ mode }) => {
@@ -871,13 +873,19 @@ const CarriersAddEdit = ({ mode }) => {
                     trigger="click"
                     overlay={
                       <Menu>
-                        {predefinedCarriers.map((item) => (
-                          <Menu.Item key={item.value}>
-                            <CarrierItem onClick={() => pickupCarrier(item.value)}>
-                              {item.text}
-                            </CarrierItem>
-                          </Menu.Item>
-                        ))}
+                        {predefinedCarriers.map((item) => {
+                          const disabled = !staticIPs && item.requires_static_ip;
+                          return (
+                            <Menu.Item key={item.value} disabled={disabled}>
+                              <CarrierItem
+                                disabled={disabled}
+                                onClick={() => !disabled && pickupCarrier(item.value)}
+                              >
+                                {item.text}
+                              </CarrierItem>
+                            </Menu.Item>
+                          );
+                        })}
                       </Menu>
                     }
                   >
