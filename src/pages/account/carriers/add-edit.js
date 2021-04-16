@@ -803,6 +803,7 @@ const CarriersAddEdit = ({ mode }) => {
     let isMounted = true;
     try {
       setShowLoader(true);
+      setErrorMessage("");
 
       const result = await axios({
         method: 'post',
