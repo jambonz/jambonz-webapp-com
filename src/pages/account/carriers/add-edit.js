@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styled from "styled-components/macro";
+import { Menu, Dropdown } from "antd";
 
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalMain from '../../../components/wrappers/InternalMain';
@@ -127,7 +128,16 @@ const CarrierSelect = styled.div`
 
   & > * {
     width: 100%;
+    justify-content: flex-end;
   }
+`;
+
+const CarrierItem = styled.div`
+  font-family: Objectivity;
+  font-size: 16px;
+  font-weight: 400;
+  color: #565656;
+  padding: 0.25rem 0.5rem;
 `;
 
 const CarriersAddEdit = ({ mode }) => {
@@ -153,7 +163,6 @@ const CarriersAddEdit = ({ mode }) => {
   const refTrash = useRef([]);
   const refAdd = useRef(null);
   const refTechPrefix = useRef(null);
-  const refSelectCarrier = useRef(null);
 
   // Form inputs
   const [ name,            setName            ] = useState('');
@@ -195,19 +204,7 @@ const CarriersAddEdit = ({ mode }) => {
   const [suportSIP, setSupportSIP] = useState(false);
   const [diversion, setDiversion] = useState("");
 
-  const [showCarrierList, setShowCarrierList] = useState(false);
   const [predefinedCarriers, setPredefinedCarriers] = useState([]);
-
-  const handleClickOutside = (e) => {
-    if (
-      refSelectCarrier &&
-      refSelectCarrier.current &&
-      !refSelectCarrier.current.contains(e.target) &&
-      showCarrierList
-    ) {
-      setShowCarrierList(false);
-    }
-  };
 
   useEffect(() => {
     const getAPIData = async () => {
@@ -364,15 +361,6 @@ const CarriersAddEdit = ({ mode }) => {
     getAPIData();
     // eslint-disable-next-line
   }, [mode]);
-
-  useEffect(() => {
-    document.addEventListener('click', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showCarrierList]);
 
   const addSipGateway = () => {
     const newSipGateways = [
@@ -807,7 +795,7 @@ const CarriersAddEdit = ({ mode }) => {
     }
   };
 
-  const pickupCarrier = async (e) => {
+  const pickupCarrier = async (value) => {
     let isMounted = true;
     try {
       setShowLoader(true);
@@ -815,7 +803,7 @@ const CarriersAddEdit = ({ mode }) => {
       const result = await axios({
         method: 'post',
         baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: `/Accounts/${accountSid}/PredefinedCarriers/${e.target.value}`,
+        url: `/Accounts/${accountSid}/PredefinedCarriers/${value}`,
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
@@ -829,7 +817,6 @@ const CarriersAddEdit = ({ mode }) => {
     } finally {
       if (isMounted) {
         setShowLoader(false);
-        setShowCarrierList(false);
       }
     }
   };
@@ -865,25 +852,25 @@ const CarriersAddEdit = ({ mode }) => {
               />
               {type === 'add' && (
                 <CarrierSelect>
-                  {showCarrierList ? (
-                    <Select onChange={pickupCarrier} ref={refSelectCarrier}>
-                      <option value="...">...</option>
-                      {predefinedCarriers.map((item) => (
-                        <option key={item.value} value={item.value}>
-                          {item.text}
-                        </option>
-                      ))}
-                    </Select>
-                  ) : (
-                    <Button
-                      text
-                      formLink
-                      type="button"
-                      onClick={() => setShowCarrierList(!showCarrierList)}
-                    >
+                  <Dropdown
+                    placement="bottomRight"
+                    trigger="click"
+                    overlay={
+                      <Menu>
+                        {predefinedCarriers.map((item) => (
+                          <Menu.Item key={item.value}>
+                            <CarrierItem onClick={() => pickupCarrier(item.value)}>
+                              {item.text}
+                            </CarrierItem>
+                          </Menu.Item>
+                        ))}
+                      </Menu>
+                    }
+                  >
+                    <Button text formLink type="button">
                       Select from list
                     </Button>
-                  )}
+                  </Dropdown>
                 </CarrierSelect>
               )}
             </NameFieldWrapper>
