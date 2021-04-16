@@ -205,6 +205,7 @@ const CarriersAddEdit = ({ mode }) => {
   const [techPrefixInvalid, setTechPrefixInvalid ] = useState(false);
   const [suportSIP, setSupportSIP] = useState(false);
   const [diversion, setDiversion] = useState("");
+  const [carrierActive, setCarrierActive] = useState(false);
 
   const [predefinedCarriers, setPredefinedCarriers] = useState([]);
   const [staticIPs, setStaticIPs] = useState(null);
@@ -317,6 +318,7 @@ const CarriersAddEdit = ({ mode }) => {
           setRequiredTechPrefix(carrier.tech_prefix ? true : false);
           setSupportSIP(carrier.diversion ? true : false);
           setDiversion(carrier.diversion || '');
+          setCarrierActive(carrier.is_active === 1);
         } else {
           const result = await axios({
             method: 'get',
@@ -662,6 +664,7 @@ const CarriersAddEdit = ({ mode }) => {
           register_sip_realm: register ? realm.trim() : null,
           tech_prefix: techPrefix ? techPrefix.trim() : null,
           diversion: diversion ? diversion.trim() : null,
+          is_active: carrierActive ? 1 : 0,
         },
       });
       const voip_carrier_sid = voipCarrier.data.sid;
@@ -897,6 +900,16 @@ const CarriersAddEdit = ({ mode }) => {
                 </CarrierSelect>
               )}
             </NameFieldWrapper>
+
+            <Label htmlFor="e164">active</Label>
+            <Checkbox
+              noLeftMargin
+              name="active"
+              id="active"
+              label=""
+              checked={carrierActive}
+              onChange={e => setCarrierActive(e.target.checked)}
+            />
 
             <Label htmlFor="e164">E.164 Syntax</Label>
             <Checkbox
