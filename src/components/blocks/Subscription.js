@@ -95,8 +95,6 @@ const Subscription = ({ data, hasDelete }) => {
       products.find((item) => item.name === "registered device") || {};
     const callSessionRecord =
       products.find((item) => item.name === "concurrent call session") || {};
-    const apiCallRecord =
-      products.find((item) => item.name === "api call") || {};
     let description = "";
     let otherDescription = "";
     const { trial_end_date } = data.account || {};
@@ -119,11 +117,9 @@ const Subscription = ({ data, hasDelete }) => {
       case PlanType.PAID:
         description = `Your paid subscription includes capacity for ${
           callSessionRecord.quantity
-        } simultaneous calls, ${
+        } simultaneous calls, and ${
           registeredDeviceRecord.quantity
-        } registered devices, and ${
-          apiCallRecord.quantity
-        } api calls per minute. You are billed ${
+        } registered devices. You are billed ${
           CurrencySymbol[invoiceData.currency || "usd"]
         }${invoiceData.total || 0} on ${
           invoiceData.next_payment_attempt || ""
