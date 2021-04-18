@@ -170,6 +170,20 @@ const LoadingContainer = styled.div`
   margin-bottom: 14px;
 `;
 
+const DeviceRow = styled.div`
+  grid-column: 1 / 5;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  & > * {
+    text-align: left;
+  }
+`;
+
+const StyledInput = styled(Input)`
+  max-width: 500px;
+`;
+
 const ModifySubscription = () => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem("jwt");
@@ -184,6 +198,7 @@ const ModifySubscription = () => {
   const [showModalLoader, setShowModalLoader] = useState(false);
   const [billingChange, setBillingChange] = useState({});
   const [applyingChange, setApplyingChange] = useState(false);
+  const [accountData, setAccountData] = useState({});
 
   const refArray = {
     voice_call_session: useRef(null),
@@ -205,11 +220,13 @@ const ModifySubscription = () => {
       min: 10,
       max: 1000,
       dirty: false,
+      visible: true,
+      required: true,
     },
     {
       category: "device",
       name: "registered device",
-      service: "Maximum concurrent device registrations",
+      service: "Additional device registrations",
       fees: 0,
       feesLabel: "",
       cost: "",
@@ -219,6 +236,8 @@ const ModifySubscription = () => {
       min: 1,
       max: 200,
       dirty: false,
+      visible: false,
+      required: false,
     },
   ]);
 
@@ -375,6 +394,7 @@ const ModifySubscription = () => {
         fees,
         feesLabel,
         cost,
+        visible: quantity > 0,
       };
     });
 
@@ -412,18 +432,20 @@ const ModifySubscription = () => {
 
       let services = [...serviceData];
       services.forEach((service, index) => {
-        const capacityNum = parseInt(service.capacity || "0", 10);
-        if (capacityNum < service.min || capacityNum > service.max) {
-          errorMessages.push(
-            `"${service.service}" must be greater than or equal to ${service.min}, less than or equal to ${service.max}.`
-          );
-          services[index] = { ...services[index], invalid: true };
-          if (!focusHasBeenSet) {
-            refArray[service.category].focus();
-            focusHasBeenSet = true;
+        if (service.required) {
+          const capacityNum = parseInt(service.capacity || "0", 10);
+          if (capacityNum < service.min || capacityNum > service.max) {
+            errorMessages.push(
+              `"${service.service}" must be greater than or equal to ${service.min}, less than or equal to ${service.max}.`
+            );
+            services[index] = { ...services[index], invalid: true };
+            if (!focusHasBeenSet) {
+              refArray[service.category].focus();
+              focusHasBeenSet = true;
+            }
+          } else {
+            services[index] = { ...services[index], invalid: false };
           }
-        } else {
-          services[index] = { ...services[index], invalid: false };
         }
       });
       setServiceData(services);
@@ -470,7 +492,7 @@ const ModifySubscription = () => {
       .map((product) => ({
         price_id: product.stripe_price_id,
         product_sid: product.product_sid,
-        quantity: product.capacity,
+        quantity: product.capacity || 0,
       }));
 
     const result = await axios({
@@ -493,6 +515,13 @@ const ModifySubscription = () => {
       setShowChangeModal(false);
       setShowModalLoader(false);
     }
+  };
+
+  const showDeviceRow = () => {
+    setServiceData((prev) => {
+      prev[1].visible = true;
+      return [...prev];
+    });
   };
 
   const upgradeQuantities = async () => {
@@ -563,6 +592,7 @@ const ModifySubscription = () => {
         });
 
         if (isMounted) {
+          setAccountData(productsInfo.data.account);
           setProductsInfo(productsInfo.data);
         }
       } catch (err) {
@@ -604,37 +634,59 @@ const ModifySubscription = () => {
               Cost
             </FormHeader>
             <hr />
-            {serviceData.map((service, index) => (
-              <React.Fragment key={service.category}>
-                <Label htmlFor={service.category}>{service.service}</Label>
-                <Input
-                  name={service.category}
-                  id={service.category}
-                  value={service.capacity}
-                  onChange={(e) =>
-                    handleServiceData(index, "capacity", e.target.value)
-                  }
-                  placeholder=""
-                  invalid={service.invalid}
-                  ref={(ref) => handleRefs(service.category, ref)}
-                />
-                <LabelInDesktop textAlign="center">{service.feesLabel}</LabelInDesktop>
-                <LabelInDesktop textAlign="center">
-                  {service.cost !== ""
-                    ? `${CurrencySymbol[service.currency]}${service.cost}`
-                    : ""}
-                </LabelInDesktop>
-                <DivInMobile>
-                  <Label textAlign="center">{service.feesLabel}</Label>
-                  <Label textAlign="center">
+            {serviceData
+              .filter((service) => service.visible)
+              .map((service, index) => (
+                <React.Fragment key={service.category}>
+                  <Label htmlFor={service.category}>{service.service}</Label>
+                  <StyledInput
+                    name={service.category}
+                    id={service.category}
+                    value={service.capacity}
+                    onChange={(e) =>
+                      handleServiceData(index, "capacity", e.target.value)
+                    }
+                    placeholder=""
+                    invalid={service.invalid}
+                    ref={(ref) => handleRefs(service.category, ref)}
+                  />
+                  <LabelInDesktop textAlign="center">
+                    {service.feesLabel}
+                  </LabelInDesktop>
+                  <LabelInDesktop textAlign="center">
                     {service.cost !== ""
                       ? `${CurrencySymbol[service.currency]}${service.cost}`
                       : ""}
+                  </LabelInDesktop>
+                  <DivInMobile>
+                    <Label textAlign="center">{service.feesLabel}</Label>
+                    <Label textAlign="center">
+                      {service.cost !== ""
+                        ? `${CurrencySymbol[service.currency]}${service.cost}`
+                        : ""}
+                    </Label>
+                  </DivInMobile>
+                  <hr />
+                </React.Fragment>
+              ))}
+            {serviceData[0].capacity && !serviceData[1].visible && (
+              <React.Fragment>
+                <DeviceRow>
+                  <Label>
+                    {`With ${
+                      serviceData[0].capacity
+                    } call sessions you can register ${
+                      parseInt(serviceData[0].capacity, 10) *
+                      accountData.device_to_call_ratio
+                    } concurrent devices`}
                   </Label>
-                </DivInMobile>
+                  <Button text formLink type="button" onClick={showDeviceRow}>
+                    Would you like to purchase additional device registrations?
+                  </Button>
+                </DeviceRow>
                 <hr />
               </React.Fragment>
-            ))}
+            )}
             <MobileContainer>
               <Text bold>Total Monthly Cost</Text>
               <Text bold textAlign="center">
@@ -679,7 +731,9 @@ const ModifySubscription = () => {
                 </P>
                 <UL style={{ listStyleType: "none" }}>
                   <li>{`- ${serviceData[0].capacity} simultaneous calls`}</li>
-                  <li>{`- ${serviceData[1].capacity} registered devices`}</li>
+                  <li>{`- ${
+                    serviceData[1].capacity || 0
+                  } registered devices`}</li>
                 </UL>
                 <P>
                   {billingChange.prorated_cost > 0 &&
