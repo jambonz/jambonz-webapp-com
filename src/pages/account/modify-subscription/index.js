@@ -736,7 +736,9 @@ const ModifySubscription = () => {
                 <UL style={{ listStyleType: "none" }}>
                   <li>{`- ${serviceData[0].capacity} simultaneous calls`}</li>
                   <li>{`- ${
-                    serviceData[1].capacity || 0
+                    accountData.device_to_call_ratio *
+                      parseInt(serviceData[0].capacity, 0) +
+                      parseInt(serviceData[1].capacity, 10) || 0
                   } registered devices`}</li>
                 </UL>
                 <P>
