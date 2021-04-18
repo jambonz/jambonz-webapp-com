@@ -178,6 +178,10 @@ const DeviceRow = styled.div`
   & > * {
     text-align: left;
   }
+
+  @media (max-width: 575.98px) {
+    display: block;
+  }
 `;
 
 const StyledInput = styled(Input)`
