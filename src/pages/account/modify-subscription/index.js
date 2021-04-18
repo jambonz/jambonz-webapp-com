@@ -179,6 +179,10 @@ const DeviceRow = styled.div`
     text-align: left;
   }
 
+  & > button {
+    align-items: center;
+  }
+
   @media (max-width: 575.98px) {
     display: block;
   }
