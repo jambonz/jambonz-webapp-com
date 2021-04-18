@@ -188,7 +188,6 @@ const ModifySubscription = () => {
   const refArray = {
     voice_call_session: useRef(null),
     device: useRef(null),
-    api_rate: useRef(null),
   };
 
   // subscription categories
@@ -219,20 +218,6 @@ const ModifySubscription = () => {
       currency: "usd",
       min: 1,
       max: 200,
-      dirty: false,
-    },
-    {
-      category: "api_rate",
-      name: "api call",
-      service: "Maximum number of API calls per minute",
-      fees: 0,
-      feesLabel: "",
-      cost: "",
-      capacity: "",
-      invalid: false,
-      currency: "usd",
-      min: 6,
-      max: 180,
       dirty: false,
     },
   ]);
@@ -695,7 +680,6 @@ const ModifySubscription = () => {
                 <UL style={{ listStyleType: "none" }}>
                   <li>{`- ${serviceData[0].capacity} simultaneous calls`}</li>
                   <li>{`- ${serviceData[1].capacity} registered devices`}</li>
-                  <li>{`- ${serviceData[2].capacity} API calls per minute`}</li>
                 </UL>
                 <P>
                   {billingChange.prorated_cost > 0 &&

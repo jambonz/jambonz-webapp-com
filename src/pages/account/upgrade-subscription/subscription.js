@@ -293,7 +293,6 @@ const Subscription = ({ elements, stripe }) => {
   const refArray = {
     voice_call_session: useRef(null),
     device: useRef(null),
-    api_rate: useRef(null),
   };
 
   // subscription categories
@@ -321,18 +320,6 @@ const Subscription = ({ elements, stripe }) => {
       currency: "usd",
       min: 1,
       max: 200,
-    },
-    {
-      category: "api_rate",
-      service: "Maximum number of API calls per minute",
-      fees: 0,
-      feesLabel: "",
-      cost: "",
-      capacity: "",
-      invalid: false,
-      currency: "usd",
-      min: 6,
-      max: 180,
     },
   ]);
 
