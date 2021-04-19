@@ -5,7 +5,7 @@ import InternalMain from "../../../components/wrappers/InternalMain";
 
 const UpgradeSubscription = () => (
   <InternalMain
-    type="normalTable"
+    type="form"
     title="Upgrade your Subscription"
     breadcrumbs={[{ name: "Back to Account Home", url: "/account" }]}
   >

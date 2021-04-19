@@ -93,6 +93,8 @@ const AccountHome = () => {
   const [generatingSecret, setGeneratingSecret] = useState(false);
   const [webhookSecret, setWebhookSecret] = useState("");
   const [enabledCardDetailRecord, setEnabledCardDetailRecord] = useState(false);
+  const [applicationMenuItems, setApplicationMenuItems] = useState([]);
+  const [applicationList, setApplicationList] = useState([]);
 
   const [mobile, setMobile] = useState(false);
 
@@ -205,10 +207,86 @@ const AccountHome = () => {
     setMobile(width < breakPoint);
   };
 
+  const getApplicationName = (data) => {
+    let res = 'Not specified';
+
+    if (data && data.account) {
+      const { device_calling_application_sid } = data.account;
+
+      const app = (applicationList || []).find((item) => item.application_sid === device_calling_application_sid);
+      if (app) {
+        res = app.name;
+      }
+    }
+
+    return res;
+  };
+
+  const resetDeviceCallingApplication = async () => {
+    let isMounted = true;
+
+    try {
+      setShowLoader(true);
+
+      await axios({
+        method: "put",
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: `/Accounts/${account_sid}`,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+        data: {
+          device_calling_application_sid: null,
+        },
+      });
+
+      const userResponse = await axios({
+        method: 'get',
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: '/Users/me',
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      setData(userResponse.data);
+      setApplicationMenuItems([
+        {
+          name: 'Add',
+          type: 'link',
+          url: `/account/device-application/add`,
+        },
+      ]);
+    } catch (err) {
+      dispatch({
+        type: 'ADD',
+        level: 'error',
+        message: `Unable to delete device calling application.`,
+      });
+    } finally {
+      if (isMounted) {
+        setShowLoader(false);
+      }
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
     const getData = async () => {
       try {
+        const appResult = await axios({
+          method: "get",
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: "/Applications",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+
+        if (appResult && appResult.data) {
+          setApplicationList(appResult.data);
+        }
+
         const userResponse = await axios({
           method: 'get',
           baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -255,6 +333,30 @@ const AccountHome = () => {
               name: 'Add',
               type: 'link',
               url: `/account/registration-webhook/add`,
+            },
+          ]);
+        }
+
+        if (userResponse.data && userResponse.data.account && userResponse.data.account.device_calling_application_sid) {
+          const { device_calling_application_sid } = userResponse.data.account;
+          setApplicationMenuItems([
+            {
+              name: 'Edit',
+              type: 'link',
+              url: `/account/device-application/${device_calling_application_sid}/edit`,
+            },
+            {
+              name: 'Delete',
+              type: 'Button',
+              action: resetDeviceCallingApplication,
+            },
+          ]);
+        } else {
+          setApplicationMenuItems([
+            {
+              name: 'Add',
+              type: 'link',
+              url: `/account/device-application/add`,
             },
           ]);
         }
@@ -354,6 +456,20 @@ const AccountHome = () => {
                         handleCurrentMenu={() => setCurrentMenu('account-home-registration-webhook')}
                         disabled={modalOpen}
                         menuItems={registrationWebhookMenuItems}
+                      />
+                    </Td>
+                  </tr>
+                  <tr>
+                    <Th scope="row">Device calling application</Th>
+                    <Td overflow="hidden">
+                      {getApplicationName(data)}
+                    </Td>
+                    <Td containsMenuButton>
+                      <TableMenu
+                        open={currentMenu === 'account-home-registration-application'}
+                        handleCurrentMenu={() => setCurrentMenu('account-home-registration-application')}
+                        disabled={modalOpen}
+                        menuItems={applicationMenuItems}
                       />
                     </Td>
                   </tr>

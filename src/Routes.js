@@ -49,6 +49,7 @@ import SubscriptionIndex from './pages/account/upgrade-subscription';
 import ManagePaymentInfo from './pages/account/manage-payment';
 import ModifySubscription from './pages/account/modify-subscription';
 import ReturnToFreeSection from './pages/account/return-to-free-plan';
+import DeviceApplicationAddEdit from './pages/account/device-application';
 
 //===============================================
 // Component Imports
@@ -82,6 +83,9 @@ function Routes() {
               <Route exact path="/account/registration-webhook/add"><RegistrationWebhookAddEdit /></Route>
               <Route exact path="/account/registration-webhook/:webhook_sid/edit"><RegistrationWebhookAddEdit /></Route>
               <Route exact path="/account/registration-webhook/:webhook_sid/delete"><RegistrationWebhookDelete /></Route>
+
+              <Route exact path="/account/device-application/add"><DeviceApplicationAddEdit /></Route>
+              <Route exact path="/account/device-application/:device_calling_application_sid/edit"><DeviceApplicationAddEdit /></Route>
 
               <Route exact path="/account/sip-realm/edit"><SipRealmEdit /></Route>
 
