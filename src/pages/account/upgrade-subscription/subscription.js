@@ -190,7 +190,7 @@ const LoadingContainer = styled.div`
     }
   }
 
-  ${props => props.theme.mobileOnly} {
+  ${(props) => props.theme.mobileOnly} {
     padding: 1rem;
 
     a {
@@ -255,6 +255,28 @@ const CardLabel = styled(Label)`
   }
 `;
 
+const DeviceRow = styled.div`
+  grid-column: 1 / 5;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  & > * {
+    text-align: left;
+  }
+
+  & > button {
+    align-items: center;
+  }
+
+  @media (max-width: 575.98px) {
+    display: block;
+  }
+`;
+
+const StyledInput = styled(Input)`
+  max-width: 500px;
+`;
+
 const cardElementsOptions = {
   style: {
     base: {
@@ -282,18 +304,18 @@ const Subscription = ({ elements, stripe }) => {
   const [stripeCustomerId, setStripeCustomerId] = useState("");
   const [paymentName, setPaymentName] = useState("");
   const [paymentNameInvalid, setPaymentNameInvalid] = useState(false);
-  const [disabledSubmit, setDisabledSubmit] = useState(false);
+  const [disabledSubmit, setDisabledSubmit] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [paymentResult, setPaymentResult] = useState({});
   const [cardErrorCase, setCardErrorCase] = useState(false);
+  const [accountData, setAccountData] = useState({});
 
   const paymentNameRef = useRef(null);
 
   const refArray = {
     voice_call_session: useRef(null),
     device: useRef(null),
-    api_rate: useRef(null),
   };
 
   // subscription categories
@@ -309,10 +331,12 @@ const Subscription = ({ elements, stripe }) => {
       currency: "usd",
       min: 10,
       max: 1000,
+      visible: true,
+      required: true,
     },
     {
       category: "device",
-      service: "Maximum concurrent device registrations",
+      service: "Additional device registrations",
       fees: 0,
       feesLabel: "",
       cost: "",
@@ -321,18 +345,8 @@ const Subscription = ({ elements, stripe }) => {
       currency: "usd",
       min: 1,
       max: 200,
-    },
-    {
-      category: "api_rate",
-      service: "Maximum number of API calls per minute",
-      fees: 0,
-      feesLabel: "",
-      cost: "",
-      capacity: "",
-      invalid: false,
-      currency: "usd",
-      min: 6,
-      max: 180,
+      visible: false,
+      required: false,
     },
   ]);
 
@@ -394,18 +408,20 @@ const Subscription = ({ elements, stripe }) => {
 
       let services = [...serviceData];
       services.forEach((service, index) => {
-        const capacityNum = parseInt(service.capacity || "0", 10);
-        if (capacityNum < service.min || capacityNum > service.max) {
-          errorMessages.push(
-            `"${service.service}" must be greater than or equal to ${service.min}, less than or equal to ${service.max}.`
-          );
-          services[index] = { ...services[index], invalid: true };
-          if (!focusHasBeenSet) {
-            refArray[service.category].focus();
-            focusHasBeenSet = true;
+        if (service.required) {
+          const capacityNum = parseInt(service.capacity || "0", 10);
+          if (capacityNum < service.min || capacityNum > service.max) {
+            errorMessages.push(
+              `"${service.service}" must be greater than or equal to ${service.min}, less than or equal to ${service.max}.`
+            );
+            services[index] = { ...services[index], invalid: true };
+            if (!focusHasBeenSet) {
+              refArray[service.category].focus();
+              focusHasBeenSet = true;
+            }
+          } else {
+            services[index] = { ...services[index], invalid: false };
           }
-        } else {
-          services[index] = { ...services[index], invalid: false };
         }
       });
       setServiceData(services);
@@ -505,7 +521,7 @@ const Subscription = ({ elements, stripe }) => {
         products: serviceData.map((service) => ({
           price_id: service.stripe_price_id,
           product_sid: service.product_sid,
-          quantity: service.capacity,
+          quantity: service.capacity || "0",
         })),
       };
     }
@@ -605,6 +621,9 @@ const Subscription = ({ elements, stripe }) => {
   };
 
   const handleServiceData = (index, field, value) => {
+    if (index === 0) {
+      setDisabledSubmit(!value);
+    }
     setServiceData((prev) => {
       if (isNaN(value)) {
         prev[index] = {
@@ -696,6 +715,13 @@ const Subscription = ({ elements, stripe }) => {
     refArray[category] = ref;
   };
 
+  const showDeviceRow = () => {
+    setServiceData((prev) => {
+      prev[1].visible = true;
+      return [...prev];
+    });
+  };
+
   useEffect(() => {
     setTotal(serviceData.reduce((res, service) => res + service.cost || 0, 0));
   }, [serviceData]);
@@ -723,13 +749,24 @@ const Subscription = ({ elements, stripe }) => {
           },
         });
 
-        const [priceResult, stripeResult] = await Promise.all([
+        const userPromise = axios({
+          method: "get",
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: "/Users/me",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+
+        const [priceResult, stripeResult, userResult] = await Promise.all([
           pricePromise,
           stripePromise,
+          userPromise,
         ]);
 
         initFeesAndCost(priceResult.data);
         setStripeCustomerId(stripeResult.data.stripe_customer_id);
+        setAccountData(userResult.data.account);
       } catch (err) {
         if (err.response && err.response.status === 401) {
           localStorage.clear();
@@ -808,39 +845,59 @@ const Subscription = ({ elements, stripe }) => {
             Cost
           </FormHeader>
           <hr />
-          {serviceData.map((service, index) => (
-            <React.Fragment key={service.category}>
-              <Label htmlFor={service.category}>{service.service}</Label>
-              <Input
-                name={service.category}
-                id={service.category}
-                value={service.capacity}
-                onChange={(e) =>
-                  handleServiceData(index, "capacity", e.target.value)
-                }
-                placeholder=""
-                invalid={service.invalid}
-                ref={(ref) => handleRefs(service.category, ref)}
-              />
-              <LabelInDesktop textAlign="center">
-                {service.feesLabel}
-              </LabelInDesktop>
-              <LabelInDesktop textAlign="center">
-                {service.cost !== ""
-                  ? `${CurrencySymbol[service.currency]}${service.cost}`
-                  : ""}
-              </LabelInDesktop>
-              <DivInMobile>
-                <Label textAlign="center">{service.feesLabel}</Label>
-                <Label textAlign="center">
+          {serviceData
+            .filter((service) => service.visible)
+            .map((service, index) => (
+              <React.Fragment key={service.category}>
+                <Label htmlFor={service.category}>{service.service}</Label>
+                <StyledInput
+                  name={service.category}
+                  id={service.category}
+                  value={service.capacity}
+                  onChange={(e) =>
+                    handleServiceData(index, "capacity", e.target.value)
+                  }
+                  placeholder=""
+                  invalid={service.invalid}
+                  ref={(ref) => handleRefs(service.category, ref)}
+                />
+                <LabelInDesktop textAlign="center">
+                  {service.feesLabel}
+                </LabelInDesktop>
+                <LabelInDesktop textAlign="center">
                   {service.cost !== ""
                     ? `${CurrencySymbol[service.currency]}${service.cost}`
                     : ""}
+                </LabelInDesktop>
+                <DivInMobile>
+                  <Label textAlign="center">{service.feesLabel}</Label>
+                  <Label textAlign="center">
+                    {service.cost !== ""
+                      ? `${CurrencySymbol[service.currency]}${service.cost}`
+                      : ""}
+                  </Label>
+                </DivInMobile>
+                <hr />
+              </React.Fragment>
+            ))}
+          {serviceData[0].capacity && !serviceData[1].visible && (
+            <React.Fragment>
+              <DeviceRow>
+                <Label>
+                  {`With ${
+                    serviceData[0].capacity
+                  } call sessions you can register ${
+                    parseInt(serviceData[0].capacity, 10) *
+                    accountData.device_to_call_ratio
+                  } concurrent devices`}
                 </Label>
-              </DivInMobile>
+                <Button text formLink type="button" onClick={showDeviceRow}>
+                  Would you like to purchase additional device registrations?
+                </Button>
+              </DeviceRow>
               <hr />
             </React.Fragment>
-          ))}
+          )}
           <MobileContainer>
             <Text bold>Total Monthly Cost</Text>
             <Text bold textAlign="center">

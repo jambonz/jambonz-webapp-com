@@ -85,6 +85,7 @@ const Subscription = ({ data, hasDelete }) => {
   const [otherDescription, setOtherDescription] = useState("");
   const [planType, setPlanType] = useState("");
   const [invoiceData, setInvoiceData] = useState({});
+  const [accountData, setAccountData] = useState({});
   const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
@@ -95,15 +96,16 @@ const Subscription = ({ data, hasDelete }) => {
       products.find((item) => item.name === "registered device") || {};
     const callSessionRecord =
       products.find((item) => item.name === "concurrent call session") || {};
-    const apiCallRecord =
-      products.find((item) => item.name === "api call") || {};
     let description = "";
     let otherDescription = "";
     const { trial_end_date } = data.account || {};
+    const quantity =
+      (accountData.device_to_call_ratio || 0) * callSessionRecord.quantity +
+      (registeredDeviceRecord.quantity || 0);
 
     switch (pType) {
       case PlanType.TRIAL:
-        description = `You are currently on the Free plan (trial period). You are limited to ${callSessionRecord.quantity} simultaneous calls and ${registeredDeviceRecord.quantity} registered devices.`;
+        description = `You are currently on the Free plan (trial period). You are limited to ${callSessionRecord.quantity} simultaneous calls and ${quantity} registered devices.`;
         if (trial_end_date) {
           otherDescription = `Your free trial will end on ${moment(
             trial_end_date
@@ -113,17 +115,13 @@ const Subscription = ({ data, hasDelete }) => {
         }
         break;
       case PlanType.FREE:
-        description = `You are currently on the Free plan (trial period expired). You are limited to ${callSessionRecord.quantity} simultaneous calls and ${registeredDeviceRecord.quantity} registered devices`;
+        description = `You are currently on the Free plan (trial period expired). You are limited to ${callSessionRecord.quantity} simultaneous calls and ${quantity} registered devices`;
         otherDescription = "";
         break;
       case PlanType.PAID:
         description = `Your paid subscription includes capacity for ${
           callSessionRecord.quantity
-        } simultaneous calls, ${
-          registeredDeviceRecord.quantity
-        } registered devices, and ${
-          apiCallRecord.quantity
-        } api calls per minute. You are billed ${
+        } simultaneous calls, and ${quantity} registered devices. You are billed ${
           CurrencySymbol[invoiceData.currency || "usd"]
         }${invoiceData.total || 0} on ${
           invoiceData.next_payment_attempt || ""
@@ -136,7 +134,7 @@ const Subscription = ({ data, hasDelete }) => {
 
     setDescription(description);
     setOtherDescription(otherDescription);
-  }, [data, invoiceData]);
+  }, [data, invoiceData, accountData]);
 
   useEffect(() => {
     let isMounted = true;
@@ -178,6 +176,36 @@ const Subscription = ({ data, hasDelete }) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planType]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const getAccountData = async () => {
+      try {
+        const userResult = await axios({
+          method: "get",
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: "/Users/me",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+
+        if (isMounted) {
+          setAccountData(userResult.data.account);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getAccountData();
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
