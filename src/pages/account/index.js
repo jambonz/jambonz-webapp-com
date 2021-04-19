@@ -93,6 +93,7 @@ const AccountHome = () => {
   const [generatingSecret, setGeneratingSecret] = useState(false);
   const [webhookSecret, setWebhookSecret] = useState("");
   const [enabledCardDetailRecord, setEnabledCardDetailRecord] = useState(false);
+  const [applicationMenuItems, setApplicationMenuItems] = useState([]);
 
   const [mobile, setMobile] = useState(false);
 
@@ -258,6 +259,30 @@ const AccountHome = () => {
             },
           ]);
         }
+
+        if (userResponse.data && userResponse.data.account && userResponse.data.account.device_calling_application_sid) {
+          const { device_calling_application_sid } = userResponse.data.account;
+          setApplicationMenuItems([
+            {
+              name: 'Edit',
+              type: 'link',
+              url: `/account/device-application/${device_calling_application_sid}/edit`,
+            },
+            {
+              name: 'Delete',
+              type: 'Button',
+              action: () => {}
+            },
+          ]);
+        } else {
+          setApplicationMenuItems([
+            {
+              name: 'Edit',
+              type: 'link',
+              url: `/account/device-application/add`,
+            },
+          ]);
+        }
       } catch (err) {
         isMounted = false;
         handleErrors({ err, history, dispatch, fallbackMessage: 'fine' });
@@ -354,6 +379,20 @@ const AccountHome = () => {
                         handleCurrentMenu={() => setCurrentMenu('account-home-registration-webhook')}
                         disabled={modalOpen}
                         menuItems={registrationWebhookMenuItems}
+                      />
+                    </Td>
+                  </tr>
+                  <tr>
+                    <Th scope="row">Device calling application</Th>
+                    <Td overflow="hidden">
+                      {data && data.account ? data.account.device_calling_application_sid || 'Not specified' : 'Not specified'}
+                    </Td>
+                    <Td containsMenuButton>
+                      <TableMenu
+                        open={currentMenu === 'account-home-registration-application'}
+                        handleCurrentMenu={() => setCurrentMenu('account-home-registration-application')}
+                        disabled={modalOpen}
+                        menuItems={applicationMenuItems}
                       />
                     </Td>
                   </tr>
