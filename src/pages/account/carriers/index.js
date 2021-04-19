@@ -161,17 +161,6 @@ const CarriersIndex = () => {
         });
         return;
       }
-      // delete associated gateways
-      for (const sid of carrierToDelete.gatewaysSid) {
-        await axios({
-          method: 'delete',
-          baseURL: process.env.REACT_APP_API_BASE_URL,
-          url: `/SipGateways/${sid}`,
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        });
-      };
       // delete carrier
       await axios({
         method: 'delete',
