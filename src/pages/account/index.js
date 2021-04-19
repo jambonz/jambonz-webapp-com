@@ -222,6 +222,54 @@ const AccountHome = () => {
     return res;
   };
 
+  const resetDeviceCallingApplication = async () => {
+    let isMounted = true;
+
+    try {
+      setShowLoader(true);
+
+      await axios({
+        method: "put",
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: `/Accounts/${account_sid}`,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+        data: {
+          device_calling_application_sid: null,
+        },
+      });
+
+      const userResponse = await axios({
+        method: 'get',
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: '/Users/me',
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      setData(userResponse.data);
+      setApplicationMenuItems([
+        {
+          name: 'Add',
+          type: 'link',
+          url: `/account/device-application/add`,
+        },
+      ]);
+    } catch (err) {
+      dispatch({
+        type: 'ADD',
+        level: 'error',
+        message: `Unable to delete device calling application.`,
+      });
+    } finally {
+      if (isMounted) {
+        setShowLoader(false);
+      }
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
     const getData = async () => {
@@ -300,7 +348,7 @@ const AccountHome = () => {
             {
               name: 'Delete',
               type: 'Button',
-              action: () => {}
+              action: resetDeviceCallingApplication,
             },
           ]);
         } else {

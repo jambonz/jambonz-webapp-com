@@ -64,6 +64,7 @@ const DeviceApplicationAddEdit = () => {
         },
       });
 
+      isMounted = false;
       history.push("/account");
       dispatch({
         type: "ADD",
