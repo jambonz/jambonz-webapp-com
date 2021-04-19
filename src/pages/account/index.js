@@ -94,6 +94,7 @@ const AccountHome = () => {
   const [webhookSecret, setWebhookSecret] = useState("");
   const [enabledCardDetailRecord, setEnabledCardDetailRecord] = useState(false);
   const [applicationMenuItems, setApplicationMenuItems] = useState([]);
+  const [applicationList, setApplicationList] = useState([]);
 
   const [mobile, setMobile] = useState(false);
 
@@ -206,10 +207,38 @@ const AccountHome = () => {
     setMobile(width < breakPoint);
   };
 
+  const getApplicationName = (data) => {
+    let res = 'Not specified';
+
+    if (data && data.account) {
+      const { device_calling_application_sid } = data.account;
+
+      const app = (applicationList || []).find((item) => item.application_sid === device_calling_application_sid);
+      if (app) {
+        res = app.name;
+      }
+    }
+
+    return res;
+  };
+
   useEffect(() => {
     let isMounted = true;
     const getData = async () => {
       try {
+        const appResult = await axios({
+          method: "get",
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: "/Applications",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+
+        if (appResult && appResult.data) {
+          setApplicationList(appResult.data);
+        }
+
         const userResponse = await axios({
           method: 'get',
           baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -277,7 +306,7 @@ const AccountHome = () => {
         } else {
           setApplicationMenuItems([
             {
-              name: 'Edit',
+              name: 'Add',
               type: 'link',
               url: `/account/device-application/add`,
             },
@@ -385,7 +414,7 @@ const AccountHome = () => {
                   <tr>
                     <Th scope="row">Device calling application</Th>
                     <Td overflow="hidden">
-                      {data && data.account ? data.account.device_calling_application_sid || 'Not specified' : 'Not specified'}
+                      {getApplicationName(data)}
                     </Td>
                     <Td containsMenuButton>
                       <TableMenu
