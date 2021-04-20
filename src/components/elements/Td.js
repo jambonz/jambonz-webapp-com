@@ -2,6 +2,10 @@ import styled from 'styled-components/macro';
 
 const Td = styled.td`
   padding: 0 2rem;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 2;
+  color: #231f20;
 
   overflow: ${props => props.overflow || 'auto'}
 

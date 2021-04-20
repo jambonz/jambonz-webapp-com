@@ -398,18 +398,18 @@ const AccountHome = () => {
 
           {!accountSetupCompleted && (
             <Section>
-              <H2>Finish Account Setup</H2>
+              <H2 bold>Finish Account Setup</H2>
               <AccountSetupList onComplete={setAccountSetupCompleted}/>
             </Section>
           )}
 
           {data.account && (
             <Section>
-              <H2>Account</H2>
-              <StyledTable>
+              <H2 bold>Account</H2>
+              <StyledTable border>
                 <tbody>
                   <tr>
-                    <Th scope="row">SIP Realm</Th>
+                    <Th scope="row" color="#da1c5c">SIP Realm</Th>
                     <Td overflow="hidden">{data.account.sip_realm}</Td>
                     <Td containsMenuButton>
                       <TableMenu
@@ -427,7 +427,7 @@ const AccountHome = () => {
                     </Td>
                   </tr>
                   <tr>
-                    <Th scope="row">Account SID</Th>
+                    <Th scope="row" color="#da1c5c">Account SID</Th>
                     <Td overflow="hidden">{data.account.account_sid}</Td>
                     <Td containsMenuButton>
                       <TableMenu
@@ -448,7 +448,7 @@ const AccountHome = () => {
                     </Td>
                   </tr>
                   <tr>
-                    <Th scope="row">Registration Webhook</Th>
+                    <Th scope="row" color="#da1c5c">Registration Webhook</Th>
                     <Td overflow="hidden">{registrationWebhookUrl || 'None'}</Td>
                     <Td containsMenuButton>
                       <TableMenu
@@ -460,7 +460,7 @@ const AccountHome = () => {
                     </Td>
                   </tr>
                   <tr>
-                    <Th scope="row">Device calling application</Th>
+                    <Th scope="row" color="#da1c5c">Device calling application</Th>
                     <Td overflow="hidden">
                       {getApplicationName(data)}
                     </Td>
@@ -474,7 +474,7 @@ const AccountHome = () => {
                     </Td>
                   </tr>
                   <tr>
-                    <Th scope="row">Webhook signing secret</Th>
+                    <Th scope="row" color="#da1c5c">Webhook signing secret</Th>
                     <Td overflow="hidden">{webhookSecret}</Td>
                     <Td containsMenuButton>
                       <TableMenu
@@ -502,7 +502,7 @@ const AccountHome = () => {
                     </Td>
                   </tr>
                   <tr>
-                    <Th scope="row">Call Detail Records</Th>
+                    <Th scope="row" color="#da1c5c">Call Detail Records</Th>
                     <Td overflow="hidden">{enabledCardDetailRecord ? 'Enabled' : 'Disabled'}</Td>
                     <Td containsMenuButton>
                       <TableMenu
@@ -546,16 +546,16 @@ const AccountHome = () => {
 
           {data.api_keys && (
             <Section>
-              <StyledAPIKeysTable sectionTableWithHeader>
+              <StyledAPIKeysTable sectionTableWithHeader border>
                 <thead>
                   <tr>
-                    <Th sectionTableWithHeader>
-                      <H2 inTable>API Keys</H2>
+                    <Th sectionTableWithHeader color="#da1c5c">
+                      <H2 inTable bold>API Keys</H2>
                     </Th>
-                    <Th sectionTableWithHeader>
+                    <Th sectionTableWithHeader color="#da1c5c" bold>
                       {data.api_keys.length ? 'Last Used' : ''}
                     </Th>
-                    <Th sectionTableWithHeader containsSquareButton>
+                    <Th sectionTableWithHeader containsSquareButton color="#da1c5c">
                       <Button square onClick={addApiKey}>+</Button>
                     </Th>
                   </tr>
@@ -570,8 +570,8 @@ const AccountHome = () => {
                   ) : (
                     data.api_keys.map(apiKey => (
                       <tr key={apiKey.api_key_sid}>
-                        <Th scope="row">
-                          <p>
+                        <Th scope="row" color="#da1c5c">
+                          <p style={{ marginBottom: 0 }}>
                             {maskApiToken(apiKey.token, mobile)}
                           </p>
                         </Th>
@@ -617,15 +617,15 @@ const AccountHome = () => {
               <Table>
                 <tbody>
                   <tr>
-                    <Th scope="row">Max simultaneous calls</Th>
+                    <Th scope="row" color="#da1c5c">Max simultaneous calls</Th>
                     <Td textAlign="right">{data.products.find(product => product.category === 'devices').quantity}</Td>
                   </tr>
                   <tr>
-                    <Th scope="row">Max simultaneous registered devices</Th>
+                    <Th scope="row" color="#da1c5c">Max simultaneous registered devices</Th>
                     <Td textAlign="right">{data.products.find(product => product.category === 'calls').quantity}</Td>
                   </tr>
                   <tr>
-                    <Th scope="row">Prepaid balance</Th>
+                    <Th scope="row" color="#da1c5c">Prepaid balance</Th>
                     <Td textAlign="right">{data.balance.balance ? `$${data.balance.balance}` : ''}</Td>
                   </tr>
                 </tbody>

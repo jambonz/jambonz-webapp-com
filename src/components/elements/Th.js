@@ -2,8 +2,12 @@ import styled from 'styled-components/macro';
 
 const Th = styled.th`
   text-align: left;
-  font-weight: normal;
+  font-size: 14px;
+  font-weight: 500;
   padding: 0 2rem;
+  line-height: 2;
+
+  ${props => props.color ? `color: ${props.color};` : ''}
 
   ${props => props.textAlign && `
     text-align: ${props.textAlign};

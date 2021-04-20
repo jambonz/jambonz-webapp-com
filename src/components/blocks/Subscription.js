@@ -209,7 +209,7 @@ const Subscription = ({ data, hasDelete }) => {
 
   return (
     <>
-      <H2>Your Subscription</H2>
+      <H2 bold>Your Subscription</H2>
       <P>{description}</P>
       {planType === PlanType.PAID ? (
         <StyledInputGroup flexEnd spaced>
@@ -238,6 +238,8 @@ const Subscription = ({ data, hasDelete }) => {
               </Button>
             )}
             <Button
+              rounded="true"
+              font="12px"
               style={{ whiteSpace: "nowrap" }}
               as={ReactRouterLink}
               to="/account/subscription"

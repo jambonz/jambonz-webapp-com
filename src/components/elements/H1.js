@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 const H1 = styled.h1`
   font-size: 3rem;
   margin: 0;
-  font-weight: normal;
+  font-weight: ${props => props.bold ? "bold" : "normal"};
 
   ${props => props.external && `
     margin-bottom: 3rem;

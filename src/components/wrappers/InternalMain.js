@@ -66,7 +66,7 @@ const InternalMain = props => {
       )}
       <TopSection type={props.type} centerVertical={!props.subtitle}>
         <div>
-          <H1>{props.title}</H1>
+          <H1 bold>{props.title}</H1>
           {props.subtitle
             ? <Subtitle>{props.subtitle}</Subtitle>
             : null
