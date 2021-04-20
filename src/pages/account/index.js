@@ -385,7 +385,7 @@ const AccountHome = () => {
   }, []);
 
   return (
-    <InternalMain title="Home" metaTitle="Account Home">
+    <InternalMain>
       {showLoader ? (
         <Loader height="calc(100vh - 24rem)" />
       ) : (

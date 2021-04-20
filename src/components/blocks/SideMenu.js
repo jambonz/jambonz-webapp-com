@@ -39,7 +39,7 @@ const StyledNavLink = styled(NavLink).attrs({ activeClassName })`
   fill: #565656;
 
   &.${activeClassName} {
-    box-shadow: inset 3px 0 0 0 #D91C5C;
+    box-shadow: inset -3px 0 0 0 #D91C5C;
     color: #D91C5C;
     fill: #D91C5C;
   }

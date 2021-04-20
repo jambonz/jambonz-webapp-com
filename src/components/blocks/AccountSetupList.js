@@ -7,26 +7,14 @@ import Link from "../../components/elements/Link";
 import Loader from "../../components/blocks/Loader";
 
 
-const List = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 4rem;
-
-  ${props => props.theme.mobileOnly} {
-    display: block;
-  }
-`;
+const List = styled.div``;
 
 const TH = styled.h4`
   font-weight: bold;
   font-size: 16px;
   line-height: 1.88;
   color: #231f20;
-  margin: 0;
-
-  ${props => props.theme.mobileOnly} {
-    margin-top: 1.5rem;
-  }
+  margin-top: 1.5rem;
 `;
 
 const TaskItem = styled.div`
