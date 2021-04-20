@@ -391,20 +391,20 @@ const AccountHome = () => {
       ) : (
         <>
           {(data.account || {}).plan_type !== PlanType.PAID && (
-            <Section>
+            <Section flat="true">
               <Subscription data={data} />
             </Section>
           )}
 
           {!accountSetupCompleted && (
-            <Section>
+            <Section flat="true">
               <H2 bold>Finish Account Setup</H2>
               <AccountSetupList onComplete={setAccountSetupCompleted}/>
             </Section>
           )}
 
           {data.account && (
-            <Section>
+            <Section flat="true">
               <H2 bold>Account</H2>
               <StyledTable border>
                 <tbody>
@@ -545,7 +545,7 @@ const AccountHome = () => {
           )}
 
           {data.api_keys && (
-            <Section>
+            <Section flat="true">
               <StyledAPIKeysTable sectionTableWithHeader border>
                 <thead>
                   <tr>
@@ -612,7 +612,7 @@ const AccountHome = () => {
           )}
 
           {data.products && data.balance && (
-            <Section>
+            <Section flat="true">
               <H2>Capacity and Balance</H2>
               <Table>
                 <tbody>

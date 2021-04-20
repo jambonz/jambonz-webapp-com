@@ -7,6 +7,10 @@ const StyledSection = styled.section`
   border-radius: 0.5rem;
   background: #FFF;
   ${props => !!props.position ? `position: ${props.position};` : ''}
+  ${props => props.flat ? "" : `
+    box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1),
+                0px 0px 0.25rem rgba(0, 0, 0, 0.1);
+  `}
 
   > *:first-child {
     margin-top: 0;
