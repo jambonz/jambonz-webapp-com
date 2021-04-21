@@ -1,18 +1,18 @@
-import { useState, useEffect, useContext, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
-import axios from 'axios';
+import { useState, useEffect, useContext, useRef } from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components/macro";
 
-import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/wrappers/InternalMain';
-import Section from '../../../components/blocks/Section';
-import Form from '../../../components/elements/Form';
-import Input from '../../../components/elements/Input';
-import Label from '../../../components/elements/Label';
-import InputGroup from '../../../components/elements/InputGroup';
-import FormError from '../../../components/blocks/FormError';
-import Button from '../../../components/elements/Button';
-import Loader from '../../../components/blocks/Loader';
+import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
+import InternalMain from "../../../components/wrappers/InternalMain";
+import Section from "../../../components/blocks/Section";
+import Form from "../../../components/elements/Form";
+import Input from "../../../components/elements/Input";
+import Label from "../../../components/elements/Label";
+import InputGroup from "../../../components/elements/InputGroup";
+import FormError from "../../../components/blocks/FormError";
+import Button from "../../../components/elements/Button";
+import Loader from "../../../components/blocks/Loader";
 
 const StyledInputGroup = styled(InputGroup)`
   grid-column: 1 / 3;
@@ -42,21 +42,21 @@ const StyledForm = styled(Form)`
 const SettingsChangeName = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
-  const jwt = localStorage.getItem('jwt');
-  const user_sid = localStorage.getItem('user_sid');
+  const jwt = localStorage.getItem("jwt");
+  const user_sid = localStorage.getItem("user_sid");
 
   const refName = useRef(null);
-  const [ name, setName ] = useState('');
-  const [ invalidName, setInvalidName ] = useState(false);
-  const [ showLoader, setShowLoader ] = useState(true);
-  const [ errorMessage, setErrorMessage ] = useState('');
+  const [name, setName] = useState("");
+  const [invalidName, setInvalidName] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const getAPIData = async () => {
       let isMounted = true;
       try {
         const userResponse = await axios({
-          method: 'get',
+          method: "get",
           baseURL: process.env.REACT_APP_API_BASE_URL,
           url: `/Users/me`,
           headers: {
@@ -64,12 +64,16 @@ const SettingsChangeName = () => {
           },
         });
 
-        if (!userResponse.data || !userResponse.data.user || !userResponse.data.user.name) {
-          throw new Error('Unable to get name');
+        if (
+          !userResponse.data ||
+          !userResponse.data.user ||
+          !userResponse.data.user.name
+        ) {
+          throw new Error("Unable to get name");
         }
 
-        if (userResponse.data.user.provider !== 'local') {
-          throw new Error('You cannot change your name on an OAuth account');
+        if (userResponse.data.user.provider !== "local") {
+          throw new Error("You cannot change your name on an OAuth account");
         }
 
         setName(userResponse.data.user.name);
@@ -79,22 +83,22 @@ const SettingsChangeName = () => {
           localStorage.clear();
           sessionStorage.clear();
           isMounted = false;
-          history.push('/');
+          history.push("/");
           dispatch({
-            type: 'ADD',
-            level: 'error',
-            message: 'Your session has expired. Please log in and try again.',
+            type: "ADD",
+            level: "error",
+            message: "Your session has expired. Please log in and try again.",
           });
         } else {
           isMounted = false;
-          history.push('/account/settings');
+          history.push("/account/settings");
           dispatch({
-            type: 'ADD',
-            level: 'error',
-            message: (
+            type: "ADD",
+            level: "error",
+            message:
               (err.response && err.response.data && err.response.data.msg) ||
-              err.message || 'That registration webhook does not exist'
-            ),
+              err.message ||
+              "That registration webhook does not exist",
           });
           console.error(err.response || err);
         }
@@ -113,13 +117,13 @@ const SettingsChangeName = () => {
     try {
       setShowLoader(true);
       e.preventDefault();
-      setErrorMessage('');
+      setErrorMessage("");
       setInvalidName(false);
       let errorMessages = [];
       let focusHasBeenSet = false;
 
       if (!name) {
-        errorMessages.push('Please provide your name.');
+        errorMessages.push("Please provide your name.");
         setInvalidName(true);
         if (!focusHasBeenSet) {
           refName.current.focus();
@@ -139,7 +143,7 @@ const SettingsChangeName = () => {
       // Submit
       //=============================================================================
       await axios({
-        method: 'put',
+        method: "put",
         baseURL: process.env.REACT_APP_API_BASE_URL,
         url: `/Users/${user_sid}`,
         headers: {
@@ -151,26 +155,28 @@ const SettingsChangeName = () => {
       });
 
       isMounted = false;
-      history.push('/account/settings');
+      history.push("/account/settings");
       dispatch({
-        type: 'ADD',
-        level: 'success',
+        type: "ADD",
+        level: "success",
         message: `Name updated successfully`,
       });
-
     } catch (err) {
       if (err.response && err.response.status === 401) {
         localStorage.clear();
         sessionStorage.clear();
         isMounted = false;
-        history.push('/');
+        history.push("/");
         dispatch({
-          type: 'ADD',
-          level: 'error',
-          message: 'Your session has expired. Please log in and try again.',
+          type: "ADD",
+          level: "error",
+          message: "Your session has expired. Please log in and try again.",
         });
       } else {
-        setErrorMessage((err.response && err.response.data && err.response.data.msg) || 'Something went wrong, please try again.');
+        setErrorMessage(
+          (err.response && err.response.data && err.response.data.msg) ||
+            "Something went wrong, please try again."
+        );
         console.error(err.response || err);
       }
     } finally {
@@ -184,50 +190,47 @@ const SettingsChangeName = () => {
     <InternalMain
       type="form"
       title="Edit Name"
-      breadcrumbs={[
-        { name: 'Back to Settings', url: '/account/settings' },
-      ]}
+      breadcrumbs={[{ name: "Back to Settings", url: "/account/settings" }]}
     >
       <Section>
         {showLoader ? (
           <Loader height="611px" />
         ) : (
-          <StyledForm
-            large
-            onSubmit={handleSubmit}
-          >
+          <StyledForm large onSubmit={handleSubmit}>
             <Label htmlFor="name">Name</Label>
             <Input
               name="name"
               id="name"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               invalid={invalidName}
               autoFocus
               ref={refName}
             />
 
-            {errorMessage && (
-              <FormError grid message={errorMessage} />
-            )}
+            {errorMessage && <FormError grid message={errorMessage} />}
 
             <StyledInputGroup flexEnd spaced>
               <Button
+                rounded="true"
+                font="12px"
                 gray
                 type="button"
                 onClick={() => {
-                  history.push('/account/settings');
+                  history.push("/account/settings");
                   dispatch({
-                    type: 'ADD',
-                    level: 'info',
-                    message: 'Changes canceled',
+                    type: "ADD",
+                    level: "info",
+                    message: "Changes canceled",
                   });
                 }}
               >
                 Cancel
               </Button>
 
-              <Button>Save</Button>
+              <Button rounded="true" font="12px">
+                Save
+              </Button>
             </StyledInputGroup>
           </StyledForm>
         )}

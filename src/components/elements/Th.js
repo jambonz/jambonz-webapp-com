@@ -7,7 +7,7 @@ const Th = styled.th`
   padding: 0 2rem;
   line-height: 2;
 
-  ${props => props.color ? `color: ${props.color};` : ''}
+  color: ${props => props.color ? props.color : '#da1c5c'};
 
   ${props => props.textAlign && `
     text-align: ${props.textAlign};

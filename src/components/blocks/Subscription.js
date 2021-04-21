@@ -213,10 +213,18 @@ const Subscription = ({ data, hasDelete }) => {
       <P>{description}</P>
       {planType === PlanType.PAID ? (
         <StyledInputGroup flexEnd spaced>
-          <Button as={ReactRouterLink} gray="true" to="/account/manage-payment">
+          <Button
+            rounded="true"
+            font="12px"
+            as={ReactRouterLink}
+            gray="true"
+            to="/account/manage-payment"
+          >
             Manage Payment Info
           </Button>
           <Button
+            rounded="true"
+            font="12px"
             gray="true"
             as={ReactRouterLink}
             to="/account/modify-subscription"
@@ -230,6 +238,8 @@ const Subscription = ({ data, hasDelete }) => {
           <StyledInputGroup flexEnd spaced hasDelete={hasDelete ? "true" : ""}>
             {hasDelete && (
               <Button
+                rounded="true"
+                font="12px"
                 gray="true"
                 as={ReactRouterLink}
                 to="/account/settings/delete-account"

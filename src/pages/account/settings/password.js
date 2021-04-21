@@ -1,18 +1,18 @@
-import { useState, useContext, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
-import axios from 'axios';
+import { useState, useContext, useRef } from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components/macro";
 
-import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
-import InternalMain from '../../../components/wrappers/InternalMain';
-import FormError from '../../../components/blocks/FormError';
-import Loader from '../../../components/blocks/Loader';
-import Section from '../../../components/blocks/Section';
-import Button from '../../../components/elements/Button';
-import Form from '../../../components/elements/Form';
-import InputGroup from '../../../components/elements/InputGroup';
-import Label from '../../../components/elements/Label';
-import PasswordInput from '../../../components/elements/PasswordInput';
+import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
+import InternalMain from "../../../components/wrappers/InternalMain";
+import FormError from "../../../components/blocks/FormError";
+import Loader from "../../../components/blocks/Loader";
+import Section from "../../../components/blocks/Section";
+import Button from "../../../components/elements/Button";
+import Form from "../../../components/elements/Form";
+import InputGroup from "../../../components/elements/InputGroup";
+import Label from "../../../components/elements/Label";
+import PasswordInput from "../../../components/elements/PasswordInput";
 
 const StyledInputGroup = styled(InputGroup)`
   grid-column: 1 / 3;
@@ -42,30 +42,30 @@ const StyledForm = styled(Form)`
 const SettingsChangePassword = () => {
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
-  const jwt = localStorage.getItem('jwt');
+  const jwt = localStorage.getItem("jwt");
 
   const refOldPassword = useRef(null);
   const refNewPassword = useRef(null);
-  const [ oldPassword, setOldPassword ] = useState('');
-  const [ newPassword, setNewPassword ] = useState('');
-  const [ invalidOldPassword, setInvalidOldPassword ] = useState(false);
-  const [ invalidNewPassword, setInvalidNewPassword ] = useState(false);
-  const [ showLoader, setShowLoader ] = useState(false);
-  const [ errorMessage, setErrorMessage ] = useState('');
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [invalidOldPassword, setInvalidOldPassword] = useState(false);
+  const [invalidNewPassword, setInvalidNewPassword] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     let isMounted = true;
     try {
       setShowLoader(true);
       e.preventDefault();
-      setErrorMessage('');
+      setErrorMessage("");
       setInvalidOldPassword(false);
       setInvalidNewPassword(false);
       let errorMessages = [];
       let focusHasBeenSet = false;
 
       if (!oldPassword) {
-        errorMessages.push('Please provide your old password.');
+        errorMessages.push("Please provide your old password.");
         setInvalidOldPassword(true);
         if (!focusHasBeenSet) {
           refOldPassword.current.focus();
@@ -74,7 +74,7 @@ const SettingsChangePassword = () => {
       }
 
       if (!newPassword) {
-        errorMessages.push('Please provide your new password.');
+        errorMessages.push("Please provide your new password.");
         setInvalidNewPassword(true);
         if (!focusHasBeenSet) {
           refNewPassword.current.focus();
@@ -83,17 +83,15 @@ const SettingsChangePassword = () => {
       }
 
       if (!newPassword) {
-        errorMessages.push('Password is required.');
+        errorMessages.push("Password is required.");
         setInvalidNewPassword(true);
         if (!focusHasBeenSet) {
           refNewPassword.current.focus();
           focusHasBeenSet = true;
         }
-
       } else {
-
         if (newPassword.length < 6) {
-          errorMessages.push('Password must be at least 6 characters long.');
+          errorMessages.push("Password must be at least 6 characters long.");
           setInvalidNewPassword(true);
           if (!focusHasBeenSet) {
             refNewPassword.current.focus();
@@ -102,7 +100,7 @@ const SettingsChangePassword = () => {
         }
 
         if (!/[a-zA-Z]/.test(newPassword)) {
-          errorMessages.push('Password must contain a letter.');
+          errorMessages.push("Password must contain a letter.");
           setInvalidNewPassword(true);
           if (!focusHasBeenSet) {
             refNewPassword.current.focus();
@@ -111,7 +109,7 @@ const SettingsChangePassword = () => {
         }
 
         if (!/[0-9]/.test(newPassword)) {
-          errorMessages.push('Password must contain a number.');
+          errorMessages.push("Password must contain a number.");
           setInvalidNewPassword(true);
           if (!focusHasBeenSet) {
             refNewPassword.current.focus();
@@ -132,7 +130,7 @@ const SettingsChangePassword = () => {
       // Submit
       //=============================================================================
       await axios({
-        method: 'post',
+        method: "post",
         baseURL: process.env.REACT_APP_API_BASE_URL,
         url: `/change-password`,
         headers: {
@@ -145,17 +143,19 @@ const SettingsChangePassword = () => {
       });
 
       isMounted = false;
-      history.push('/account/settings');
+      history.push("/account/settings");
       dispatch({
-        type: 'ADD',
-        level: 'success',
+        type: "ADD",
+        level: "success",
         message: `Password updated successfully`,
       });
     } catch (err) {
       if (err.response && err.response.status === 400) {
         const { msg } = err.response.data;
         if (msg === "old_password is incorrect") {
-          setErrorMessage("You entered an invalid password for your current password.  Please try again.");
+          setErrorMessage(
+            "You entered an invalid password for your current password.  Please try again."
+          );
         } else {
           setErrorMessage(msg);
         }
@@ -163,14 +163,17 @@ const SettingsChangePassword = () => {
         localStorage.clear();
         sessionStorage.clear();
         isMounted = false;
-        history.push('/');
+        history.push("/");
         dispatch({
-          type: 'ADD',
-          level: 'error',
-          message: 'Your session has expired. Please log in and try again.',
+          type: "ADD",
+          level: "error",
+          message: "Your session has expired. Please log in and try again.",
         });
       } else {
-        setErrorMessage((err.response && err.response.data && err.response.data.msg) || 'Something went wrong, please try again.');
+        setErrorMessage(
+          (err.response && err.response.data && err.response.data.msg) ||
+            "Something went wrong, please try again."
+        );
         console.error(err.response || err);
       }
     } finally {
@@ -184,19 +187,16 @@ const SettingsChangePassword = () => {
     <InternalMain
       type="form"
       title="Change Password"
-      breadcrumbs={[
-        { name: 'Back to Settings', url: '/account/settings' },
-      ]}
+      breadcrumbs={[{ name: "Back to Settings", url: "/account/settings" }]}
     >
       <Section>
         {showLoader ? (
           <Loader height="611px" />
         ) : (
-          <StyledForm
-            large
-            onSubmit={handleSubmit}
-          >
-            <Label style={{ width: '7.5rem' }} htmlFor="oldPassword">Old Password</Label>
+          <StyledForm large onSubmit={handleSubmit}>
+            <Label style={{ width: "7.5rem" }} htmlFor="oldPassword">
+              Old Password
+            </Label>
             <PasswordInput
               allowShowPassword
               name="oldPassword"
@@ -221,27 +221,29 @@ const SettingsChangePassword = () => {
               ref={refNewPassword}
             />
 
-            {errorMessage && (
-              <FormError grid message={errorMessage} />
-            )}
+            {errorMessage && <FormError grid message={errorMessage} />}
 
             <StyledInputGroup flexEnd spaced>
               <Button
+                rounded="true"
+                font="12px"
                 gray
                 type="button"
                 onClick={() => {
-                  history.push('/account/settings');
+                  history.push("/account/settings");
                   dispatch({
-                    type: 'ADD',
-                    level: 'info',
-                    message: 'Changes canceled',
+                    type: "ADD",
+                    level: "info",
+                    message: "Changes canceled",
                   });
                 }}
               >
                 Cancel
               </Button>
 
-              <Button>Save</Button>
+              <Button rounded="true" font="12px">
+                Save
+              </Button>
             </StyledInputGroup>
           </StyledForm>
         )}

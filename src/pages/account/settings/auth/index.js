@@ -13,8 +13,8 @@ import InputGroup from "../../../../components/elements/InputGroup";
 import Button from "../../../../components/elements/Button";
 import { NotificationDispatchContext } from "../../../../contexts/NotificationContext";
 import handleErrors from "../../../../helpers/handleErrors";
-import ContactIconButton from '../../../../components/elements/ContactIconButton';
-import EmailIconButton from '../../../../components/elements/EmailIconButton';
+import ContactIconButton from "../../../../components/elements/ContactIconButton";
+import EmailIconButton from "../../../../components/elements/EmailIconButton";
 
 const StyledP = styled(P)`
   margin-top: 1rem;
@@ -34,7 +34,7 @@ const ProviderLink = styled.a`
 const StyledInputGroup = styled(InputGroup)`
   margin-bottom: 1rem;
 
-  @media(max-width: 576.98px) {
+  @media (max-width: 576.98px) {
     flex-direction: column;
 
     & > a {
@@ -47,7 +47,7 @@ const StyledInputGroup = styled(InputGroup)`
       }
     }
 
-    & > div[type='email'] {
+    & > div[type="email"] {
       width: 100%;
     }
   }
@@ -172,7 +172,13 @@ const SettingsAuthIndex = () => {
               ))}
           </StyledInputGroup>
           <InputGroup flexEnd spaced>
-            <Button gray="true" as={ReactRouterLink} to="/account/settings">
+            <Button
+              rounded="true"
+              font="12px"
+              gray="true"
+              as={ReactRouterLink}
+              to="/account/settings"
+            >
               Cancel
             </Button>
           </InputGroup>

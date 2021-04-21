@@ -13,6 +13,7 @@ import TableMenu from '../../../components/blocks/TableMenu';
 import Button from '../../../components/elements/Button';
 import H2 from '../../../components/elements/H2';
 import H3 from '../../../components/elements/H3';
+import P from '../../../components/elements/P';
 import Table from '../../../components/elements/Table';
 import Td from '../../../components/elements/Td';
 import Th from '../../../components/elements/Th';
@@ -145,12 +146,12 @@ const SettingsIndex = () => {
       {showLoader ? <Loader /> : (
         <>
           <Section>
-            <H2>Authentication Method</H2>
+            <H2 bold>Authentication Method</H2>
             {provider === 'local' ? (
-              <p>
+              <P>
                 You currently sign in with an email and password. Other
                 options for authentication are GitHub, Google.
-              </p>
+              </P>
             ) : provider === 'github' ? (
               <>
                 <p>You currently sign in with</p>
@@ -175,13 +176,21 @@ const SettingsIndex = () => {
               <p>You currently sign in with {provider}</p>
             )}
             <StyledInputGroup flexEnd>
-              <Button as={ReactRouterLink} gray="true" to="/account/settings/auth">Change Authentication Method</Button>
+              <Button
+                rounded="true"
+                font="12px"
+                as={ReactRouterLink}
+                gray="true"
+                to="/account/settings/auth"
+              >
+                Change Authentication Method
+              </Button>
             </StyledInputGroup>
           </Section>
 
           {provider === 'local' && (
             <Section>
-              <H2>Your Information</H2>
+              <H2 bold>Your Information</H2>
               <Table>
                 <tbody>
                   <StyledTR>
