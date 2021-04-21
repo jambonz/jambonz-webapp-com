@@ -60,7 +60,7 @@ const Text = styled.h3`
   font-size: 1rem;
   margin: 0;
   font-weight: ${(props) => (props.bold ? "600" : "normal")};
-  color: #707070;
+  color: #231f20;
   text-align: ${(props) => props.textAlign || "left"};
 `;
 
@@ -68,7 +68,7 @@ const FormHeader = styled.h3`
   font-size: 1rem;
   margin: 0;
   font-weight: ${(props) => (props.bold ? "600" : "normal")};
-  color: #707070;
+  color: #231f20;
   text-align: ${(props) => props.textAlign || "left"};
 
   ${(props) => props.theme.mobileOnly} {
@@ -815,7 +815,13 @@ const Subscription = ({ elements, stripe }) => {
               }${
                 paymentResult.chargedAmount / 100
               } each month, and the charge will appear on your credit card statement.`}</Text>
-              <Button as={ReactRouterLink} to="/account">
+              <Button
+                rounded="true"
+                font="12px"
+                size="small"
+                as={ReactRouterLink}
+                to="/account"
+              >
                 OK
               </Button>
             </LoadingContainer>
@@ -931,10 +937,20 @@ const Subscription = ({ elements, stripe }) => {
           <hr />
           {errorMessage && <StyledFormError grid message={errorMessage} />}
           <StyledInputGroup flexEnd spaced>
-            <Button gray="true" as={ReactRouterLink} to="/account">
+            <Button
+              rounded="true"
+              font="12px"
+              gray="true"
+              as={ReactRouterLink}
+              to="/account"
+            >
               Cancel
             </Button>
-            <Button disabled={disabledSubmit || !stripe}>
+            <Button
+              rounded="true"
+              font="12px"
+              disabled={disabledSubmit || !stripe}
+            >
               {isMobile
                 ? `Upgrade to Paid Plan`
                 : `Pay $${total} and Upgrade to Paid Plan`}

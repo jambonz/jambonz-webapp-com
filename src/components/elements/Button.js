@@ -14,7 +14,6 @@ const StyledButton = styled.button`
   text-decoration: none;
   font-weight: 500;
   font-size: ${props => props.font || "16px"};
-  line-height: 0.5;
 
   ${props => props.fullWidth
     ? `width: 100%;`
@@ -128,6 +127,7 @@ const StyledButton = styled.button`
       background: none;
       box-shadow: 0 0.125rem 0 #D91C5C;
       border-radius: 0;
+      color: #D91C5C;
     }
 
     &:active > span {

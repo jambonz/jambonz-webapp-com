@@ -40,7 +40,7 @@ const Text = styled.h3`
   font-size: 1rem;
   margin: 0;
   font-weight: ${(props) => (props.bold ? "600" : "normal")};
-  color: #707070;
+  color: #231f20;
   text-align: ${(props) => props.textAlign || "left"};
 `;
 
@@ -84,7 +84,7 @@ const CardElementsWrapper = styled.div`
     width: 100%;
   }
 
-  ${props => props.theme.mobileOnly} {
+  ${(props) => props.theme.mobileOnly} {
     max-width: none;
   }
 `;
@@ -133,7 +133,7 @@ const CardNameInput = styled.div`
   max-width: 450px;
   width: 100%;
 
-  ${props => props.theme.mobileOnly} {
+  ${(props) => props.theme.mobileOnly} {
     max-width: none;
   }
 `;
@@ -322,19 +322,19 @@ const NewPaymentInfo = ({ elements, stripe, edit }) => {
   };
 
   return (
-    <Section position="relative" style={isMobile ? { margin: '1rem' } : {}}>
+    <Section position="relative" style={isMobile ? { margin: "1rem" } : {}}>
       {paymentLoading && (
         <ProgressContainer>
           <LoadingContainer direction="row">
             <Loader height="64px" />
             <Text>
-              Your subscription is being processed. Please wait and do not
-              hit the back button or leave this page
+              Your subscription is being processed. Please wait and do not hit
+              the back button or leave this page
             </Text>
           </LoadingContainer>
         </ProgressContainer>
       )}
-      <H2>New payment information</H2>
+      <H2 bold>New payment information</H2>
       <StyledForm onSubmit={handleSubmit}>
         <Label htmlFor="payment_name" textAlign="right">
           Cardholder Name
@@ -360,10 +360,20 @@ const NewPaymentInfo = ({ elements, stripe, edit }) => {
         </CardElementsWrapper>
         {errorMessage && <StyledFormError grid message={errorMessage} />}
         <StyledInputGroup flexEnd spaced>
-          <Button gray="true" as={ReactRouterLink} to="/account">
+          <Button
+            rounded="true"
+            font="12px"
+            gray="true"
+            as={ReactRouterLink}
+            to="/account"
+          >
             Cancel
           </Button>
-          <Button disabled={disabledSubmit || !stripe}>
+          <Button
+            rounded="true"
+            font="12px"
+            disabled={disabledSubmit || !stripe}
+          >
             Save New Card
           </Button>
         </StyledInputGroup>
