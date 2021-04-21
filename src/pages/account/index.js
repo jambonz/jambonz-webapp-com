@@ -395,22 +395,22 @@ const AccountHome = () => {
       ) : (
         <HomePageWrapper>
           {(data.account || {}).plan_type !== PlanType.PAID && (
-            <Section flat="true">
+            <Section>
               <Subscription data={data} />
             </Section>
           )}
 
           {!accountSetupCompleted && (
-            <Section flat="true">
+            <Section>
               <H2 bold>Finish Account Setup</H2>
               <AccountSetupList onComplete={setAccountSetupCompleted}/>
             </Section>
           )}
 
           {data.account && (
-            <Section flat="true">
+            <Section>
               <H2 bold>Account</H2>
-              <StyledTable border>
+              <StyledTable>
                 <tbody>
                   <tr>
                     <Th scope="row" color="#da1c5c">SIP Realm</Th>
@@ -549,8 +549,8 @@ const AccountHome = () => {
           )}
 
           {data.api_keys && (
-            <Section flat="true">
-              <StyledAPIKeysTable sectionTableWithHeader border>
+            <Section>
+              <StyledAPIKeysTable sectionTableWithHeader>
                 <thead>
                   <tr>
                     <Th sectionTableWithHeader color="#da1c5c">
@@ -616,7 +616,7 @@ const AccountHome = () => {
           )}
 
           {data.products && data.balance && (
-            <Section flat="true">
+            <Section>
               <H2>Capacity and Balance</H2>
               <Table>
                 <tbody>

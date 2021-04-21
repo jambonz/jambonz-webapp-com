@@ -18,11 +18,11 @@ const Table = styled.table`
 
   &:not(:first-child) {
     margin-top: 1.5rem;
-    border-top: ${props => props.border ? "2px solid #231f20" : "1px solid #E0E0E0"};
+    border-top: 1px solid #E0E0E0;
   }
 
   & tr {
-    border-bottom: ${props => props.border ? "2px solid #231f20" : "1px solid #E0E0E0"};
+    border-bottom: 1px solid #E0E0E0;
   }
 
   & thead tr {
@@ -34,10 +34,6 @@ const Table = styled.table`
     ${props => props.theme.mobileOnly} {
       height: 2.5rem;
     }
-  }
-
-  & tbody {
-    ${props => props.border ? `border: 2px solid #231f20;` : ""}
   }
 
   & tbody tr {
