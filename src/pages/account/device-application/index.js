@@ -148,6 +148,8 @@ const DeviceApplicationAddEdit = () => {
             {errorMessage && <FormError grid message={errorMessage} />}
             <InputGroup flexEnd spaced>
               <Button
+                rounded="true"
+                font="12px"
                 gray
                 type="button"
                 onClick={() => {
@@ -161,7 +163,7 @@ const DeviceApplicationAddEdit = () => {
               >
                 Cancel
               </Button>
-              <Button>
+              <Button rounded="true" font="12px">
                 {type === "add" ? "Add Device Calling Application" : "Save"}
               </Button>
             </InputGroup>

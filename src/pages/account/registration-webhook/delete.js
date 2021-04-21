@@ -5,6 +5,7 @@ import { NotificationDispatchContext } from '../../../contexts/NotificationConte
 import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
 import InputGroup from '../../../components/elements/InputGroup';
+import P from '../../../components/elements/P';
 import FormError from '../../../components/blocks/FormError';
 import Button from '../../../components/elements/Button';
 import Loader from '../../../components/blocks/Loader';
@@ -138,16 +139,18 @@ const RegistrationWebhookDelete = () => {
           <Loader height="611px" />
         ) : (
           <>
-            <p>
+            <P>
               Are you sure you want to delete the registration
               webhook <strong>{url}</strong>? You can always create another one.
-            </p>
+            </P>
             {errorMessage && (
               <FormError message={errorMessage} />
             )}
 
             <InputGroup flexEnd spaced>
               <Button
+                rounded="true"
+                font="12px"
                 gray
                 type="button"
                 onClick={() => {
@@ -162,7 +165,7 @@ const RegistrationWebhookDelete = () => {
                 Cancel
               </Button>
 
-              <Button onClick={handleSubmit}>
+              <Button rounded="true" font="12px" onClick={handleSubmit}>
                 Delete Registration Webhook
               </Button>
             </InputGroup>
