@@ -65,7 +65,6 @@ const Table = styled.table`
   }
 
   & thead th {
-    background: #F7F7F7;
     color: #717171;
 
     :first-child {

@@ -119,8 +119,11 @@ const NavItem = ({ navMain, item }) => {
     ) : item.type === 'submenu' ? (
       <SubmenuContainer desktopOnly={item.desktopOnly}>
         <Button
-          gray
-          text
+          hollow
+          rounded
+          border
+          size="small"
+          font="14px"
           onClick={handleCurrentMenu}
           desktopOnly={item.desktopOnly}
         >

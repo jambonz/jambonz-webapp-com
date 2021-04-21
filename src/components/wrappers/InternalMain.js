@@ -1,7 +1,7 @@
 import { useEffect, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
-import H1 from '../elements/H1';
+import H2 from '../elements/H2';
 import AddButton from '../elements/AddButton';
 import Breadcrumbs from '../blocks/Breadcrumbs';
 
@@ -66,7 +66,7 @@ const InternalMain = props => {
       )}
       <TopSection type={props.type} centerVertical={!props.subtitle}>
         <div>
-          <H1>{props.title}</H1>
+          <H2 bold inTable>{props.title}</H2>
           {props.subtitle
             ? <Subtitle>{props.subtitle}</Subtitle>
             : null

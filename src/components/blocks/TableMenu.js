@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components/macro';
-import { ReactComponent as MenuDots } from '../../images/MenuDots.svg';
+import { MoreVertical } from "react-feather";
 import Button from '../elements/Button';
 
 const Container = styled.div`
@@ -84,7 +84,7 @@ const TableMenu = props => (
         props.handleCurrentMenu(props.sid);
       }}
     >
-      {props.buttonText || <MenuDots />}
+      {props.buttonText || <MoreVertical color="#d91c5c" />}
     </Button>
     {props.open && (
       <Container

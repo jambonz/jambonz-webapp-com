@@ -1,51 +1,35 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components/macro";
 import axios from "axios";
+import { Edit, CheckSquare } from "react-feather";
 import PropTypes from "prop-types";
 import Link from "../../components/elements/Link";
-import { ReactComponent as CheckGreen } from "../../images/CheckGreen.svg";
 import Loader from "../../components/blocks/Loader";
 
-const Span = styled.span`
-  margin-right: 0.75rem;
-`;
 
-const List = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 4rem;
-
-  ${props => props.theme.mobileOnly} {
-    display: block;
-  }
-`;
+const List = styled.div``;
 
 const TH = styled.h4`
-  font-weight: 500;
+  font-weight: bold;
   font-size: 16px;
-  line-height: 19px;
-  color: #707070;
-  margin: 0;
-
-  ${props => props.theme.mobileOnly} {
-    margin-top: 1.5rem;
-  }
-`;
-
-const Circle = styled.div`
-  width: 4px;
-  height: 4px;
-  min-width: 4px;
-  min-height: 4px;
-  border-radius: 50%;
-  background: #707070;
-  margin-right: 1rem;
+  line-height: 1.88;
+  color: #231f20;
+  margin-top: 1.5rem;
 `;
 
 const TaskItem = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
   margin-top: 1rem;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 2;
+  color: #231f20;
+
+  & > span {
+    margin-left: 0.5rem;
+  }
 
   ${props => props.theme.mobileOnly} {
     margin-left: 10px;
@@ -84,22 +68,6 @@ const AccountSetupList = ({ onComplete }) => {
     let isMounted = true;
 
     const getPhoneNumbers = async () => {
-      const phoneNumbersPromise = axios({
-        method: "get",
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: "/PhoneNumbers",
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-      const applicationsPromise = axios({
-        method: "get",
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: "/Applications",
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
       const carriersPromise = axios({
         method: "get",
         baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -117,13 +85,9 @@ const AccountSetupList = ({ onComplete }) => {
         },
       });
       const [
-        phoneNumbersData,
-        applicationsData,
         carriersData,
         speechData,
       ] = await Promise.all([
-        phoneNumbersPromise,
-        applicationsPromise,
         carriersPromise,
         speechPromise,
       ]);
@@ -134,8 +98,6 @@ const AccountSetupList = ({ onComplete }) => {
         setLoading(false);
 
         if (
-          (phoneNumbersData.data || []).length > 0 &&
-          (applicationsData.data || []).length > 0 &&
           (carriersData.data || []).length > 0 &&
           (speechData.data || []).length > 0
           ) {
@@ -162,7 +124,7 @@ const AccountSetupList = ({ onComplete }) => {
         <TH>To Do</TH>
         {TaskData.filter((task) => !task.isCompleted()).map((task, index) => (
           <TaskItem key={index}>
-            <Circle />
+            <Edit size={14} color="#231f20" />
             {task.node()}
           </TaskItem>
         ))}
@@ -171,9 +133,7 @@ const AccountSetupList = ({ onComplete }) => {
         <TH>Complete</TH>
         {TaskData.filter((task) => task.isCompleted()).map((task, index) => (
           <TaskItem key={index}>
-            <Span>
-              <CheckGreen style={{ display: "block" }} aria-label="complete" />
-            </Span>
+            <CheckSquare size={14} color="#008a1a" />
             {task.node()}
           </TaskItem>
         ))}

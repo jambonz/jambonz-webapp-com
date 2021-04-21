@@ -5,13 +5,16 @@ import styled from 'styled-components/macro';
 const StyledButton = styled.button`
   display: inline-flex;
   padding: 0;
-  border: 0;
+  border: ${props => props.border ? 'solid 2px #da1c5c' : '0'};
   outline: 0;
   background: none;
   cursor: pointer;
-  border-radius: 0.25rem;
+  border-radius: ${props => props.rounded ? '30px' : '0.25rem'};
   grid-column: 2;
   text-decoration: none;
+  font-weight: 500;
+  font-size: ${props => props.font || "16px"};
+  line-height: 0.5;
 
   ${props => props.fullWidth
     ? `width: 100%;`
@@ -24,17 +27,17 @@ const StyledButton = styled.button`
     align-items: center;
     position: relative;
     outline: 0;
-    height: 2.25rem;
+    height: ${props => props.size === "small" ? "2rem" : '3rem'};
     ${props => props.fullWidth && `
       width: 100%;
     `}
     ${props => props.square
       ? `width: 2.25rem;`
-      : `padding: 0 1rem;`
+      : props.size === "small" ? `padding: 0 27px;` : `padding: 0 2rem;`
     }
-    border-radius: 0.25rem;
+    border-radius: ${props => props.rounded ? '30px' : '0.25rem'};
     background: ${
-      props => props.text
+      props => props.text || props.hollow
         ? 'none'
         : props.gray
           ? '#E3E3E3'
@@ -43,11 +46,10 @@ const StyledButton = styled.button`
     color: ${
       props => props.gray
         ? '#565656'
-        : props.text
+        : props.text || props.hollow
           ? '#D91C5C'
           : '#FFF'
     };
-    font-weight: 500;
   }
 
   &:focus > span {
@@ -67,20 +69,42 @@ const StyledButton = styled.button`
   }
 
   &:hover:not([disabled]) > span {
-    background: ${props => props.text
-      ? '#E3E3E3'
-      : props.gray
-        ? '#C6C6C6'
-        : '#BD164E'
+    background: ${props => {
+      if (props.hollow) {
+        return '#da1c5c';
+      } else if (props.text) {
+        return '#E3E3E3';
+      } else if (props.gray) {
+        return '#C6C6C6';
+      }
+      return '#BD164E';
+    }};
+    color: ${
+      props => props.gray
+        ? '#565656'
+        : props.text || props.hollow
+          ? '#FFF'
+          : '#FFF'
     };
   }
 
   &:active:not([disabled]) > span  {
-    background: ${props => props.text
-      ? '#D5D5D5'
-      : props.gray
-        ? '#B6B6B6'
-        : '#A40D40'
+    background: ${props => {
+      if (props.hollow) {
+        return '#da1c5c';
+      } else if (props.text) {
+        return '#E3E3E3';
+      } else if (props.gray) {
+        return '#C6C6C6';
+      }
+      return '#BD164E';
+    }};
+    color: ${
+      props => props.gray
+        ? '#565656'
+        : props.text || props.hollow
+          ? '#FFF'
+          : '#FFF'
     };
   }
 
