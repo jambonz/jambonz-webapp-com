@@ -18,31 +18,22 @@ const StyledLink = styled(FilteredLink)`
   border-radius: 50%;
   text-decoration: none;
   color: #565656;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 3.5rem;
+  width: 3.5rem;
+  border-radius: 50%;
+  outline: 0;
+  background: #D91C5C;
+  color: #FFF;
+  font-size: 2.5rem;
+  box-shadow: 0 0.375rem 0.25rem rgba(0, 0, 0, 0.12), 
+              0 0        0.25rem rgba(0, 0, 0, 0.18);
 
-  & > span:first-child {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    height: 3.5rem;
-    width: 3.5rem;
-    border-radius: 50%;
-    outline: 0;
-    background: #D91C5C;
-    color: #FFF;
-    font-size: 2.5rem;
-    box-shadow: 0 0.375rem 0.25rem rgba(0, 0, 0, 0.12), 
-                0 0        0.25rem rgba(0, 0, 0, 0.18);
-  }
-
-  &:focus > span:first-child {
-    border: 0.25rem solid #890934;
-  }
-
-  &:hover > span:first-child {
-  }
-
-  &:active > span:first-child  {
+  & > div {
+    padding-top: 4px;
   }
 
   ${props => props.theme.mobileOnly} {
@@ -66,6 +57,7 @@ const Tooltip = styled.span`
     box-shadow: 0 0.375rem 0.25rem rgba(0, 0, 0, 0.12),
                 0 0        0.25rem rgba(0, 0, 0, 0.18);
     z-index: 60;
+    font-size: 16px;
   }
 `;
 
@@ -76,9 +68,9 @@ const AddButton = props => {
       {...props}
       tabIndex={modalOpen ? '-1' : ''}
     >
-      <span tabIndex="-1">
+      <div tabIndex="-1">
         +
-      </span>
+      </div>
       <Tooltip>{props.addButtonText}</Tooltip>
     </StyledLink>
   );
