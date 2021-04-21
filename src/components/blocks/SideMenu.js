@@ -18,7 +18,6 @@ const StyledSideMenu = styled.div`
   overflow: auto;
   background: #FFF;
   padding: 3.25rem 0;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.12);
   z-index: 40;
 
   ${props => props.theme.mobileOnly} {
@@ -39,7 +38,6 @@ const StyledNavLink = styled(NavLink).attrs({ activeClassName })`
   fill: #565656;
 
   &.${activeClassName} {
-    box-shadow: inset -3px 0 0 0 #D91C5C;
     color: #D91C5C;
     fill: #D91C5C;
   }

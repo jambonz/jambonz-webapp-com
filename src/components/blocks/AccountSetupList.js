@@ -68,22 +68,6 @@ const AccountSetupList = ({ onComplete }) => {
     let isMounted = true;
 
     const getPhoneNumbers = async () => {
-      const phoneNumbersPromise = axios({
-        method: "get",
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: "/PhoneNumbers",
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-      const applicationsPromise = axios({
-        method: "get",
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: "/Applications",
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
       const carriersPromise = axios({
         method: "get",
         baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -101,13 +85,9 @@ const AccountSetupList = ({ onComplete }) => {
         },
       });
       const [
-        phoneNumbersData,
-        applicationsData,
         carriersData,
         speechData,
       ] = await Promise.all([
-        phoneNumbersPromise,
-        applicationsPromise,
         carriersPromise,
         speechPromise,
       ]);
@@ -118,8 +98,6 @@ const AccountSetupList = ({ onComplete }) => {
         setLoading(false);
 
         if (
-          (phoneNumbersData.data || []).length > 0 &&
-          (applicationsData.data || []).length > 0 &&
           (carriersData.data || []).length > 0 &&
           (speechData.data || []).length > 0
           ) {

@@ -28,6 +28,10 @@ const ModalContainer = styled.div`
   margin-top: 2rem;
 `;
 
+const HomePageWrapper = styled.div`
+  margin-top: -2rem;
+`;
+
 const StyledTable = styled(Table)`
   tr {
     display: grid;
@@ -389,7 +393,7 @@ const AccountHome = () => {
       {showLoader ? (
         <Loader height="calc(100vh - 24rem)" />
       ) : (
-        <>
+        <HomePageWrapper>
           {(data.account || {}).plan_type !== PlanType.PAID && (
             <Section flat="true">
               <Subscription data={data} />
@@ -635,7 +639,7 @@ const AccountHome = () => {
               </InputGroup>
             </Section>
           )}
-        </>
+        </HomePageWrapper>
       )}
     </InternalMain>
   );
