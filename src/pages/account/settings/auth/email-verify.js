@@ -44,8 +44,8 @@ const StyledForm = styled(Form)`
 const SettingsAuthEmailVerify = () => {
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem("jwt");
-  const user_sid = localStorage.getItem('user_sid');
-  const email = localStorage.getItem('email');
+  const user_sid = localStorage.getItem("user_sid");
+  const email = localStorage.getItem("email");
   const history = useHistory();
 
   const [showLoader, setShowLoader] = useState(false);
@@ -64,7 +64,7 @@ const SettingsAuthEmailVerify = () => {
       setInvalidCode(false);
 
       if (!code) {
-        setErrorMessage('Verification code is required.');
+        setErrorMessage("Verification code is required.");
         setInvalidCode(true);
         refCode.current.focus();
         return;
@@ -75,7 +75,7 @@ const SettingsAuthEmailVerify = () => {
       //===============================================
       setShowLoader(true);
       const response = await axios({
-        method: 'put',
+        method: "put",
         baseURL: process.env.REACT_APP_API_BASE_URL,
         url: `/ActivationCode/${code}`,
         headers: {
@@ -83,7 +83,7 @@ const SettingsAuthEmailVerify = () => {
         },
         data: {
           user_sid,
-          type: 'email',
+          type: "email",
         },
       });
 
@@ -92,11 +92,11 @@ const SettingsAuthEmailVerify = () => {
       }
 
       dispatch({
-        type: 'ADD',
-        level: 'success',
-        message: 'Your authentication method has been changed.',
+        type: "ADD",
+        level: "success",
+        message: "Your authentication method has been changed.",
       });
-      history.push('/account/settings');
+      history.push("/account/settings");
     } catch (err) {
       if (isMounted) {
         handleErrors({ err, history, dispatch, setErrorMessage });
@@ -105,7 +105,7 @@ const SettingsAuthEmailVerify = () => {
       if (isMounted) {
         setShowLoader(false);
       }
-      localStorage.removeItem('email');
+      localStorage.removeItem("email");
     }
   };
 
@@ -135,10 +135,17 @@ const SettingsAuthEmailVerify = () => {
               />
               {errorMessage && <FormError grid message={errorMessage} />}
               <StyledInputGroup flexEnd spaced>
-                <Button gray="true" as={ReactRouterLink} to="/account/settings">
+                <Button
+                  rounded="true"
+                  gray="true"
+                  as={ReactRouterLink}
+                  to="/account/settings"
+                >
                   Cancel
                 </Button>
-                <Button>Continue</Button>
+                <Button rounded="true">
+                  Continue
+                </Button>
               </StyledInputGroup>
             </StyledForm>
           </>

@@ -92,7 +92,7 @@ const Text = styled.h3`
   font-size: 1rem;
   margin: 0;
   font-weight: ${(props) => (props.bold ? "600" : "normal")};
-  color: #707070;
+  color: #231f20;
   text-align: ${(props) => props.textAlign || "left"};
 `;
 
@@ -100,7 +100,7 @@ const FormHeader = styled.h3`
   font-size: 1rem;
   margin: 0;
   font-weight: ${(props) => (props.bold ? "600" : "normal")};
-  color: #707070;
+  color: #231f20;
   text-align: ${(props) => props.textAlign || "left"};
 
   ${(props) => props.theme.mobileOnly} {
@@ -159,6 +159,7 @@ const StyledLink = styled(Link)`
 const UL = styled.ul`
   list-style-type: none;
   padding-left: 1rem;
+  color: #231f20;
 `;
 
 const LoadingContainer = styled.div`
@@ -168,6 +169,7 @@ const LoadingContainer = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 14px;
+  color: #231f20;
 `;
 
 const DeviceRow = styled.div`
@@ -711,10 +713,17 @@ const ModifySubscription = () => {
                 <StyledLink to={"#"}>Delete Account</StyledLink>
               </InnerInputGroup>
               <InnerInputGroup flexEnd spaced>
-                <Button gray="true" as={ReactRouterLink} to="/account/settings">
+                <Button
+                  rounded="true"
+                  gray="true"
+                  as={ReactRouterLink}
+                  to="/account/settings"
+                >
                   Cancel
                 </Button>
-                <Button disabled={disableSubmit}>Review Changes</Button>
+                <Button rounded="true" disabled={disableSubmit}>
+                  Review Changes
+                </Button>
               </InnerInputGroup>
             </StyledInputGroup>
           </Form>

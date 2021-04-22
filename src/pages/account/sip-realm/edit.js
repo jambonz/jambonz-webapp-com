@@ -240,10 +240,17 @@ const SipRealmEdit = () => {
               )}
               {errorMessage && <FormError message={errorMessage} />}
               <StyledInputGroup flexEnd spaced>
-                <Button gray="true" as={ReactRouterLink} to="/account">
+                <Button
+                  rounded="true"
+                  gray="true"
+                  as={ReactRouterLink}
+                  to="/account"
+                >
                   Cancel
                 </Button>
-                <Button>Change SIP Realm</Button>
+                <Button rounded="true">
+                  Change SIP Realm
+                </Button>
               </StyledInputGroup>
             </React.Fragment>
           )}

@@ -50,8 +50,20 @@ const ApiKeyDelete = (props) => {
       <Section>
         <P>Are you sure you want to delete this API key? This cannot be undone, but you can always create new API keys.</P>
         <InputGroup flexEnd spaced>
-          <Button gray="true" as={ReactRouterLink} to="/account">Cancel</Button>
-          <Button onClick={apiKeyDelete}>Delete</Button>
+          <Button
+            rounded="true"
+            gray="true"
+            as={ReactRouterLink}
+            to="/account"
+          >
+            Cancel
+          </Button>
+          <Button
+            rounded="true"
+            onClick={apiKeyDelete}
+          >
+            Delete
+          </Button>
         </InputGroup>
       </Section>
     </InternalMain>

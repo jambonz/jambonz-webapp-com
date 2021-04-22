@@ -24,6 +24,7 @@ const Cell = styled.span`
   font-family: 'WorkSans';
   font-size: 16px;
   line-height: 19px;
+  color: #231f20;
 `;
 
 const StyledInputGroup = styled(InputGroup)`
@@ -94,7 +95,13 @@ const ApiKeyDetails = (props) => {
             <Cell>{moment(data.created_at).format('YYYY-MM-DD')}</Cell>
           </APIKeyInfo>
           <StyledInputGroup flexEnd spaced>
-            <Button as={ReactRouterLink} to="/account" gray="true" disabled={true}>
+            <Button
+              rounded="true"
+              as={ReactRouterLink}
+              to="/account"
+              gray="true"
+              disabled={true}
+            >
               Back to Account Home
             </Button>
           </StyledInputGroup>

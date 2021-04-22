@@ -279,10 +279,17 @@ const SettingsAuthEmail = () => {
               />
               {errorMessage && <StyledFormError grid message={errorMessage} />}
               <StyledInputGroup flexEnd spaced>
-                <Button gray="true" as={ReactRouterLink} to="/account/settings">
+                <Button
+                  rounded="true"
+                  gray="true"
+                  as={ReactRouterLink}
+                  to="/account/settings"
+                >
                   Cancel
                 </Button>
-                <Button>Continue</Button>
+                <Button rounded="true">
+                  Continue
+                </Button>
               </StyledInputGroup>
             </StyledForm>
           </>

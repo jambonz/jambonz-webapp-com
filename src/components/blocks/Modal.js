@@ -4,6 +4,7 @@ import styled from 'styled-components/macro';
 import Button from '../elements/Button';
 import Loader from '../blocks/Loader';
 import PropTypes from "prop-types";
+import H1 from "../elements/H1";
 
 const Overlay = styled.div`
   position: fixed;
@@ -34,6 +35,7 @@ const ModalContainer = styled.div`
 
 const ContentContainer = styled.div`
   position: relative;
+  margin-top: 1rem;
 `;
 
 const LoaderContainer = styled.div`
@@ -97,16 +99,22 @@ const Modal = props => {
   return (
     <Overlay onClick={() => props.maskClosable && props.handleCancel()}>
       <ModalContainer onClick={e => e.stopPropagation()}>
-        <h1>{props.title}</h1>
+        <H1 bold>{props.title}</H1>
         <ContentContainer>
           {props.content}
           {!props.hideButtons && (
             <ButtonContainer normalPadding={props.normalButtonPadding}>
-              <Button inModal gray onClick={props.handleCancel}>
+              <Button
+                rounded="true"
+                inModal
+                gray
+                onClick={props.handleCancel}
+              >
                 {props.closeText || "Cancel"}
               </Button>
               {props.actionText && (
                 <Button
+                  rounded="true"
                   inModal
                   disabled={props.loader}
                   onClick={props.handleSubmit}

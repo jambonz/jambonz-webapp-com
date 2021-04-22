@@ -277,6 +277,7 @@ const RegistrationWebhookAddEdit = () => {
 
             <InputGroup flexEnd spaced>
               <Button
+                rounded="true"
                 gray
                 type="button"
                 onClick={() => {
@@ -291,7 +292,7 @@ const RegistrationWebhookAddEdit = () => {
                 Cancel
               </Button>
 
-              <Button>
+              <Button rounded="true">
                 {type === 'add'
                   ? 'Add Registration Webhook'
                   : 'Save'

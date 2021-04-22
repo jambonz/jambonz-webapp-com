@@ -18,7 +18,7 @@ const PaymentInfo = styled.div`
   grid-gap: 16px 30px;
   margin-bottom: 1.5rem;
 
-  ${props => props.theme.mobileOnly} {
+  ${(props) => props.theme.mobileOnly} {
     grid-template-columns: 120px 1fr;
     grid-gap: 8px 16px;
   }
@@ -37,9 +37,9 @@ const StyledInputGroup = styled(InputGroup)`
 `;
 
 const Cell = styled.span`
-  font-family: "WorkSans";
   font-size: 16px;
   line-height: 19px;
+  color: #231f20;
 `;
 
 const ManagePaymentInfo = () => {
@@ -94,29 +94,35 @@ const ManagePaymentInfo = () => {
       title="Manage Payment Information"
       breadcrumbs={[{ name: "Back to Settings", url: "/account/settings" }]}
     >
-      <Section style={isMobile ? { margin: '0 1rem' } : {}}>
+      <Section style={isMobile ? { margin: "0 1rem" } : {}}>
         {showLoader ? (
           <Loader height="calc(100vh - 24rem)" />
         ) : (
           <>
-            <H2>Current payment information</H2>
+            <H2 bold>Current payment information</H2>
             <PaymentInfo>
               <Cell>Card Type</Cell>
               <Cell>{paymentInfo.card_type || ""}</Cell>
               <Cell>Card Number</Cell>
-              <Cell>{paymentInfo.last4 ? `**** **** **** ${paymentInfo.last4}`: ''}</Cell>
+              <Cell>
+                {paymentInfo.last4 ? `**** **** **** ${paymentInfo.last4}` : ""}
+              </Cell>
               <Cell>Expiration</Cell>
-              <Cell>{paymentInfo.exp_year ? `${paymentInfo.exp_month}/${paymentInfo.exp_year}`: ''}</Cell>
+              <Cell>
+                {paymentInfo.exp_year
+                  ? `${paymentInfo.exp_month}/${paymentInfo.exp_year}`
+                  : ""}
+              </Cell>
             </PaymentInfo>
             <StyledInputGroup flexEnd spaced>
-              <Button onClick={showPaymentEditPanel}>Change Payment Info</Button>
+              <Button rounded="true" onClick={showPaymentEditPanel}>
+                Change Payment Info
+              </Button>
             </StyledInputGroup>
           </>
         )}
       </Section>
-      {paymentEditMode && (
-        <NewPaymentInfo />
-      )}
+      {paymentEditMode && <NewPaymentInfo />}
     </InternalMain>
   );
 };
