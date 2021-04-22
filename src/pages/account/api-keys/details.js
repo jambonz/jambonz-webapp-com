@@ -97,7 +97,6 @@ const ApiKeyDetails = (props) => {
           <StyledInputGroup flexEnd spaced>
             <Button
               rounded="true"
-              font="12px"
               as={ReactRouterLink}
               to="/account"
               gray="true"

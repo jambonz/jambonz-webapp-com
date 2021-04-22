@@ -150,7 +150,6 @@ const RegistrationWebhookDelete = () => {
             <InputGroup flexEnd spaced>
               <Button
                 rounded="true"
-                font="12px"
                 gray
                 type="button"
                 onClick={() => {
@@ -165,7 +164,7 @@ const RegistrationWebhookDelete = () => {
                 Cancel
               </Button>
 
-              <Button rounded="true" font="12px" onClick={handleSubmit}>
+              <Button rounded="true" onClick={handleSubmit}>
                 Delete Registration Webhook
               </Button>
             </InputGroup>

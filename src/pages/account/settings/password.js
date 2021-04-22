@@ -226,7 +226,6 @@ const SettingsChangePassword = () => {
             <StyledInputGroup flexEnd spaced>
               <Button
                 rounded="true"
-                font="12px"
                 gray
                 type="button"
                 onClick={() => {
@@ -241,7 +240,7 @@ const SettingsChangePassword = () => {
                 Cancel
               </Button>
 
-              <Button rounded="true" font="12px">
+              <Button rounded="true">
                 Save
               </Button>
             </StyledInputGroup>

@@ -281,14 +281,13 @@ const SettingsAuthEmail = () => {
               <StyledInputGroup flexEnd spaced>
                 <Button
                   rounded="true"
-                  font="12px"
                   gray="true"
                   as={ReactRouterLink}
                   to="/account/settings"
                 >
                   Cancel
                 </Button>
-                <Button rounded="true" font="12px">
+                <Button rounded="true">
                   Continue
                 </Button>
               </StyledInputGroup>

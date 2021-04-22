@@ -174,7 +174,6 @@ const SettingsAuthIndex = () => {
           <InputGroup flexEnd spaced>
             <Button
               rounded="true"
-              font="12px"
               gray="true"
               as={ReactRouterLink}
               to="/account/settings"

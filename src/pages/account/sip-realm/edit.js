@@ -242,14 +242,13 @@ const SipRealmEdit = () => {
               <StyledInputGroup flexEnd spaced>
                 <Button
                   rounded="true"
-                  font="12px"
                   gray="true"
                   as={ReactRouterLink}
                   to="/account"
                 >
                   Cancel
                 </Button>
-                <Button rounded="true" font="12px">
+                <Button rounded="true">
                   Change SIP Realm
                 </Button>
               </StyledInputGroup>

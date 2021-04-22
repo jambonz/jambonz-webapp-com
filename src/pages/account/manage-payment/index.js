@@ -115,7 +115,7 @@ const ManagePaymentInfo = () => {
               </Cell>
             </PaymentInfo>
             <StyledInputGroup flexEnd spaced>
-              <Button rounded="true" font="12px" onClick={showPaymentEditPanel}>
+              <Button rounded="true" onClick={showPaymentEditPanel}>
                 Change Payment Info
               </Button>
             </StyledInputGroup>

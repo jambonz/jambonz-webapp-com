@@ -215,7 +215,6 @@ const Subscription = ({ data, hasDelete }) => {
         <StyledInputGroup flexEnd spaced>
           <Button
             rounded="true"
-            font="12px"
             as={ReactRouterLink}
             gray="true"
             to="/account/manage-payment"
@@ -224,7 +223,6 @@ const Subscription = ({ data, hasDelete }) => {
           </Button>
           <Button
             rounded="true"
-            font="12px"
             gray="true"
             as={ReactRouterLink}
             to="/account/modify-subscription"
@@ -239,7 +237,6 @@ const Subscription = ({ data, hasDelete }) => {
             {hasDelete && (
               <Button
                 rounded="true"
-                font="12px"
                 gray="true"
                 as={ReactRouterLink}
                 to="/account/settings/delete-account"
@@ -249,7 +246,6 @@ const Subscription = ({ data, hasDelete }) => {
             )}
             <Button
               rounded="true"
-              font="12px"
               style={{ whiteSpace: "nowrap" }}
               as={ReactRouterLink}
               to="/account/subscription"

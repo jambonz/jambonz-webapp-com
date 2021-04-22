@@ -178,7 +178,6 @@ const SettingsIndex = () => {
             <StyledInputGroup flexEnd>
               <Button
                 rounded="true"
-                font="12px"
                 as={ReactRouterLink}
                 gray="true"
                 to="/account/settings/auth"

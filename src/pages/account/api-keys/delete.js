@@ -52,7 +52,6 @@ const ApiKeyDelete = (props) => {
         <InputGroup flexEnd spaced>
           <Button
             rounded="true"
-            font="12px"
             gray="true"
             as={ReactRouterLink}
             to="/account"
@@ -61,7 +60,6 @@ const ApiKeyDelete = (props) => {
           </Button>
           <Button
             rounded="true"
-            font="12px"
             onClick={apiKeyDelete}
           >
             Delete

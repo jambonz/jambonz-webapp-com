@@ -106,7 +106,6 @@ const Modal = props => {
             <ButtonContainer normalPadding={props.normalButtonPadding}>
               <Button
                 rounded="true"
-                font="12px"
                 inModal
                 gray
                 onClick={props.handleCancel}
@@ -116,7 +115,6 @@ const Modal = props => {
               {props.actionText && (
                 <Button
                   rounded="true"
-                  font="12px"
                   inModal
                   disabled={props.loader}
                   onClick={props.handleSubmit}

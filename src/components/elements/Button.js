@@ -13,7 +13,7 @@ const StyledButton = styled.button`
   grid-column: 2;
   text-decoration: none;
   font-weight: 500;
-  font-size: ${props => props.font || "16px"};
+  font-size: ${props => props.font || "14px"};
 
   ${props => props.fullWidth
     ? `width: 100%;`

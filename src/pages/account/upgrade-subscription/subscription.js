@@ -817,7 +817,6 @@ const Subscription = ({ elements, stripe }) => {
               } each month, and the charge will appear on your credit card statement.`}</Text>
               <Button
                 rounded="true"
-                font="12px"
                 size="small"
                 as={ReactRouterLink}
                 to="/account"
@@ -939,7 +938,6 @@ const Subscription = ({ elements, stripe }) => {
           <StyledInputGroup flexEnd spaced>
             <Button
               rounded="true"
-              font="12px"
               gray="true"
               as={ReactRouterLink}
               to="/account"
@@ -948,7 +946,6 @@ const Subscription = ({ elements, stripe }) => {
             </Button>
             <Button
               rounded="true"
-              font="12px"
               disabled={disabledSubmit || !stripe}
             >
               {isMobile

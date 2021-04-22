@@ -362,7 +362,6 @@ const NewPaymentInfo = ({ elements, stripe, edit }) => {
         <StyledInputGroup flexEnd spaced>
           <Button
             rounded="true"
-            font="12px"
             gray="true"
             as={ReactRouterLink}
             to="/account"
@@ -371,7 +370,6 @@ const NewPaymentInfo = ({ elements, stripe, edit }) => {
           </Button>
           <Button
             rounded="true"
-            font="12px"
             disabled={disabledSubmit || !stripe}
           >
             Save New Card

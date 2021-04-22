@@ -715,14 +715,13 @@ const ModifySubscription = () => {
               <InnerInputGroup flexEnd spaced>
                 <Button
                   rounded="true"
-                  font="12px"
                   gray="true"
                   as={ReactRouterLink}
                   to="/account/settings"
                 >
                   Cancel
                 </Button>
-                <Button rounded="true" font="12px" disabled={disableSubmit}>
+                <Button rounded="true" disabled={disableSubmit}>
                   Review Changes
                 </Button>
               </InnerInputGroup>

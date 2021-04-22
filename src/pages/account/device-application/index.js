@@ -149,7 +149,6 @@ const DeviceApplicationAddEdit = () => {
             <InputGroup flexEnd spaced>
               <Button
                 rounded="true"
-                font="12px"
                 gray
                 type="button"
                 onClick={() => {
@@ -163,7 +162,7 @@ const DeviceApplicationAddEdit = () => {
               >
                 Cancel
               </Button>
-              <Button rounded="true" font="12px">
+              <Button rounded="true">
                 {type === "add" ? "Add Device Calling Application" : "Save"}
               </Button>
             </InputGroup>
