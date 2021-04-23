@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
+import styled from 'styled-components/macro';
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
 import InternalMain from "../../../components/wrappers/InternalMain";
 import Section from "../../../components/blocks/Section";
@@ -12,6 +13,44 @@ import FormError from "../../../components/blocks/FormError";
 import InputGroup from "../../../components/elements/InputGroup";
 import Button from "../../../components/elements/Button";
 import handleErrors from "../../../helpers/handleErrors";
+
+const StyledForm = styled(Form)`
+  @media (max-width: 575px) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    grid-row-gap: 1rem;
+
+    & > * {
+      width: 100%;
+    }
+  }
+`;
+
+const StyledInputGroup = styled(InputGroup)`
+  @media (max-width: 575.98px) {
+    grid-column: 1 / 3;
+  }
+
+  @media (max-width: 489.98px) {
+    display: flex;
+    flex-direction: column;
+
+    & > button {
+      width: 100%;
+      margin-right: 0;
+
+      &:first-child {
+        margin-bottom: 1rem;
+      }
+
+      & > span {
+        width: 100%;
+      }
+    }
+  }
+`;
 
 const DeviceApplicationAddEdit = () => {
   let history = useHistory();
@@ -128,7 +167,7 @@ const DeviceApplicationAddEdit = () => {
         {showLoader ? (
           <Loader height={type === "edit" ? "646px" : "611px"} />
         ) : (
-          <Form large onSubmit={handleSubmit}>
+          <StyledForm large onSubmit={handleSubmit}>
             <Label htmlFor="application">Application</Label>
             <Select
               name="application"
@@ -146,7 +185,7 @@ const DeviceApplicationAddEdit = () => {
               ))}
             </Select>
             {errorMessage && <FormError grid message={errorMessage} />}
-            <InputGroup flexEnd spaced>
+            <StyledInputGroup flexEnd spaced>
               <Button
                 rounded="true"
                 gray
@@ -165,8 +204,8 @@ const DeviceApplicationAddEdit = () => {
               <Button rounded="true">
                 {type === "add" ? "Add Device Calling Application" : "Save"}
               </Button>
-            </InputGroup>
-          </Form>
+            </StyledInputGroup>
+          </StyledForm>
         )}
       </Section>
     </InternalMain>
