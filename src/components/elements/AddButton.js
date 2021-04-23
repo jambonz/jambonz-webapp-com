@@ -37,7 +37,6 @@ const StyledLink = styled(FilteredLink)`
   }
 
   ${props => props.theme.mobileOnly} {
-    top: 5rem;
     right: 1rem;
   }
 `;

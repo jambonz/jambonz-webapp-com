@@ -29,7 +29,11 @@ const StyledTable = styled(Table)`
   }
 
   .ant-pagination {
-    margin-right: 2rem;
+    height: 32px;
+
+    .ant-pagination-simple-pager {
+      height: 32px;
+    }
   }
 
   .ant-pagination-item {
