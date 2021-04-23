@@ -12,6 +12,7 @@ import Select from "../../../components/elements/Select";
 import Section from "../../../components/blocks/Section";
 import AntdTable from "../../../components/blocks/AntdTable";
 import handleErrors from "../../../helpers/handleErrors";
+import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 
 const StyledInputGroup = styled(InputGroup)`
   margin: 0 2rem 1.5rem;
@@ -24,6 +25,7 @@ const StyledButton = styled(Button)`
 `;
 
 const AlertsIndex = () => {
+  const { width } = useContext(ResponsiveContext);
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem("jwt");
@@ -192,6 +194,7 @@ const AlertsIndex = () => {
             showSizeChanger: true,
             itemRender: renderPagination,
             showLessItems: true,
+            simple: width < 987,
           }}
           scroll={{ y: Math.max(height - 660, 200) }}
         />
