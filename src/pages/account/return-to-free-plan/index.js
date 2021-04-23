@@ -94,10 +94,15 @@ const ReturnToFreePlan = () => {
           <>
             <P>{description}</P>
             <StyledInputGroup flexEnd spaced>
-              <Button gray="true" as={ReactRouterLink} to="/account/settings">
+              <Button
+                rounded="true"
+                gray="true"
+                as={ReactRouterLink}
+                to="/account/settings"
+              >
                 Cancel
               </Button>
-              <Button onClick={downloadToFreePlan}>Return to Free Plan</Button>
+              <Button rounded="true" onClick={downloadToFreePlan}>Return to Free Plan</Button>
             </StyledInputGroup>
             {errorMessage && <FormError grid message={errorMessage} />}
           </>

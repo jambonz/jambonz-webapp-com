@@ -124,6 +124,12 @@ const LoadingContainer = styled.div`
       width: 100%;
     }
   }
+
+  @media (max-width: 575.98px) {
+    & > div {
+      display: none;
+    }
+  }
 `;
 
 const CardNameInput = styled.div`
@@ -360,18 +366,10 @@ const NewPaymentInfo = ({ elements, stripe, edit }) => {
         </CardElementsWrapper>
         {errorMessage && <StyledFormError grid message={errorMessage} />}
         <StyledInputGroup flexEnd spaced>
-          <Button
-            rounded="true"
-            gray="true"
-            as={ReactRouterLink}
-            to="/account"
-          >
+          <Button rounded="true" gray="true" as={ReactRouterLink} to="/account">
             Cancel
           </Button>
-          <Button
-            rounded="true"
-            disabled={disabledSubmit || !stripe}
-          >
+          <Button rounded="true" disabled={disabledSubmit || !stripe}>
             Save New Card
           </Button>
         </StyledInputGroup>
