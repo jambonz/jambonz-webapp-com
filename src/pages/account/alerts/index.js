@@ -150,7 +150,11 @@ const AlertsIndex = () => {
   return (
     <InternalMain type="fullWidthTable" title="Alerts">
       <StyledInputGroup flexEnd spaced>
-        <Button gray="true" style={{ marginBotton: "1rem !important" }}>
+        <Button
+          rounded="true"
+          gray="true"
+          style={{ marginBotton: "1rem !important" }}
+        >
           Download as CSV
         </Button>
       </StyledInputGroup>

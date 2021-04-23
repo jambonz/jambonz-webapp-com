@@ -266,6 +266,7 @@ const DeviceRow = styled.div`
 
   & > button {
     align-items: center;
+    font-size: 16px;
   }
 
   @media (max-width: 575.98px) {

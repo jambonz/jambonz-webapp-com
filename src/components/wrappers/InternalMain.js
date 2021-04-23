@@ -29,6 +29,7 @@ const TopSection = styled.section`
 
 const Subtitle = styled.p`
   margin: 1rem 0 0;
+  color: #231f20;
 `;
 
 const ContentContainer = styled.div`

@@ -805,6 +805,7 @@ const ApplicationsAddEdit = () => {
 
             <StyledButtonGroup flexEnd spaced>
               <Button
+                rounded="true"
                 gray
                 type="button"
                 onClick={() => {
@@ -819,7 +820,7 @@ const ApplicationsAddEdit = () => {
                 Cancel
               </Button>
 
-              <Button>
+              <Button rounded="true">
                 {type === 'add'
                   ? 'Add Application'
                   : 'Save'

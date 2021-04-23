@@ -34,6 +34,8 @@ const StyledForm = styled(Form)`
 `;
 
 const VendorText = styled.span`
+  color: #231f20;
+
   ${props => props.theme.mobileOnly} {
     margin-bottom: -0.5rem;
   }
@@ -573,6 +575,7 @@ const SpeechServicesAddEdit = () => {
 
             <StyledButtonGroup flexEnd spaced type={type}>
               <Button
+                rounded="true"
                 gray
                 type="button"
                 onClick={() => {
@@ -587,7 +590,7 @@ const SpeechServicesAddEdit = () => {
                 Cancel
               </Button>
 
-              <Button>
+              <Button rounded="true">
                 {type === 'add'
                   ? 'Add Speech Service'
                   : 'Save'

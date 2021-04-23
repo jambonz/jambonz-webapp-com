@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link as PlainLink } from 'react-router-dom';
+import styled from 'styled-components/macro';
 import { CurrentMenuStateContext, CurrentMenuDispatchContext } from '../../contexts/CurrentMenuContext';
 import { ModalStateContext } from '../../contexts/ModalContext';
 import { NotificationDispatchContext } from '../../contexts/NotificationContext';
@@ -17,6 +17,18 @@ import CopyableText from '../elements/CopyableText';
 import ToggleText from '../blocks/ToggleText';
 import { ReactComponent as CheckGreen } from '../../images/CheckGreen.svg';
 import { ReactComponent as ErrorIcon } from '../../images/ErrorIcon.svg';
+
+const StyledLink = styled(Link)`
+  span {
+    color: #D91C5C;
+  }
+
+  &:hover span {
+    box-shadow: 0 0.125rem 0;
+    border-radius: 0;
+    color: #D91C5C;
+  }
+`;
 
 const TableContent = props => {
 
@@ -391,14 +403,14 @@ const TableContent = props => {
                       >
                         {i === 0 && props.urlParam
                           ? <span>
-                              <PlainLink
+                              <StyledLink
                                 to={`/account/${props.urlParam}/${a.sid}/edit`}
                                 tabIndex={modalOpen ? '-1' : ''}
                               >
                                 <span tabIndex="-1" title={columnTitle}>
                                   {columnContent}
                                 </span>
-                              </PlainLink>
+                              </StyledLink>
                             </span>
                           : <span title={columnTitle}>{columnContent}</span>
                         }

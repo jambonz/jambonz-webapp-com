@@ -369,6 +369,7 @@ const PhoneNumbersAddEdit = () => {
 
             <StyledButtonGroup flexEnd spaced type={type}>
               <Button
+                rounded="true"
                 gray
                 type="button"
                 onClick={() => {
@@ -383,7 +384,7 @@ const PhoneNumbersAddEdit = () => {
                 Cancel
               </Button>
 
-              <Button>
+              <Button rounded="true">
                 {type === 'add'
                   ? 'Add Phone Number'
                   : 'Save'
