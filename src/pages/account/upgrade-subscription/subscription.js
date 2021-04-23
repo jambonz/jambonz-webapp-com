@@ -106,7 +106,7 @@ const StyledInputGroup = styled(InputGroup)`
     }
   }
 
-  @media (max-width: 369.98px) {
+  @media (max-width: 439.98px) {
     display: flex;
     flex-direction: column;
 
