@@ -55,6 +55,7 @@ const AlertsIndex = () => {
       title: "Message",
       dataIndex: "message",
       key: "message",
+      width: width > 600 ? null : 250,
     },
   ];
   const { height } = window.screen;

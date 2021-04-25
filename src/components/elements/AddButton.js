@@ -24,6 +24,8 @@ const StyledLink = styled(FilteredLink)`
   position: relative;
   height: 3.5rem;
   width: 3.5rem;
+  min-width: 3.5rem;
+  max-width: 3.5rem;
   border-radius: 50%;
   outline: 0;
   background: #D91C5C;

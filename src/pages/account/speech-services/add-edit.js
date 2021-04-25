@@ -71,8 +71,11 @@ const StyledButtonGroup = styled(InputGroup)`
   }
   ${props => props.type === 'add' ? `
     @media (max-width: 459.98px) {
+      flex-direction: column;
+
       & > *:first-child {
-        flex: 0;
+        width: 100%;
+        margin: 0 0 1rem 0;
       }
     }
   ` : ''}
