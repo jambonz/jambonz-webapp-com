@@ -1,6 +1,43 @@
 import { v4 as uuid } from 'uuid';
+import styled from "styled-components/macro";
 import ExternalMain from '../../components/wrappers/ExternalMain';
 import Link from '../../components/elements/Link';
+
+const H3 = styled.h3`
+  font-family: Objectivity;
+  font-size: 18px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: -0.02px;
+  text-align: left;
+  color: #231f20;
+  margin-bottom: 1rem;
+  width: 28rem;
+`;
+
+const ALink = styled.a`
+  font-family: Objectivity;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02px;
+  text-align: center;
+  color: #da1c5c;
+  text-decoration: none;
+
+  &:hover {
+    color: #da1c5c;
+    text-decoration: none;
+    box-shadow: 0 0.125rem 0;
+    border-radius: 0;
+    color: #d91c5c;
+  }
+
+  &:hover > span {
+  }
+`;
 
 const SignIn = props => {
   const state = uuid();
@@ -11,11 +48,11 @@ const SignIn = props => {
 
   return (
     <ExternalMain title="Sign In">
-      <p>Sign in with:</p>
-      <p><a href={gitHubUrl}>GitHub</a> </p>
-      <p><a href={googleUrl}>Google</a> </p>
-      <p><Link to="/sign-in/email">Email</Link></p>
-      <p><Link to="/register">Register</Link></p>
+      <H3>Sign in with:</H3>
+      <H3><ALink href={gitHubUrl}>GitHub</ALink> </H3>
+      <H3><ALink href={googleUrl}>Google</ALink> </H3>
+      <H3><Link to="/sign-in/email">Email</Link></H3>
+      <H3><Link to="/register">Register</Link></H3>
     </ExternalMain>
   );
 };

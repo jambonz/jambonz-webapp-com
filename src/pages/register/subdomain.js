@@ -36,6 +36,8 @@ const RootDomain = styled.div`
 
 const RegisterChooseSubdomain = () => {
   let history = useHistory();
+  const code = localStorage.getItem("register-code");
+  const betaFlag = process.env.REACT_APP_BETA_FLAG === 'true';
 
   // Refs
   const refSubdomain = useRef(null);
@@ -150,6 +152,17 @@ const RegisterChooseSubdomain = () => {
 
       if (createResponse.status !== 204) {
         throw new Error(`Unable to save subdomain. Please try a different subdomain.`);
+      }
+
+      if (betaFlag) {
+        await  axios({
+          method: "post",
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: `/InviteCodes`,
+          data: {
+            code,
+          },
+        });
       }
 
       isMounted = false;

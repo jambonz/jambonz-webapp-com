@@ -227,7 +227,7 @@ const ModifySubscription = () => {
       capacity: "",
       invalid: false,
       currency: "usd",
-      min: 10,
+      min: 5,
       max: 1000,
       dirty: false,
       visible: true,
@@ -432,51 +432,60 @@ const ModifySubscription = () => {
     }
   };
 
+  const checkValidation = () => {
+    setErrorMessage("");
+    resetInvalidFields();
+    let errorMessages = [];
+    let focusHasBeenSet = false;
+
+    let services = [...serviceData];
+    services.forEach((service, index) => {
+      if (service.required || !!service.capacity) {
+        const capacityNum = parseInt(service.capacity || "0", 10);
+        if (capacityNum < service.min || capacityNum > service.max) {
+          errorMessages.push(
+            `"${service.service}" must be greater than or equal to ${service.min}, less than or equal to ${service.max}.`
+          );
+          services[index] = { ...services[index], invalid: true };
+          if (!focusHasBeenSet) {
+            refArray[service.category].focus();
+            focusHasBeenSet = true;
+          }
+        } else {
+          services[index] = { ...services[index], invalid: false };
+        }
+      }
+    });
+    setServiceData(services);
+
+    // remove duplicate error messages
+    for (let i = 0; i < errorMessages.length; i++) {
+      for (let j = 0; j < errorMessages.length; j++) {
+        if (i >= j) continue;
+        if (errorMessages[i] === errorMessages[j]) {
+          errorMessages.splice(j, 1);
+          j = j - 1;
+        }
+      }
+    }
+    if (errorMessages.length > 1) {
+      setErrorMessage(errorMessages);
+      setDisabledSubmit(true);
+      return false;
+    } else if (errorMessages.length === 1) {
+      setErrorMessage(errorMessages[0]);
+      setDisabledSubmit(true);
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      setErrorMessage("");
-      resetInvalidFields();
-      let errorMessages = [];
-      let focusHasBeenSet = false;
 
-      let services = [...serviceData];
-      services.forEach((service, index) => {
-        if (service.required) {
-          const capacityNum = parseInt(service.capacity || "0", 10);
-          if (capacityNum < service.min || capacityNum > service.max) {
-            errorMessages.push(
-              `"${service.service}" must be greater than or equal to ${service.min}, less than or equal to ${service.max}.`
-            );
-            services[index] = { ...services[index], invalid: true };
-            if (!focusHasBeenSet) {
-              refArray[service.category].focus();
-              focusHasBeenSet = true;
-            }
-          } else {
-            services[index] = { ...services[index], invalid: false };
-          }
-        }
-      });
-      setServiceData(services);
-
-      // remove duplicate error messages
-      for (let i = 0; i < errorMessages.length; i++) {
-        for (let j = 0; j < errorMessages.length; j++) {
-          if (i >= j) continue;
-          if (errorMessages[i] === errorMessages[j]) {
-            errorMessages.splice(j, 1);
-            j = j - 1;
-          }
-        }
-      }
-      if (errorMessages.length > 1) {
-        setErrorMessage(errorMessages);
-        setDisabledSubmit(true);
-        return;
-      } else if (errorMessages.length === 1) {
-        setErrorMessage(errorMessages[0]);
-        setDisabledSubmit(true);
+      if (!checkValidation()) {
         return;
       }
 
@@ -750,7 +759,7 @@ const ModifySubscription = () => {
                   <li>{`- ${serviceData[0].capacity} simultaneous calls`}</li>
                   <li>{`- ${
                     accountData.device_to_call_ratio *
-                      parseInt(serviceData[0].capacity, 0) +
+                      parseInt(serviceData[0].capacity, 10) +
                       parseInt(serviceData[1].capacity, 10) || 0
                   } registered devices`}</li>
                 </UL>
