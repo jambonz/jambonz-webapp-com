@@ -14,9 +14,10 @@ import Button from "../../../components/elements/Button";
 import InputGroup from "../../../components/elements/InputGroup";
 import Select from "../../../components/elements/Select";
 import handleErrors from "../../../helpers/handleErrors";
+import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 
 const FilterLabel = styled.span`
-  color: #767676;
+  color: #231f20;
   text-align: right;
   font-size: 14px;
   margin-left: 1rem;
@@ -37,7 +38,22 @@ const StyledButton = styled(Button)`
   }
 `;
 
+const StyledInputGroup = styled(InputGroup)`
+  @media (max-width: 767.98px) {
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr;
+    grid-row-gap: 1rem;
+  }
+
+  @media (max-width: 575.98px) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-row-gap: 1rem;
+  }
+`;
+
 const RecentCallsIndex = () => {
+  const { width } = useContext(ResponsiveContext);
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem("jwt");
@@ -277,7 +293,7 @@ const RecentCallsIndex = () => {
   return (
     <InternalMain type="fullWidthTable" title="Recent Calls">
       <Section fullPage>
-        <InputGroup flexEnd space>
+        <StyledInputGroup flexEnd space>
           <FilterLabel htmlFor="daterange">Date:</FilterLabel>
           <Select
             name="daterange"
@@ -312,7 +328,7 @@ const RecentCallsIndex = () => {
             <option value="answered">answered</option>
             <option value="not-answered">not answered</option>
           </Select>
-        </InputGroup>
+        </StyledInputGroup>
         <AntdTable
           dataSource={recentCallsData}
           columns={Columns}
@@ -332,6 +348,7 @@ const RecentCallsIndex = () => {
             showSizeChanger: true,
             itemRender: renderPagination,
             showLessItems: true,
+            simple: width < 987,
           }}
           scroll={{ y: Math.max(height - 580, 200) }}
           expandable={{

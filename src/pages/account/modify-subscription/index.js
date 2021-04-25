@@ -163,8 +163,8 @@ const UL = styled.ul`
 `;
 
 const LoadingContainer = styled.div`
-  width: 500px;
-  height: 50px;
+  max-width: 500px;
+  min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;

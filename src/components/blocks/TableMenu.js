@@ -75,6 +75,7 @@ const MenuButton = styled.button`
 const TableMenu = props => (
   <>
     <Button
+      rounded="true"
       bulkEditMenu={props.bulkEditMenu}
       tableMenu={!props.bulkEditMenu}
       selected={props.open}

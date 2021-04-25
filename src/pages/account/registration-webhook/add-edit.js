@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from 'styled-components/macro';
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalMain from '../../../components/wrappers/InternalMain';
 import Section from '../../../components/blocks/Section';
@@ -12,6 +13,72 @@ import PasswordInput from '../../../components/elements/PasswordInput';
 import FormError from '../../../components/blocks/FormError';
 import Button from '../../../components/elements/Button';
 import Loader from '../../../components/blocks/Loader';
+
+const StyledInputGroup = styled(InputGroup)`
+  @media (max-width: 575.98px) {
+    grid-column: 1 / 3;
+  }
+
+  @media (max-width: 459.98px) {
+    display: flex;
+    flex-direction: column;
+
+    & > button {
+      width: 100%;
+      margin-right: 0;
+
+      &:first-child {
+        margin-bottom: 1rem;
+      }
+
+      & > span {
+        width: 100%;
+      }
+    }
+  }
+`;
+
+const HTTPGroup = styled(InputGroup)`
+  @media (max-width: 767.98px) {
+    display: grid;
+    grid-template-columns: 1.3fr 10fr;
+    grid-row-gap: 1rem;
+    grid-column: 1 / 3;
+
+    & > label {
+      margin: 0;
+      margin-right: 1.75rem;
+    }
+  }
+
+  @media (max-width: 575.98px) {
+    display: flex;
+    flex-direction: column;
+
+    & > * {
+      width: 100%;
+      margin: 0 0 1rem;
+    }
+
+    & > label {
+      margin-right: 0;
+    }
+  }
+`;
+
+const StyledForm = styled(Form)`
+  @media (max-width: 575px) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    grid-row-gap: 1rem;
+
+    & > * {
+      width: 100%;
+    }
+  }
+`;
 
 const RegistrationWebhookAddEdit = () => {
   let history = useHistory();
@@ -219,7 +286,7 @@ const RegistrationWebhookAddEdit = () => {
             }
           />
         ) : (
-          <Form
+          <StyledForm
             large
             onSubmit={handleSubmit}
           >
@@ -236,7 +303,7 @@ const RegistrationWebhookAddEdit = () => {
             />
 
             {showAuth ? (
-              <InputGroup>
+              <HTTPGroup>
                 <Label indented htmlFor="webhookUser">User</Label>
                 <Input
                   name="webhookUser"
@@ -259,7 +326,7 @@ const RegistrationWebhookAddEdit = () => {
                   invalid={invalidWebhookPass}
                   ref={refWebhookPass}
                 />
-              </InputGroup>
+              </HTTPGroup>
             ) : (
               <Button
                 text
@@ -275,7 +342,7 @@ const RegistrationWebhookAddEdit = () => {
               <FormError grid message={errorMessage} />
             )}
 
-            <InputGroup flexEnd spaced>
+            <StyledInputGroup flexEnd spaced>
               <Button
                 rounded="true"
                 gray
@@ -298,8 +365,8 @@ const RegistrationWebhookAddEdit = () => {
                   : 'Save'
                 }
               </Button>
-            </InputGroup>
-          </Form>
+            </StyledInputGroup>
+          </StyledForm>
         )}
       </Section>
     </InternalMain>

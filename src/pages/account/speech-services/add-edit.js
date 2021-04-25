@@ -34,6 +34,8 @@ const StyledForm = styled(Form)`
 `;
 
 const VendorText = styled.span`
+  color: #231f20;
+
   ${props => props.theme.mobileOnly} {
     margin-bottom: -0.5rem;
   }
@@ -69,8 +71,11 @@ const StyledButtonGroup = styled(InputGroup)`
   }
   ${props => props.type === 'add' ? `
     @media (max-width: 459.98px) {
+      flex-direction: column;
+
       & > *:first-child {
-        flex: 0;
+        width: 100%;
+        margin: 0 0 1rem 0;
       }
     }
   ` : ''}
@@ -573,6 +578,7 @@ const SpeechServicesAddEdit = () => {
 
             <StyledButtonGroup flexEnd spaced type={type}>
               <Button
+                rounded="true"
                 gray
                 type="button"
                 onClick={() => {
@@ -587,7 +593,7 @@ const SpeechServicesAddEdit = () => {
                 Cancel
               </Button>
 
-              <Button>
+              <Button rounded="true">
                 {type === 'add'
                   ? 'Add Speech Service'
                   : 'Save'

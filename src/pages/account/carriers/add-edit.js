@@ -1077,6 +1077,7 @@ const CarriersAddEdit = ({ mode }) => {
               style={{
                 whiteSpace: 'nowrap',
                 textAlign: 'left',
+                color: '#231f20'
               }}
             >SIP Gateways</div>
             {
@@ -1159,6 +1160,7 @@ const CarriersAddEdit = ({ mode }) => {
 
             <StyledButtonGroup flexEnd spaced>
               <Button
+                rounded="true"
                 gray
                 type="button"
                 onClick={() => {
@@ -1173,7 +1175,7 @@ const CarriersAddEdit = ({ mode }) => {
                 Cancel
               </Button>
 
-              <Button>
+              <Button rounded="true">
                 {type === 'add'
                   ? 'Add Carrier'
                   : 'Save'

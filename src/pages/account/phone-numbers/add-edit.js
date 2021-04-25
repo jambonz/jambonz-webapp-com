@@ -40,8 +40,11 @@ const StyledButtonGroup = styled(InputGroup)`
   }
   ${props => props.type === 'add' ? `
     @media (max-width: 449.98px) {
+      flex-direction: column;
+      
       & > *:first-child {
-        flex: 0;
+        margin-right: 0;
+        margin-bottom: 1rem;
       }
     }
   ` : ''}
@@ -369,6 +372,7 @@ const PhoneNumbersAddEdit = () => {
 
             <StyledButtonGroup flexEnd spaced type={type}>
               <Button
+                rounded="true"
                 gray
                 type="button"
                 onClick={() => {
@@ -383,7 +387,7 @@ const PhoneNumbersAddEdit = () => {
                 Cancel
               </Button>
 
-              <Button>
+              <Button rounded="true">
                 {type === 'add'
                   ? 'Add Phone Number'
                   : 'Save'

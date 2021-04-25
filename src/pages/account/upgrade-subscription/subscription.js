@@ -106,7 +106,7 @@ const StyledInputGroup = styled(InputGroup)`
     }
   }
 
-  @media (max-width: 369.98px) {
+  @media (max-width: 439.98px) {
     display: flex;
     flex-direction: column;
 
@@ -266,6 +266,7 @@ const DeviceRow = styled.div`
 
   & > button {
     align-items: center;
+    font-size: 16px;
   }
 
   @media (max-width: 575.98px) {

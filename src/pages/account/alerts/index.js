@@ -12,6 +12,7 @@ import Select from "../../../components/elements/Select";
 import Section from "../../../components/blocks/Section";
 import AntdTable from "../../../components/blocks/AntdTable";
 import handleErrors from "../../../helpers/handleErrors";
+import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 
 const StyledInputGroup = styled(InputGroup)`
   margin: 0 2rem 1.5rem;
@@ -24,6 +25,7 @@ const StyledButton = styled(Button)`
 `;
 
 const AlertsIndex = () => {
+  const { width } = useContext(ResponsiveContext);
   let history = useHistory();
   const dispatch = useContext(NotificationDispatchContext);
   const jwt = localStorage.getItem("jwt");
@@ -53,6 +55,7 @@ const AlertsIndex = () => {
       title: "Message",
       dataIndex: "message",
       key: "message",
+      width: width > 600 ? null : 250,
     },
   ];
   const { height } = window.screen;
@@ -150,7 +153,11 @@ const AlertsIndex = () => {
   return (
     <InternalMain type="fullWidthTable" title="Alerts">
       <StyledInputGroup flexEnd spaced>
-        <Button gray="true" style={{ marginBotton: "1rem !important" }}>
+        <Button
+          rounded="true"
+          gray="true"
+          style={{ marginBotton: "1rem !important" }}
+        >
           Download as CSV
         </Button>
       </StyledInputGroup>
@@ -188,6 +195,7 @@ const AlertsIndex = () => {
             showSizeChanger: true,
             itemRender: renderPagination,
             showLessItems: true,
+            simple: width < 987,
           }}
           scroll={{ y: Math.max(height - 660, 200) }}
         />

@@ -17,6 +17,10 @@ const SignupTemplateContainer = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  @media (max-width: 767.98px) {
+    margin: 5.5rem 1rem;
+  }
 `;
 
 const PageContainer = styled.div`
