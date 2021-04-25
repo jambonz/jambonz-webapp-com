@@ -330,7 +330,7 @@ const Subscription = ({ elements, stripe }) => {
       capacity: "",
       invalid: false,
       currency: "usd",
-      min: 10,
+      min: 5,
       max: 1000,
       visible: true,
       required: true,
@@ -424,7 +424,7 @@ const Subscription = ({ elements, stripe }) => {
     setServiceData(services);
 
     if (!paymentName) {
-      errorMessages.push("You must input the name.");
+      errorMessages.push("Cardholder name is required.");
       setPaymentNameInvalid(true);
       if (!focusHasBeenSet) {
         paymentNameRef.current.focus();

@@ -227,7 +227,7 @@ const ModifySubscription = () => {
       capacity: "",
       invalid: false,
       currency: "usd",
-      min: 10,
+      min: 5,
       max: 1000,
       dirty: false,
       visible: true,
