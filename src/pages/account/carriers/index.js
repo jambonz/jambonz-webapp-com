@@ -207,7 +207,7 @@ const CarriersIndex = () => {
     <InternalMain
       type="normalTable"
       title="Carriers"
-      addButtonText="Add a Carriers"
+      addButtonText="Add a Carrier"
       addButtonLink="/account/carriers/add"
       subtitle={getSubTitle()}
     >
