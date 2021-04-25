@@ -8,12 +8,14 @@ import Link from "../../components/elements/Link";
 import Modal from "../../components/blocks/Modal";
 import Input from "../../components/elements/Input";
 import FormError from "../../components/blocks/FormError";
+import ExternalMain from '../../components/wrappers/ExternalMain';
 
 const InviteConfirmContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 0;
+  margin-top: ${(props) => props.marginTop || "0"};
 `;
 
 const HeaderTitle = styled.h2`
@@ -48,7 +50,7 @@ const H3 = styled.h3`
   font-style: normal;
   line-height: 1;
   letter-spacing: -0.02px;
-  text-align: center;
+  text-align: ${(props) => props.textAlign || "center"};
   color: #231f20;
   margin-bottom: 1rem;
   width: 28rem;
@@ -58,7 +60,7 @@ const ALink = styled.a`
   font-family: Objectivity;
   font-size: 18px;
   font-weight: 500;
-  line-height: 1.89;
+  line-height: 1;
   letter-spacing: -0.02px;
   text-align: center;
   color: #da1c5c;
@@ -116,6 +118,7 @@ const Register = (props) => {
   localStorage.setItem("oauth-state", state);
   const gitHubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&state=${state}&scope=user:email&allow_signup=false`;
   const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=email+profile+https://www.googleapis.com/auth/cloud-platform&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
+  const betaFlag = process.env.REACT_APP_BETA_FLAG === 'true';
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [code, setCode] = useState("");
@@ -144,6 +147,7 @@ const Register = (props) => {
         url: `/InviteCodes`,
         data: {
           code,
+          test: true,
         },
       });
 
@@ -166,7 +170,7 @@ const Register = (props) => {
   }, []);
 
   return (
-    <InviteConfirmContainer>
+    <InviteConfirmContainer marginTop={betaFlag ? "" : "5rem"}>
       {showConfirmModal && (
         <Modal
           title="Enter invite code"
@@ -196,53 +200,69 @@ const Register = (props) => {
           normalButtonPadding
         />
       )}
-
-      <HeaderTitle>
-        jambonz will launch soon, but currently we are running a private beta.
-      </HeaderTitle>
-      <Description>
-        If you would like to participate in the private beta, and are willing to
-        share your feedback and actively participate, email us at{" "}
-        <ALink href="mailto:support@jambonz.com?subject=Requesting invitation to the beta">
-          support@jambonz.com
-        </ALink>{" "}
-        to request an invite code.
-      </Description>
-      {codeConfirmed ? (
-        <SuccessAlarm
-          fill="transparent"
-          color="#231f20"
-          border="transparent"
-          width="320px"
-          fontSize="24px"
-        >
-          You're in!
-          <br />
-          Sign up using one of the options below
-        </SuccessAlarm>
+      {betaFlag ? (
+        <>
+          <HeaderTitle>
+            jambonz will launch soon, but currently we are running a private beta.
+          </HeaderTitle>
+          <Description>
+            If you would like to participate in the private beta, and are willing to
+            share your feedback and actively participate, email us at{" "}
+            <ALink href="mailto:support@jambonz.com?subject=Requesting invitation to the beta">
+              support@jambonz.com
+            </ALink>{" "}
+            to request an invite code.
+          </Description>
+          {codeConfirmed ? (
+            <SuccessAlarm
+              fill="transparent"
+              color="#231f20"
+              border="transparent"
+              width="320px"
+              fontSize="24px"
+            >
+              You're in!
+              <br />
+              Sign up using one of the options below
+            </SuccessAlarm>
+          ) : (
+            <RoundButton
+              fill="transparent"
+              color="#231f20"
+              border="#231f20"
+              width="320px"
+              fontSize="18px"
+              onClick={() => setShowConfirmModal(true)}
+            >
+              Enter invite code
+            </RoundButton>
+          )}
+          <SignupButtonsWrapper show={codeConfirmed}>
+            <H3>
+              Sign up with <ALink href={gitHubUrl}>Github</ALink>
+            </H3>
+            <H3>
+              Sign up with <ALink href={googleUrl}>Google</ALink>
+            </H3>
+            <H3>
+              Sign up with your <Link to="/register/email">email</Link>
+            </H3>
+          </SignupButtonsWrapper>
+        </>
       ) : (
-        <RoundButton
-          fill="transparent"
-          color="#231f20"
-          border="#231f20"
-          width="320px"
-          fontSize="18px"
-          onClick={() => setShowConfirmModal(true)}
-        >
-          Enter invite code
-        </RoundButton>
+        <ExternalMain title="Register">
+          <H3 textAlign="left">Sign up with:</H3>
+          <H3 textAlign="left">
+            <ALink href={gitHubUrl}>Github</ALink>
+          </H3>
+          <H3 textAlign="left">
+            <ALink href={googleUrl}>Google</ALink>
+          </H3>
+          <H3 textAlign="left">
+            <Link to="/register/email">Email</Link>
+          </H3>
+        </ExternalMain>
       )}
-      <SignupButtonsWrapper show={codeConfirmed}>
-        <H3>
-          Sign up with <ALink href={gitHubUrl}>Github</ALink>
-        </H3>
-        <H3>
-          Sign up with <ALink href={googleUrl}>Google</ALink>
-        </H3>
-        <H3>
-          Sign up with your <Link to="/register/email">email</Link>
-        </H3>
-      </SignupButtonsWrapper>
     </InviteConfirmContainer>
   );
 };
