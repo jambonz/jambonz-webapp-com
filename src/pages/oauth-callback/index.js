@@ -59,6 +59,7 @@ const OauthCallback = () => {
             oauth2_state: originalState,
             oauth2_client_id,
             oauth2_redirect_uri,
+            locationBeforeAuth: previousLocation,
           },
           headers: previousLocation === '/account/settings/auth' ? {
             Authorization: `Bearer ${jwt}`,
@@ -92,6 +93,8 @@ const OauthCallback = () => {
               message: 'Your authentication method has been changed.',
             });
           }
+        } else if (response.status === 302) {
+          history.replace('/register');
         } else {
           throw Error('Non-200 response');
         }
