@@ -59,6 +59,7 @@ const OauthCallback = () => {
             oauth2_state: originalState,
             oauth2_client_id,
             oauth2_redirect_uri,
+            locationBeforeAuth: previousLocation,
           },
           headers: previousLocation === '/account/settings/auth' ? {
             Authorization: `Bearer ${jwt}`,
@@ -97,6 +98,12 @@ const OauthCallback = () => {
         }
 
       } catch (err) {
+        const {response} = err;
+        if (response && 404 === response.status &&
+          response.data && response.data.msg &&
+          response.data.msg === 'registering a new account not allowed from the sign-in page') {
+            return history.replace('/register');
+        }
         history.replace(previousLocation);
         dispatch({
           type: 'ADD',
