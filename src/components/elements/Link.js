@@ -52,8 +52,9 @@ const StyledReactRouterLink = styled(FilteredLink)`
   `}
 
   ${props => props.nav && `
+    font-family: 'objectivitymedium';
     margin: 0.25rem;
-    color: #565656;
+    color: #231f20;
 
     & > span {
       padding: 0.75rem;
@@ -64,7 +65,7 @@ const StyledReactRouterLink = styled(FilteredLink)`
       background: #E3E3E3;
       box-shadow: none;
       border-radius: 0.25rem;
-      color: #565656;
+      color: #231f20;
     }
 
     &:focus > span {
@@ -79,7 +80,7 @@ const StyledReactRouterLink = styled(FilteredLink)`
   `}
 
   ${props => props.navMain && `
-    margin: 0;
+    margin: 0 1rem 0 0;
     font-size: 1.5rem;
   `}
 
