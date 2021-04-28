@@ -100,6 +100,12 @@ const OauthCallback = () => {
         }
 
       } catch (err) {
+        const {response} = err;
+        if (response && 404 === response.status &&
+          response.data && response.data.msg &&
+          response.data.msg === 'registering a new account not allowed from the sign-in page') {
+            return history.replace('/register');
+        }
         history.replace(previousLocation);
         dispatch({
           type: 'ADD',
