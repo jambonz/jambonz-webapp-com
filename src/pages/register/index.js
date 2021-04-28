@@ -16,6 +16,10 @@ const InviteConfirmContainer = styled.div`
   align-items: center;
   margin: 0;
   margin-top: ${(props) => props.marginTop || "0"};
+
+  @media (max-width: 767.98px) {
+    margin-top: 0;
+  }
 `;
 
 const HeaderTitle = styled.h2`
@@ -53,7 +57,7 @@ const H3 = styled.h3`
   text-align: ${(props) => props.textAlign || "center"};
   color: #231f20;
   margin-bottom: 1rem;
-  width: 28rem;
+  max-width: 28rem;
 `;
 
 const ALink = styled.a`

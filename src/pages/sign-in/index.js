@@ -14,7 +14,7 @@ const H3 = styled.h3`
   text-align: left;
   color: #231f20;
   margin-bottom: 1rem;
-  width: 28rem;
+  max-width: 28rem;
 `;
 
 const ALink = styled.a`

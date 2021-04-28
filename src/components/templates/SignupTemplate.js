@@ -20,6 +20,7 @@ const SignupTemplateContainer = styled.div`
 
   @media (max-width: 767.98px) {
     margin: 5.5rem 1rem;
+    padding-top: 0;
   }
 `;
 
@@ -27,6 +28,10 @@ const PageContainer = styled.div`
   width: 640px;
   max-width: 100%;
   margin: 3rem 0 6rem;
+
+  @media (max-width: 767.98px) {
+    margin-top: 0;
+  }
 `;
 
 const SignupTemplate = (props) => (
