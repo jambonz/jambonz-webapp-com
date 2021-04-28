@@ -184,6 +184,29 @@ const Register = (props) => {
     }
   };
 
+  const CheckPrivacyAndTerms = () => (
+    <PrivacyCheckbox>
+      <Checkbox
+        noLeftMargin
+        label=""
+        name="privacy"
+        id="privacy"
+        checked={privacyChecked}
+        onChange={(e) => setPrivacyChecked(e.target.checked)}
+      />
+      <H3>
+        I accept the{" "}
+        <ALink href={StaticURLs.TERMS_OF_SERVICE} target="__blank">
+          Terms of Service
+        </ALink>{" "}
+        and have read the{" "}
+        <ALink href={StaticURLs.PRIVACY_POLICY} target="__blank">
+          Privacy Policy
+        </ALink>
+      </H3>
+    </PrivacyCheckbox>
+  );
+
   useEffect(() => {
     localStorage.removeItem("register-code");
   }, []);
@@ -276,26 +299,7 @@ const Register = (props) => {
                 email
               </Link>
             </H3>
-            <PrivacyCheckbox>
-              <Checkbox
-                noLeftMargin
-                label=""
-                name="privacy"
-                id="privacy"
-                checked={privacyChecked}
-                onChange={(e) => setPrivacyChecked(e.target.checked)}
-              />
-              <H3>
-                I accept the{" "}
-                <ALink href={StaticURLs.TERMS_OF_SERVICE} target="__blank">
-                  Terms of Service
-                </ALink>{" "}
-                and have read the{" "}
-                <ALink href={StaticURLs.PRIVACY_POLICY} target="__blank">
-                  Privacy Policy
-                </ALink>
-              </H3>
-            </PrivacyCheckbox>
+            <CheckPrivacyAndTerms />
           </SignupButtonsWrapper>
         </>
       ) : (
@@ -316,26 +320,7 @@ const Register = (props) => {
               Email
             </Link>
           </H3>
-          <PrivacyCheckbox>
-            <Checkbox
-              noLeftMargin
-              label=""
-              name="privacy"
-              id="privacy"
-              checked={privacyChecked}
-              onChange={(e) => setPrivacyChecked(e.target.checked)}
-            />
-            <H3>
-              I accept the{" "}
-              <ALink href={StaticURLs.TERMS_OF_SERVICE} target="__blank">
-                Terms of Service
-              </ALink>{" "}
-              and have read the{" "}
-              <ALink href={StaticURLs.PRIVACY_POLICY} target="__blank">
-                Privacy Policy
-              </ALink>
-            </H3>
-          </PrivacyCheckbox>
+          <CheckPrivacyAndTerms />
         </ExternalMain>
       )}
     </InviteConfirmContainer>
