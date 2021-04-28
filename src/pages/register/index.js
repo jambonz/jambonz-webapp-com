@@ -7,8 +7,10 @@ import RoundButton from "../../components/elements/RoundButton";
 import Link from "../../components/elements/Link";
 import Modal from "../../components/blocks/Modal";
 import Input from "../../components/elements/Input";
+import Checkbox from "../../components/elements/Checkbox";
 import FormError from "../../components/blocks/FormError";
-import ExternalMain from '../../components/wrappers/ExternalMain';
+import ExternalMain from "../../components/wrappers/ExternalMain";
+import StaticURLs from "../../data/StaticURLs";
 
 const InviteConfirmContainer = styled.div`
   display: flex;
@@ -116,13 +118,25 @@ const SuccessAlarm = styled.p`
   height: 60px;
 `;
 
+const PrivacyCheckbox = styled.div`
+  display: flex;
+  align-items: center;
+  max-width: 350px;
+
+  h3 {
+    margin-bottom: 0;
+    line-height: 1.5;
+    text-align: left;
+  }
+`;
+
 const Register = (props) => {
   const state = uuid();
   localStorage.setItem("location-before-oauth", "/register");
   localStorage.setItem("oauth-state", state);
   const gitHubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&state=${state}&scope=user:email&allow_signup=false`;
   const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=email+profile+https://www.googleapis.com/auth/cloud-platform&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
-  const betaFlag = process.env.REACT_APP_BETA_FLAG === 'true';
+  const betaFlag = process.env.REACT_APP_BETA_FLAG === "true";
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [code, setCode] = useState("");
@@ -130,6 +144,7 @@ const Register = (props) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [codeConfirmed, setCodeConfirmed] = useState(false);
+  const [privacyChecked, setPrivacyChecked] = useState(false);
 
   const refCode = useRef(null);
 
@@ -207,11 +222,12 @@ const Register = (props) => {
       {betaFlag ? (
         <>
           <HeaderTitle>
-            jambonz will launch soon, but currently we are running a private beta.
+            jambonz will launch soon, but currently we are running a private
+            beta.
           </HeaderTitle>
           <Description>
-            If you would like to participate in the private beta, and are willing to
-            share your feedback and actively participate, email us at{" "}
+            If you would like to participate in the private beta, and are
+            willing to share your feedback and actively participate, email us at{" "}
             <ALink href="mailto:support@jambonz.com?subject=Requesting invitation to the beta">
               support@jambonz.com
             </ALink>{" "}
@@ -243,28 +259,83 @@ const Register = (props) => {
           )}
           <SignupButtonsWrapper show={codeConfirmed}>
             <H3>
-              Sign up with <ALink href={gitHubUrl}>Github</ALink>
+              Sign up with{" "}
+              <ALink disabled={!privacyChecked} href={gitHubUrl}>
+                Github
+              </ALink>
             </H3>
             <H3>
-              Sign up with <ALink href={googleUrl}>Google</ALink>
+              Sign up with{" "}
+              <ALink disabled={!privacyChecked} href={googleUrl}>
+                Google
+              </ALink>
             </H3>
             <H3>
-              Sign up with your <Link to="/register/email">email</Link>
+              Sign up with your{" "}
+              <Link disabled={!privacyChecked} to="/register/email">
+                email
+              </Link>
             </H3>
+            <PrivacyCheckbox>
+              <Checkbox
+                noLeftMargin
+                label=""
+                name="privacy"
+                id="privacy"
+                checked={privacyChecked}
+                onChange={(e) => setPrivacyChecked(e.target.checked)}
+              />
+              <H3>
+                I accept the{" "}
+                <ALink href={StaticURLs.TERMS_OF_SERVICE} target="__blank">
+                  Terms of Service
+                </ALink>{" "}
+                and have read the{" "}
+                <ALink href={StaticURLs.PRIVACY_POLICY} target="__blank">
+                  Privacy Policy
+                </ALink>
+              </H3>
+            </PrivacyCheckbox>
           </SignupButtonsWrapper>
         </>
       ) : (
         <ExternalMain title="Register">
           <H3 textAlign="left">Sign up with:</H3>
           <H3 textAlign="left">
-            <ALink href={gitHubUrl}>Github</ALink>
+            <ALink disabled={!privacyChecked} href={gitHubUrl}>
+              Github
+            </ALink>
           </H3>
           <H3 textAlign="left">
-            <ALink href={googleUrl}>Google</ALink>
+            <ALink disabled={!privacyChecked} href={googleUrl}>
+              Google
+            </ALink>
           </H3>
           <H3 textAlign="left">
-            <Link to="/register/email">Email</Link>
+            <Link disabled={!privacyChecked} to="/register/email">
+              Email
+            </Link>
           </H3>
+          <PrivacyCheckbox>
+            <Checkbox
+              noLeftMargin
+              label=""
+              name="privacy"
+              id="privacy"
+              checked={privacyChecked}
+              onChange={(e) => setPrivacyChecked(e.target.checked)}
+            />
+            <H3>
+              I accept the{" "}
+              <ALink href={StaticURLs.TERMS_OF_SERVICE} target="__blank">
+                Terms of Service
+              </ALink>{" "}
+              and have read the{" "}
+              <ALink href={StaticURLs.PRIVACY_POLICY} target="__blank">
+                Privacy Policy
+              </ALink>
+            </H3>
+          </PrivacyCheckbox>
         </ExternalMain>
       )}
     </InviteConfirmContainer>
