@@ -70,7 +70,7 @@ const StyledButton = styled.button`
   &:hover:not([disabled]) > span {
     background: ${props => {
       if (props.hollow) {
-        return '#da1c5c';
+        return 'none';
       } else if (props.text) {
         return '#E3E3E3';
       } else if (props.gray) {
@@ -81,7 +81,9 @@ const StyledButton = styled.button`
     color: ${
       props => props.gray
         ? '#565656'
-        : props.text || props.hollow
+        : props.hollow
+        ? '#D91C5C'
+        : props.text
           ? '#FFF'
           : '#FFF'
     };
@@ -90,7 +92,7 @@ const StyledButton = styled.button`
   &:active:not([disabled]) > span  {
     background: ${props => {
       if (props.hollow) {
-        return '#da1c5c';
+        return 'none';
       } else if (props.text) {
         return '#E3E3E3';
       } else if (props.gray) {
@@ -101,7 +103,9 @@ const StyledButton = styled.button`
     color: ${
       props => props.gray
         ? '#565656'
-        : props.text || props.hollow
+        : props.hollow
+        ? '#D91C5C'
+        : props.text
           ? '#FFF'
           : '#FFF'
     };

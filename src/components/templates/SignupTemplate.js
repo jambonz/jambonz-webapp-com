@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components/macro";
 
 import Nav from "../blocks/Nav";
+import StaticURLs from "../../data/StaticURLs";
 
 import LogoJambong from "../../images/logo-jambong.svg";
 
@@ -44,42 +45,68 @@ const SignupTemplate = (props) => (
           image: LogoJambong,
           desktopOnly: false,
         },
+        {
+          type: "linkExternal",
+          text: "Why jambonz",
+          url: StaticURLs.WHY_JAMBONZ,
+          desktopOnly: true,
+        },
+        {
+          type: "linkExternal",
+          text: "For Developers",
+          url: StaticURLs.FOR_DEVELOPERS,
+          desktopOnly: true,
+        },
+        {
+          type: "linkExternal",
+          text: "Pricing",
+          url: StaticURLs.PRICING,
+          desktopOnly: true,
+        },
       ]}
       topRight={[
         {
-          type: "link",
+          type: "button-link",
           text: "Sign In",
           url: "/sign-in",
           desktopOnly: true,
         },
       ]}
       drawer={[
-        { type: "linkExternal", text: "Home", url: "https://www.jambonz.org" },
+        {
+          type: "linkExternal",
+          text: "Home",
+          url: StaticURLs.HOME,
+        },
         {
           type: "linkExternal",
           text: "Why jambonz",
-          url: "https://www.jambonz.org/docs",
+          url: StaticURLs.WHY_JAMBONZ,
         },
         {
           type: "linkExternal",
           text: "For Developers",
-          url: "https://www.jambonz.org/docs",
+          url: StaticURLs.FOR_DEVELOPERS,
         },
         {
           type: "linkExternal",
           text: "Pricing",
-          url: "https://www.jambonz.org/pricing",
+          url: StaticURLs.PRICING,
         },
         { type: "link", text: "Register", url: "/register" },
         { type: "link", text: "Sign In", url: "/sign-in" },
         { type: "horizontal-rule" },
         { type: "linkExternal", text: "View on Github", url: "#" },
         { type: "linkExternal", text: "Join us on Slack", url: "#" },
-        { type: "linkExternal", text: "Privacy Policy", url: "#" },
+        {
+          type: "linkExternal",
+          text: "Privacy Policy",
+          url: StaticURLs.PRIVACY_POLICY,
+        },
         {
           type: "linkExternal",
           text: "Terms of Service",
-          url: "https://www.jambonz.org/docs/terms-of-service",
+          url: StaticURLs.TERMS_OF_SERVICE,
         },
         {
           type: "linkExternal",

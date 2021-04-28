@@ -54,6 +54,10 @@ const Hr = styled.hr`
   }
 `;
 
+const StyledLink = styled(ReactRouterLink)`
+  text-decoration: none;
+`;
+
 const NavItem = ({ navMain, item }) => {
   const currentMenu = useContext(CurrentMenuStateContext);
   const setCurrentMenu = useContext(CurrentMenuDispatchContext);
@@ -123,7 +127,6 @@ const NavItem = ({ navMain, item }) => {
           rounded
           border
           size="small"
-          font="14px"
           onClick={handleCurrentMenu}
           desktopOnly={item.desktopOnly}
         >
@@ -151,6 +154,18 @@ const NavItem = ({ navMain, item }) => {
       <ReactRouterLink to={item.url}>
         <img src={item.image} alt="link-img" />
       </ReactRouterLink>
+    ) : item.type === 'button-link' ? (
+      <StyledLink to={item.url}>
+        <Button
+          hollow
+          rounded
+          border
+          size="small"
+          desktopOnly={item.desktopOnly}
+        >
+          {item.text}
+        </Button>
+      </StyledLink>
     ) : (
       <span>{item.text}</span>
     )
