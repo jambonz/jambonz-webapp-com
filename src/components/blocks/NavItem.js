@@ -56,6 +56,7 @@ const Hr = styled.hr`
 
 const StyledLink = styled(ReactRouterLink)`
   text-decoration: none;
+  margin-right: ${props => props.navmain ? "1rem" : "0"};
 `;
 
 const NavItem = ({ navMain, item }) => {
@@ -151,9 +152,9 @@ const NavItem = ({ navMain, item }) => {
         )}
       </SubmenuContainer>
     ) : item.type === 'image-link' ? (
-      <ReactRouterLink to={item.url}>
+      <StyledLink navmain={navMain ? 'true' : ''} to={item.url}>
         <img src={item.image} alt="link-img" />
-      </ReactRouterLink>
+      </StyledLink>
     ) : item.type === 'button-link' ? (
       <StyledLink to={item.url}>
         <Button
