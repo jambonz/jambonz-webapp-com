@@ -93,8 +93,6 @@ const OauthCallback = () => {
               message: 'Your authentication method has been changed.',
             });
           }
-        } else if (response.status === 302) {
-          history.replace('/register');
         } else {
           throw Error('Non-200 response');
         }
