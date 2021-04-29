@@ -122,6 +122,7 @@ const PrivacyCheckbox = styled.div`
   display: flex;
   align-items: center;
   max-width: 350px;
+  margin-bottom: 1rem;
 
   h3 {
     margin-bottom: 0;
@@ -281,6 +282,7 @@ const Register = (props) => {
             </RoundButton>
           )}
           <SignupButtonsWrapper show={codeConfirmed}>
+            <CheckPrivacyAndTerms />
             <H3>
               Sign up with{" "}
               <ALink disabled={!privacyChecked} href={gitHubUrl}>
@@ -299,11 +301,11 @@ const Register = (props) => {
                 email
               </Link>
             </H3>
-            <CheckPrivacyAndTerms />
           </SignupButtonsWrapper>
         </>
       ) : (
         <ExternalMain title="Register">
+          <CheckPrivacyAndTerms />
           <H3 textAlign="left">Sign up with:</H3>
           <H3 textAlign="left">
             <ALink disabled={!privacyChecked} href={gitHubUrl}>
@@ -320,7 +322,6 @@ const Register = (props) => {
               Email
             </Link>
           </H3>
-          <CheckPrivacyAndTerms />
         </ExternalMain>
       )}
     </InviteConfirmContainer>
