@@ -89,6 +89,22 @@ const SpeechServicesIndex = () => {
 
         }
 
+        const { last_used } = s;
+        let lastUsedString = 'Never used';
+        if (last_used) {
+          const currentDate = new Date();
+          const lastUsedDate = new Date(last_used);
+          currentDate.setHours(0,0,0,0);
+          lastUsedDate.setHours(0,0,0,0);
+          const daysDifference = Math.round((currentDate - lastUsedDate) / 1000 / 60 / 60 / 24);
+          lastUsedString = daysDifference > 1
+            ? `${daysDifference} days ago`
+            : daysDifference === 1
+              ? 'Yesterday'
+              : daysDifference === 0
+                ? 'Today'
+                : 'Never used';
+        }
         return {
           sid: s.speech_credential_sid,
           vendor: s.vendor,
@@ -96,7 +112,7 @@ const SpeechServicesIndex = () => {
                 : s.use_for_tts ? 'TTS'
                 : s.use_for_stt ? 'STT'
                 : 'Not in use',
-          last_used: s.last_used || 'Never used',
+          last_used: lastUsedString,
           status: {
             type: 'status',
             content,
