@@ -14,10 +14,6 @@ import AntdTable from "../../../components/blocks/AntdTable";
 import handleErrors from "../../../helpers/handleErrors";
 import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 
-const StyledInputGroup = styled(InputGroup)`
-  margin: 0 2rem 1.5rem;
-`;
-
 const StyledButton = styled(Button)`
   & > span {
     height: 2rem;
@@ -152,15 +148,6 @@ const AlertsIndex = () => {
 
   return (
     <InternalMain type="fullWidthTable" title="Alerts">
-      <StyledInputGroup flexEnd spaced>
-        <Button
-          rounded="true"
-          gray="true"
-          style={{ marginBotton: "1rem !important" }}
-        >
-          Download as CSV
-        </Button>
-      </StyledInputGroup>
       <Section normalTable>
         <InputGroup flexEnd space>
           <Label indented htmlFor="daterange">
