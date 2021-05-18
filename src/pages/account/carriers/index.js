@@ -107,7 +107,7 @@ const CarriersIndex = () => {
         gatewaysConcat: `${
           t.gateways.filter((item) => item.inbound === 1).length
         } inbound, ${
-          t.gateways.filter((item) => item.inbound === 0).length
+          t.gateways.filter((item) => item.outbound === 1).length
         } outbound`,
         gatewaysList:   t.gateways.map(g => `${g.ipv4}:${g.port}`),
         gatewaysSid:    t.gateways.map(g => g.sip_gateway_sid),
