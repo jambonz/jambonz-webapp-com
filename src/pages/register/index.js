@@ -252,8 +252,8 @@ const Register = (props) => {
           <Description>
             If you would like to participate in the private beta, and are
             willing to share your feedback and actively participate, email us at{" "}
-            <ALink href="mailto:support@jambonz.com?subject=Requesting invitation to the beta">
-              support@jambonz.com
+            <ALink href="mailto:support@jambonz.org?subject=Requesting invitation to the beta">
+              support@jambonz.org
             </ALink>{" "}
             to request an invite code.
           </Description>
