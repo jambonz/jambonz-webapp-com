@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styled from "styled-components/macro";
-import { Menu, Dropdown } from "antd";
+import { Menu, Dropdown, Tabs } from "antd";
 
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalMain from '../../../components/wrappers/InternalMain';
@@ -21,6 +21,8 @@ import sortSipGateways from '../../../helpers/sortSipGateways';
 import Select from '../../../components/elements/Select';
 import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 import handleErrors from "../../../helpers/handleErrors";
+
+const { TabPane } = Tabs;
 
 const StyledForm = styled(Form)`
   @media (max-width: 978.98px) {
@@ -210,6 +212,7 @@ const CarriersAddEdit = ({ mode }) => {
   const [predefinedCarriers, setPredefinedCarriers] = useState([]);
   const [staticIPs, setStaticIPs] = useState(null);
 
+  const [smpps, setSmpps] = useState([]);
   useEffect(() => {
     const getAPIData = async () => {
       let isMounted = true;
@@ -238,6 +241,16 @@ const CarriersAddEdit = ({ mode }) => {
         });
         promises.push(applicationPromise);
 
+        const smppsPromise = axios({
+          method: 'get',
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: '/Smpps',
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        promises.push(smppsPromise);
+
         if (type === 'edit') {
           const carrierPromise = axios({
             method: 'get',
@@ -265,6 +278,7 @@ const CarriersAddEdit = ({ mode }) => {
 
         const usersMe = promiseResponses[0].data;
         setApplicationValues(promiseResponses[1].data);
+        setSmpps(promiseResponses[2].data);
 
         if (usersMe.account) {
           setSipRealm(usersMe.account.sip_realm);
@@ -273,8 +287,8 @@ const CarriersAddEdit = ({ mode }) => {
 
         if (type === 'edit') {
 
-          const carrier = promiseResponses[2].data;
-          const allSipGateways = promiseResponses[3].data;
+          const carrier = promiseResponses[3].data;
+          const allSipGateways = promiseResponses[4].data;
 
           if (!carrier) {
             isMounted = false;
@@ -841,6 +855,10 @@ const CarriersAddEdit = ({ mode }) => {
     return title;
   };
 
+  const handleTabChange = () => {
+
+  };
+
   return (
     <InternalMain
       type="form"
@@ -854,336 +872,478 @@ const CarriersAddEdit = ({ mode }) => {
         {showLoader ? (
           <Loader height="376px" />
         ) : (
-          <StyledForm
-            large
-            onSubmit={handleSubmit}
-          >
-            <Label htmlFor="name">Name</Label>
-            <NameFieldWrapper hasDropdown={type === 'add'}>
-              <Input
-                name="name"
-                id="name"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="Carrier name"
-                invalid={nameInvalid}
-                autoFocus
-                ref={refName}
-              />
-              {type === 'add' && (
-                <CarrierSelect>
-                  <Dropdown
-                    placement="bottomRight"
-                    trigger="click"
-                    overlay={
-                      <Menu>
-                        {predefinedCarriers.map((item) => {
-                          const disabled = !staticIPs && item.requires_static_ip;
-                          return (
-                            <Menu.Item key={item.value} disabled={disabled}>
-                              <CarrierItem
-                                disabled={disabled}
-                                onClick={() => !disabled && pickupCarrier(item.value)}
-                              >
-                                {item.text}
-                              </CarrierItem>
-                            </Menu.Item>
-                          );
-                        })}
-                      </Menu>
-                    }
-                  >
-                    <Button text formLink type="button">
-                      Select from list
-                    </Button>
-                  </Dropdown>
-                </CarrierSelect>
-              )}
-            </NameFieldWrapper>
-
-            <Label htmlFor="e164">active</Label>
-            <Checkbox
-              noLeftMargin
-              name="active"
-              id="active"
-              label=""
-              checked={carrierActive}
-              onChange={e => setCarrierActive(e.target.checked)}
-            />
-
-            <Label htmlFor="e164">E.164 Syntax</Label>
-            <Checkbox
-              noLeftMargin
-              name="e164"
-              id="e164"
-              label="prepend a leading + on origination attempts"
-              checked={e164}
-              onChange={e => setE164(e.target.checked)}
-            />
-
-            <Label htmlFor="application">Application</Label>
-            <Select
-              name="application"
-              id="application"
-              value={application}
-              onChange={e => setApplication(e.target.value)}
-            >
-              <option value="">
-                {type === 'add'
-                  ? '-- OPTIONAL: Application to invoke on calls arriving from this carrier --'
-                  : '-- NONE --'
-                }
-              </option>
-              {applicationValues.map(a => (
-                <option
-                  key={a.application_sid}
-                  value={a.application_sid}
-                >
-                  {a.name}
-                </option>
-              ))}
-            </Select>
-
-            <hr style={{ margin: '0.5rem -2rem' }} />
-
-            {
-              !authenticate ? (
-                <>
-                  <Button
-                    text
-                    formLink
-                    type="button"
-                    onClick={e => setAuthenticate(!authenticate)}
-                  >
-                    Does your carrier require authentication on outbound calls?
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Label htmlFor="username">Username</Label>
+          <Tabs defaultActiveKey="1" onChange={handleTabChange}>
+            <TabPane tab="VOIP" key="1">
+              <StyledForm
+                large
+              >
+                <Label htmlFor="name">Name</Label>
+                <NameFieldWrapper hasDropdown={type === 'add'}>
                   <Input
-                    name="username"
-                    id="username"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    placeholder="SIP username for authenticating outbound calls"
-                    invalid={usernameInvalid}
-                    ref={refUsername}
+                    name="name"
+                    id="name"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    placeholder="Carrier name"
+                    invalid={nameInvalid}
+                    autoFocus
+                    ref={refName}
                   />
-                  <Label htmlFor="password">Password</Label>
-                  <PasswordInput
-                    allowShowPassword
-                    name="password"
-                    id="password"
-                    password={password}
-                    setPassword={setPassword}
-                    setErrorMessage={setErrorMessage}
-                    placeholder="SIP password for authenticating outbound calls"
-                    invalid={passwordInvalid}
-                    ref={refPassword}
-                  />
-                  <div></div>
-                  <Checkbox
-                    noLeftMargin
-                    name="register"
-                    id="register"
-                    label="Carrier requires SIP Register before sending outbound calls"
-                    checked={register}
-                    onChange={e => setRegister(e.target.checked)}
-                  />
-                  {
-                    register ? (
-                      <>
-                        <Label htmlFor="realm">SIP Realm</Label>
-                        <Input
-                          name="realm"
-                          id="realm"
-                          value={realm}
-                          onChange={e => setRealm(e.target.value)}
-                          placeholder="SIP realm for registration"
-                          invalid={realmInvalid}
-                          ref={refRealm}
-                        />
-                      </>
-                    ) : (
-                      null
-                    )
-                  }
-                </>
-              )
-            }
+                  {type === 'add' && (
+                    <CarrierSelect>
+                      <Dropdown
+                        placement="bottomRight"
+                        trigger="click"
+                        overlay={
+                          <Menu>
+                            {predefinedCarriers.map((item) => {
+                              const disabled = !staticIPs && item.requires_static_ip;
+                              return (
+                                <Menu.Item key={item.value} disabled={disabled}>
+                                  <CarrierItem
+                                    disabled={disabled}
+                                    onClick={() => !disabled && pickupCarrier(item.value)}
+                                  >
+                                    {item.text}
+                                  </CarrierItem>
+                                </Menu.Item>
+                              );
+                            })}
+                          </Menu>
+                        }
+                      >
+                        <Button text formLink type="button">
+                          Select from list
+                        </Button>
+                      </Dropdown>
+                    </CarrierSelect>
+                  )}
+                </NameFieldWrapper>
 
-            <hr style={{ margin: '0.5rem -2rem' }} />
-
-            {
-              requiredTechPrefix ? (
-                <>
-                  <Label htmlFor="techPrefix">Tech prefix</Label>
-                  <Input
-                    name="techPrefix"
-                    id="techPrefix"
-                    value={techPrefix}
-                    onChange={e => setTechPrefix(e.target.value)}
-                    placeholder="Tech Prefix"
-                    invalid={techPrefixInvalid}
-                    ref={refTechPrefix}
-                  />
-                </>
-              ) : (
-                <>
-                  <Button
-                    text
-                    formLink
-                    type="button"
-                    onClick={e => setRequiredTechPrefix(!requiredTechPrefix)}
-                  >
-                    Does your carrier require a tech prefix on outbound calls?
-                  </Button>
-                </>
-              )
-            }
-
-            <hr style={{ margin: '0.5rem -2rem' }} />
-
-            {
-              suportSIP ? (
-                <>
-                  <Label htmlFor="diversion">Diversion</Label>
-                  <Input
-                    name="diversion"
-                    id="diversion"
-                    value={diversion}
-                    onChange={e => setDiversion(e.target.value)}
-                    placeholder="Phone number or SIP URI"
-                  />
-                </>
-              ) : (
-                <>
-                  <Button
-                    text
-                    formLink
-                    type="button"
-                    onClick={() => setSupportSIP(!suportSIP)}
-                  >
-                    Does your carrier support the SIP Diversion header for authenticating the calling number?
-                  </Button>
-                </>
-              )
-            }
-
-            <hr style={{ margin: '0.5rem -2rem' }} />
-
-            <div
-              style={{
-                whiteSpace: 'nowrap',
-                textAlign: 'left',
-                color: '#231f20'
-              }}
-            >SIP Gateways</div>
-            {
-              sipGateways.length
-              ? <div>{/* for CSS grid layout */}</div>
-              : null
-            }
-            <SIPGatewaysInputGroup>
-              <StyledLabel>{`Network Address / Port / Netmask`}</StyledLabel>
-            </SIPGatewaysInputGroup>
-            {sipGateways.map((g, i) => (
-              <SIPGatewaysInputGroup key={i}>
-                <Input
-                  name={`sipGatewaysIp[${i}]`}
-                  id={`sipGatewaysIp[${i}]`}
-                  value={sipGateways[i].ip}
-                  onChange={e => updateSipGateways(e, i, 'ip')}
-                  placeholder={'1.2.3.4'}
-                  invalid={sipGateways[i].invalidIp}
-                  ref={ref => refIp.current[i] = ref}
+                <Label htmlFor="e164">active</Label>
+                <Checkbox
+                  noLeftMargin
+                  name="active"
+                  id="active"
+                  label=""
+                  checked={carrierActive}
+                  onChange={e => setCarrierActive(e.target.checked)}
                 />
-                <Input
-                  width="5rem"
-                  name={`sipGatewaysPort[${i}]`}
-                  id={`sipGatewaysPort[${i}]`}
-                  value={sipGateways[i].port}
-                  onChange={e => updateSipGateways(e, i, 'port')}
-                  placeholder="5060"
-                  invalid={sipGateways[i].invalidPort}
-                  ref={ref => refPort.current[i] = ref}
+
+                <Label htmlFor="e164">E.164 Syntax</Label>
+                <Checkbox
+                  noLeftMargin
+                  name="e164"
+                  id="e164"
+                  label="prepend a leading + on origination attempts"
+                  checked={e164}
+                  onChange={e => setE164(e.target.checked)}
                 />
+
+                <Label htmlFor="application">Application</Label>
                 <Select
-                  name={`sipgatewaysNetmask[${i}]`}
-                  id={`sipgatewaysNetmask[${i}]`}
-                  value={sipGateways[i].netmask}
-                  disabled={sipGateways[i].outbound}
-                  onChange={e => updateSipGateways(e, i, 'netmask')}
+                  name="application"
+                  id="application"
+                  value={application}
+                  onChange={e => setApplication(e.target.value)}
                 >
-                  {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
-                    <option value={item} key={item}>{item}</option>
+                  <option value="">
+                    {type === 'add'
+                      ? '-- OPTIONAL: Application to invoke on calls arriving from this carrier --'
+                      : '-- NONE --'
+                    }
+                  </option>
+                  {applicationValues.map(a => (
+                    <option
+                      key={a.application_sid}
+                      value={a.application_sid}
+                    >
+                      {a.name}
+                    </option>
                   ))}
                 </Select>
-                <SIPGatewaysChecboxGroup>
-                  <Checkbox
-                    id={`inbound[${i}]`}
-                    label={width > 1100 ? "Inbound" : "In"}
-                    tooltip="Sends us calls"
-                    checked={sipGateways[i].inbound}
-                    onChange={e => updateSipGateways(e, i, 'inbound')}
-                    invalid={sipGateways[i].invalidInbound}
-                    ref={ref => refInbound.current[i] = ref}
-                  />
-                  <Checkbox
-                    id={`outbound[${i}]`}
-                    label={width > 1100 ? "Outbound" : "Out"}
-                    tooltip="Accepts calls from us"
-                    checked={sipGateways[i].outbound}
-                    onChange={e => updateSipGateways(e, i, 'outbound')}
-                    invalid={sipGateways[i].invalidOutbound}
-                    ref={ref => refOutbound.current[i] = ref}
-                  />
-                  <TrashButton
-                    onClick={() => removeSipGateway(i)}
-                    ref={ref => refTrash.current[i] = ref}
-                  />
-                </SIPGatewaysChecboxGroup>
-              </SIPGatewaysInputGroup>
-            ))}
-            <StyledButton
-              square
-              type="button"
-              onClick={addSipGateway}
-              ref={refAdd}
-            >
-              +
-            </StyledButton>
-            {errorMessage && (
-              <FormError grid message={errorMessage} />
-            )}
 
-            <StyledButtonGroup flexEnd spaced>
-              <Button
-                rounded="true"
-                gray
-                type="button"
-                onClick={() => {
-                  history.push('/account/carriers');
-                  dispatch({
-                    type: 'ADD',
-                    level: 'info',
-                    message: type === 'add' ? 'New carrier canceled' :'Changes canceled',
-                  });
-                }}
-              >
-                Cancel
-              </Button>
+                <hr style={{ margin: '0.5rem -2rem' }} />
 
-              <Button rounded="true">
-                {type === 'add'
-                  ? 'Add Carrier'
-                  : 'Save'
+                {
+                  !authenticate ? (
+                    <>
+                      <Button
+                        text
+                        formLink
+                        type="button"
+                        onClick={e => setAuthenticate(!authenticate)}
+                      >
+                        Does your carrier require authentication on outbound calls?
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Label htmlFor="username">Username</Label>
+                      <Input
+                        name="username"
+                        id="username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        placeholder="SIP username for authenticating outbound calls"
+                        invalid={usernameInvalid}
+                        ref={refUsername}
+                      />
+                      <Label htmlFor="password">Password</Label>
+                      <PasswordInput
+                        allowShowPassword
+                        name="password"
+                        id="password"
+                        password={password}
+                        setPassword={setPassword}
+                        setErrorMessage={setErrorMessage}
+                        placeholder="SIP password for authenticating outbound calls"
+                        invalid={passwordInvalid}
+                        ref={refPassword}
+                      />
+                      <div></div>
+                      <Checkbox
+                        noLeftMargin
+                        name="register"
+                        id="register"
+                        label="Carrier requires SIP Register before sending outbound calls"
+                        checked={register}
+                        onChange={e => setRegister(e.target.checked)}
+                      />
+                      {
+                        register ? (
+                          <>
+                            <Label htmlFor="realm">SIP Realm</Label>
+                            <Input
+                              name="realm"
+                              id="realm"
+                              value={realm}
+                              onChange={e => setRealm(e.target.value)}
+                              placeholder="SIP realm for registration"
+                              invalid={realmInvalid}
+                              ref={refRealm}
+                            />
+                          </>
+                        ) : (
+                          null
+                        )
+                      }
+                    </>
+                  )
                 }
-              </Button>
-            </StyledButtonGroup>
-          </StyledForm>
+
+                <hr style={{ margin: '0.5rem -2rem' }} />
+
+                {
+                  requiredTechPrefix ? (
+                    <>
+                      <Label htmlFor="techPrefix">Tech prefix</Label>
+                      <Input
+                        name="techPrefix"
+                        id="techPrefix"
+                        value={techPrefix}
+                        onChange={e => setTechPrefix(e.target.value)}
+                        placeholder="Tech Prefix"
+                        invalid={techPrefixInvalid}
+                        ref={refTechPrefix}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        text
+                        formLink
+                        type="button"
+                        onClick={e => setRequiredTechPrefix(!requiredTechPrefix)}
+                      >
+                        Does your carrier require a tech prefix on outbound calls?
+                      </Button>
+                    </>
+                  )
+                }
+
+                <hr style={{ margin: '0.5rem -2rem' }} />
+
+                {
+                  suportSIP ? (
+                    <>
+                      <Label htmlFor="diversion">Diversion</Label>
+                      <Input
+                        name="diversion"
+                        id="diversion"
+                        value={diversion}
+                        onChange={e => setDiversion(e.target.value)}
+                        placeholder="Phone number or SIP URI"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        text
+                        formLink
+                        type="button"
+                        onClick={() => setSupportSIP(!suportSIP)}
+                      >
+                        Does your carrier support the SIP Diversion header for authenticating the calling number?
+                      </Button>
+                    </>
+                  )
+                }
+
+                <hr style={{ margin: '0.5rem -2rem' }} />
+
+                <div
+                  style={{
+                    whiteSpace: 'nowrap',
+                    textAlign: 'left',
+                    color: '#231f20'
+                  }}
+                >SIP Gateways</div>
+                {
+                  sipGateways.length
+                  ? <div>{/* for CSS grid layout */}</div>
+                  : null
+                }
+                <SIPGatewaysInputGroup>
+                  <StyledLabel>{`Network Address / Port / Netmask`}</StyledLabel>
+                </SIPGatewaysInputGroup>
+                {sipGateways.map((g, i) => (
+                  <SIPGatewaysInputGroup key={i}>
+                    <Input
+                      name={`sipGatewaysIp[${i}]`}
+                      id={`sipGatewaysIp[${i}]`}
+                      value={sipGateways[i].ip}
+                      onChange={e => updateSipGateways(e, i, 'ip')}
+                      placeholder={'1.2.3.4'}
+                      invalid={sipGateways[i].invalidIp}
+                      ref={ref => refIp.current[i] = ref}
+                    />
+                    <Input
+                      width="5rem"
+                      name={`sipGatewaysPort[${i}]`}
+                      id={`sipGatewaysPort[${i}]`}
+                      value={sipGateways[i].port}
+                      onChange={e => updateSipGateways(e, i, 'port')}
+                      placeholder="5060"
+                      invalid={sipGateways[i].invalidPort}
+                      ref={ref => refPort.current[i] = ref}
+                    />
+                    <Select
+                      name={`sipgatewaysNetmask[${i}]`}
+                      id={`sipgatewaysNetmask[${i}]`}
+                      value={sipGateways[i].netmask}
+                      disabled={sipGateways[i].outbound}
+                      onChange={e => updateSipGateways(e, i, 'netmask')}
+                    >
+                      {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
+                        <option value={item} key={item}>{item}</option>
+                      ))}
+                    </Select>
+                    <SIPGatewaysChecboxGroup>
+                      <Checkbox
+                        id={`inbound[${i}]`}
+                        label={width > 1100 ? "Inbound" : "In"}
+                        tooltip="Sends us calls"
+                        checked={sipGateways[i].inbound}
+                        onChange={e => updateSipGateways(e, i, 'inbound')}
+                        invalid={sipGateways[i].invalidInbound}
+                        ref={ref => refInbound.current[i] = ref}
+                      />
+                      <Checkbox
+                        id={`outbound[${i}]`}
+                        label={width > 1100 ? "Outbound" : "Out"}
+                        tooltip="Accepts calls from us"
+                        checked={sipGateways[i].outbound}
+                        onChange={e => updateSipGateways(e, i, 'outbound')}
+                        invalid={sipGateways[i].invalidOutbound}
+                        ref={ref => refOutbound.current[i] = ref}
+                      />
+                      <TrashButton
+                        onClick={() => removeSipGateway(i)}
+                        ref={ref => refTrash.current[i] = ref}
+                      />
+                    </SIPGatewaysChecboxGroup>
+                  </SIPGatewaysInputGroup>
+                ))}
+                <StyledButton
+                  square
+                  type="button"
+                  onClick={addSipGateway}
+                  ref={refAdd}
+                >
+                  +
+                </StyledButton>
+                {errorMessage && (
+                  <FormError grid message={errorMessage} />
+                )}
+              </StyledForm>
+            </TabPane>
+            <TabPane tab="SMPP" disabled={smpps.length !== 0} key="2">
+            <StyledForm
+                large
+              >
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  name="username"
+                  id="username"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                  placeholder="SIP username for authenticating outbound calls"
+                  invalid={usernameInvalid}
+                  ref={refUsername}
+                />
+                <Label htmlFor="password">Password</Label>
+                <PasswordInput
+                  allowShowPassword
+                  name="password"
+                  id="password"
+                  password={password}
+                  setPassword={setPassword}
+                  setErrorMessage={setErrorMessage}
+                  placeholder="SIP password for authenticating outbound calls"
+                  invalid={passwordInvalid}
+                  ref={refPassword}
+                />
+
+                <Label htmlFor="username">Inbound System Id</Label>
+                <Input
+                  name="username"
+                  id="username"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                  placeholder="SIP username for authenticating outbound calls"
+                  invalid={usernameInvalid}
+                  ref={refUsername}
+                />
+                <Label htmlFor="password">Inbound System Password</Label>
+                <PasswordInput
+                  allowShowPassword
+                  name="password"
+                  id="password"
+                  password={password}
+                  setPassword={setPassword}
+                  setErrorMessage={setErrorMessage}
+                  placeholder="SIP password for authenticating outbound calls"
+                  invalid={passwordInvalid}
+                  ref={refPassword}
+                />
+
+                <hr style={{ margin: '0.5rem -2rem' }} />
+
+                <div
+                  style={{
+                    whiteSpace: 'nowrap',
+                    textAlign: 'left',
+                    color: '#231f20'
+                  }}
+                >SMPP Gateways</div>
+                {
+                  sipGateways.length
+                  ? <div>{/* for CSS grid layout */}</div>
+                  : null
+                }
+                <SIPGatewaysInputGroup>
+                  <StyledLabel>{`Network Address / Port / Netmask`}</StyledLabel>
+                </SIPGatewaysInputGroup>
+                {sipGateways.map((g, i) => (
+                  <SIPGatewaysInputGroup key={i}>
+                    <Input
+                      name={`sipGatewaysIp[${i}]`}
+                      id={`sipGatewaysIp[${i}]`}
+                      value={sipGateways[i].ip}
+                      onChange={e => updateSipGateways(e, i, 'ip')}
+                      placeholder={'1.2.3.4'}
+                      invalid={sipGateways[i].invalidIp}
+                      ref={ref => refIp.current[i] = ref}
+                    />
+                    <Input
+                      width="5rem"
+                      name={`sipGatewaysPort[${i}]`}
+                      id={`sipGatewaysPort[${i}]`}
+                      value={sipGateways[i].port}
+                      onChange={e => updateSipGateways(e, i, 'port')}
+                      placeholder="5060"
+                      invalid={sipGateways[i].invalidPort}
+                      ref={ref => refPort.current[i] = ref}
+                    />
+                    <Select
+                      name={`sipgatewaysNetmask[${i}]`}
+                      id={`sipgatewaysNetmask[${i}]`}
+                      value={sipGateways[i].netmask}
+                      disabled={sipGateways[i].outbound}
+                      onChange={e => updateSipGateways(e, i, 'netmask')}
+                    >
+                      {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
+                        <option value={item} key={item}>{item}</option>
+                      ))}
+                    </Select>
+                    <SIPGatewaysChecboxGroup>
+                      <Checkbox
+                        id={`inbound[${i}]`}
+                        label={width > 1100 ? "Inbound" : "In"}
+                        tooltip="Sends us calls"
+                        checked={sipGateways[i].inbound}
+                        onChange={e => updateSipGateways(e, i, 'inbound')}
+                        invalid={sipGateways[i].invalidInbound}
+                        ref={ref => refInbound.current[i] = ref}
+                      />
+                      <Checkbox
+                        id={`outbound[${i}]`}
+                        label={width > 1100 ? "Outbound" : "Out"}
+                        tooltip="Accepts calls from us"
+                        checked={sipGateways[i].outbound}
+                        onChange={e => updateSipGateways(e, i, 'outbound')}
+                        invalid={sipGateways[i].invalidOutbound}
+                        ref={ref => refOutbound.current[i] = ref}
+                      />
+                      <TrashButton
+                        onClick={() => removeSipGateway(i)}
+                        ref={ref => refTrash.current[i] = ref}
+                      />
+                    </SIPGatewaysChecboxGroup>
+                  </SIPGatewaysInputGroup>
+                ))}
+                <StyledButton
+                  square
+                  type="button"
+                  onClick={addSipGateway}
+                  ref={refAdd}
+                >
+                  +
+                </StyledButton>
+                {errorMessage && (
+                  <FormError grid message={errorMessage} />
+                )}
+              </StyledForm>
+            </TabPane>
+          </Tabs>
         )}
+        <StyledButtonGroup flexEnd spaced>
+          <Button
+            rounded="true"
+            gray
+            type="button"
+            onClick={() => {
+              history.push('/account/carriers');
+              dispatch({
+                type: 'ADD',
+                level: 'info',
+                message: type === 'add' ? 'New carrier canceled' :'Changes canceled',
+              });
+            }}
+          >
+            Cancel
+          </Button>
+
+          <Button rounded="true"
+            onClick={handleSubmit}
+          >
+            {type === 'add'
+              ? 'Add Carrier'
+              : 'Save'
+            }
+          </Button>
+        </StyledButtonGroup>
       </Section>
     </InternalMain>
   );
