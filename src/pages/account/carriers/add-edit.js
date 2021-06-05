@@ -82,7 +82,7 @@ const SMPPGatewaysInputGroup = styled(InputGroup)`
   grid-column: 1 / 3;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: 1fr 80px 200px 50px;
+  grid-template-columns: 1fr 80px 70px 200px 50px;
 `;
 
 const SIPGatewaysChecboxGroup = styled.div`
@@ -174,8 +174,13 @@ const CarriersAddEdit = ({ mode }) => {
   const refAdd = useRef(null);
   const refTechPrefix = useRef(null);
 
+  const refSmppSystemId = useRef(null);
+  const refSmppPassword = useRef(null);
+  const refSmppInboundSystemId = useRef(null);
+  const refSmppInboundPassword = useRef(null);
   const refSmppIp = useRef([]);
   const refSmppPort = useRef([]);
+  const refSmppTrash = useRef([]);
 
   // Form inputs
   const [ name,            setName            ] = useState('');
@@ -192,9 +197,10 @@ const CarriersAddEdit = ({ mode }) => {
   const [ realmInvalid,    setRealmInvalid    ] = useState(false);
   const [ sipGateways,     setSipGateways     ] = useState([
     {
-      voip_carrier_sid: '',
+      sip_gateway_sid: '',
       ip: '',
       port: 5060,
+      voip_carrier_sid: '',
       inbound: true,
       outbound: false,
       invalidIp: false,
@@ -203,15 +209,24 @@ const CarriersAddEdit = ({ mode }) => {
       invalidOutbound: false,
     }
   ]);
+  const [ smpp_system_id,        setSmppSystemId        ] = useState('');
+  const [ smpp_system_idInvalid, setSmppSystemIdInvalid ] = useState(false);
+  const [ smpp_password,        setSmppPassword        ] = useState('');
+  const [ smpp_passwordInvalid, setSmppPasswordInvalid ] = useState(false);
+  const [ smpp_inbound_system_id,        setSmppInboundSystemId        ] = useState('');
+  const [ smpp_inbound_system_idInvalid, setSmppInboundSystemIdInvalid ] = useState(false);
+  const [ smpp_inbound_password,        setSmppInboundPassword        ] = useState('');
+  const [ smpp_inbound_passwordInvalid, setSmppInboundPasswordInvalid ] = useState(false);
 
   const [ smppGateways,     setSmppGateways     ] = useState([
     {
-      voip_carrier_sid: '',
+      smpp_gateway_sid: '',
       ipv4: '',
       port: 2775,
-      inbound: true,
+      voip_carrier_sid: '',
+      inbound: false,
       use_tls: false,
-      outbound: false,
+      outbound: true,
       is_primary: false,
       invalidIp: false,
       invalidPort: false,
@@ -287,7 +302,16 @@ const CarriersAddEdit = ({ mode }) => {
           const sipGatewaysPromise = axios({
             method: 'get',
             baseURL: process.env.REACT_APP_API_BASE_URL,
-            url: `/SipGateways`,
+            url: `/SipGateways?voip_carrier_sid=${voip_carrier_sid}`,
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+
+          const smppGatewaysPromise = axios({
+            method: 'get',
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url: `/SmppGateways?voip_carrier_sid=${voip_carrier_sid}`,
             headers: {
               Authorization: `Bearer ${jwt}`,
             },
@@ -295,6 +319,7 @@ const CarriersAddEdit = ({ mode }) => {
 
           promises.push(carrierPromise);
           promises.push(sipGatewaysPromise);
+          promises.push(smppGatewaysPromise);
         }
 
         const promiseResponses = await Promise.all(promises);
@@ -312,6 +337,7 @@ const CarriersAddEdit = ({ mode }) => {
 
           const carrier = promiseResponses[3].data;
           const allSipGateways = promiseResponses[4].data;
+          const allSmppGateways = promiseResponses[5].data;
 
           if (!carrier) {
             isMounted = false;
@@ -328,7 +354,12 @@ const CarriersAddEdit = ({ mode }) => {
             return s.voip_carrier_sid === carrier.voip_carrier_sid;
           });
 
+          const currentSmppGateways = allSmppGateways.filter(s => {
+            return s.voip_carrier_sid === carrier.voip_carrier_sid;
+          });
+
           sortSipGateways(currentSipGateways);
+          sortSipGateways(currentSmppGateways);
 
           setName(carrier.name || '');
           setE164(carrier.e164_leading_plus === 1);
@@ -343,12 +374,30 @@ const CarriersAddEdit = ({ mode }) => {
             ip: s.ipv4,
             port: s.port,
             netmask: s.netmask,
+            voip_carrier_sid: s.voip_carrier_sid,
             inbound: s.inbound === 1,
             outbound: s.outbound === 1,
             invalidIp: false,
             invalidPort: false,
             invalidInbound: false,
             invalidOutbound: false,
+          })));
+          setSmppSystemId(carrier.smpp_system_id || '');
+          setSmppPassword(carrier.smpp_password || '');
+          setSmppInboundSystemId(carrier.smpp_inbound_system_id || '');
+          setSmppInboundPassword(carrier.smpp_inbound_password || '');
+          setSmppGateways(currentSmppGateways.map(s => ({
+            smpp_gateway_sid: s.smpp_gateway_sid,
+            ipv4: s.ipv4,
+            port: s.port,
+            netmask: s.netmask,
+            voip_carrier_sid: s.voip_carrier_sid,
+            inbound: s.inbound,
+            outbound: s.outbound,
+            use_tls: s.use_tls,
+            is_primary: s.is_primary,
+            invalidIp: false,
+            invalidPort: false,
           })));
           setCarrierSid(carrier.voip_carrier_sid);
           setTechPrefix(carrier.tech_prefix || '');
@@ -414,6 +463,7 @@ const CarriersAddEdit = ({ mode }) => {
         port: 5060,
         inbound: true,
         outbound: false,
+        voip_carrier_sid: '',
         invalidIp: false,
         invalidPort: false,
         invalidInbound: false,
@@ -427,13 +477,16 @@ const CarriersAddEdit = ({ mode }) => {
     const newSmppGateways = [
       ...smppGateways,
       {
-        voip_carrier_sid: '',
+        sip_gateway_sid: '',
         ipv4: '',
         port: 2775,
         inbound: inbound,
         outbound: !inbound,
+        voip_carrier_sid: '',
         use_tls: false,
-        is_primary: false
+        is_primary: false,
+        invalidIp: false,
+        invalidPort: false,
       }
     ];
     setSmppGateways(newSmppGateways);
@@ -481,6 +534,10 @@ const CarriersAddEdit = ({ mode }) => {
           : e.target.value;
     newSmppGateways[i][key] = newValue;
 
+    if (key === "outbound" && newValue === true) {
+      newSmppGateways[i]["netmask"] = 32;
+    }
+
     setSmppGateways(newSmppGateways);
   };
 
@@ -498,6 +555,10 @@ const CarriersAddEdit = ({ mode }) => {
       s.invalidOutbound = false;
     });
     setSipGateways(newSipGateways);
+    setSmppSystemIdInvalid(false);
+    setSmppPasswordInvalid(false);
+    setSmppInboundSystemIdInvalid(false);
+    setSmppInboundPasswordInvalid(false);
     const newSmppGateways = [...smppGateways];
     newSmppGateways.forEach((s, i) => {
       s.invalidIp = false;
@@ -694,6 +755,71 @@ const CarriersAddEdit = ({ mode }) => {
         });
       });
 
+      smppGateways.forEach(async (gateway, i) => {
+        //-----------------------------------------------------------------------------
+        // IP validation
+        //-----------------------------------------------------------------------------
+        const type = regIp.test(gateway.ipv4.trim())
+          ? 'ip'
+          : 'invalid';
+
+        if (!gateway.ipv4) {
+          errorMessages.push('The IP Address cannot be blank. Please provide an IP address or delete the row.');
+          updateSmppGateways(null, i, 'invalidIp');
+          if (!focusHasBeenSet) {
+            refIp.current[i].focus();
+            focusHasBeenSet = true;
+          }
+        }
+
+        else if (type === 'invalid') {
+          errorMessages.push('Please provide a valid IP address or fully qualified domain name.');
+          updateSmppGateways(null, i, 'invalidIp');
+          if (!focusHasBeenSet) {
+            refSmppIp.current[i].focus();
+            focusHasBeenSet = true;
+          }
+        }
+
+        //-----------------------------------------------------------------------------
+        // Port validation
+        //-----------------------------------------------------------------------------
+        if (
+          gateway.port && (
+            !(refSmppPort.test(gateway.port.toString().trim()))
+            || (parseInt(gateway.port.toString().trim()) < 0)
+            || (parseInt(gateway.port.toString().trim()) > 65535)
+          )
+        ) {
+          errorMessages.push('Please provide a valid port number between 0 and 65535');
+          updateSmppGateways(null, i, 'invalidPort');
+          if (!focusHasBeenSet) {
+            refSmppPort.current[i].focus();
+            focusHasBeenSet = true;
+          }
+        }
+
+        //-----------------------------------------------------------------------------
+        // duplicates validation
+        //-----------------------------------------------------------------------------
+        smppGateways.forEach((otherGateway, j) => {
+          if (i >= j) return;
+          if (!gateway.ip) return;
+          if (type === 'invalid') return;
+          if (gateway.ip === otherGateway.ip && gateway.port === otherGateway.port) {
+            errorMessages.push('Each SIP gateway must have a unique IP address.');
+            updateSmppGateways(null, i, 'invalidIp');
+            updateSmppGateways(null, i, 'invalidPort');
+            updateSmppGateways(null, j, 'invalidIp');
+            updateSmppGateways(null, j, 'invalidPort');
+            if (!focusHasBeenSet) {
+              refSmppTrash.current[j].focus();
+              focusHasBeenSet = true;
+            }
+          }
+        });
+      });
+
       // remove duplicate error messages
       for (let i = 0; i < errorMessages.length; i++) {
         for (let j = 0; j < errorMessages.length; j++) {
@@ -744,22 +870,36 @@ const CarriersAddEdit = ({ mode }) => {
           tech_prefix: techPrefix ? techPrefix.trim() : null,
           diversion: diversion ? diversion.trim() : null,
           is_active: carrierActive ? 1 : 0,
+          smpp_system_id: smpp_system_id ? smpp_system_id.trim(): null,
+          smpp_password: smpp_password ? smpp_password.trim(): null,
+          smpp_inbound_system_id: smpp_inbound_system_id ? smpp_inbound_system_id.trim(): null,
+          smpp_inbound_password: smpp_inbound_password ? smpp_inbound_password.trim(): null
         },
       });
       const voip_carrier_sid = voipCarrier.data.sid;
 
       // get updated gateway info from API in order to delete ones that user has removed from UI
       let sipGatewaysFromAPI;
+      let smppGatewaysFromAPI;
       if (!creatingNewCarrier) {
-        const results = await axios({
+        let results = await axios({
           method: 'get',
           baseURL: process.env.REACT_APP_API_BASE_URL,
-          url: '/SipGateways',
+          url: `/SipGateways?voip_carrier_sid=${voip_carrier_sid}`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
         });
         sipGatewaysFromAPI = results.data.filter(s => s.voip_carrier_sid === carrierSid);
+        results = await axios({
+          method: 'get',
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: `/SmppGateways?voip_carrier_sid=${voip_carrier_sid}`,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        smppGatewaysFromAPI = results.data.filter(s => s.voip_carrier_sid === carrierSid);
       }
 
       //-----------------------------------------------------------------------------
@@ -768,6 +908,7 @@ const CarriersAddEdit = ({ mode }) => {
       // Keeping track of created SIP gateways in case one throws an error, then all
       // of the ones created before that (as well as the carrier) have to be deleted.
       let completedSipGateways = [];
+      let completedSmppGateways = [];
       try {
         for (const s of sipGateways) {
           const creatingNewGateway = creatingNewCarrier || s.sip_gateway_sid === '';
@@ -805,18 +946,64 @@ const CarriersAddEdit = ({ mode }) => {
             completedSipGateways.push(result.data.sid);
           }
         };
-      } catch (err) {
-        if (completedSipGateways.length) {
-          for (const sid of completedSipGateways) {
-            await axios({
-              method: 'delete',
-              baseURL: process.env.REACT_APP_API_BASE_URL,
-              url: `/SipGateways/${sid}`,
-              headers: {
-                Authorization: `Bearer ${jwt}`,
-              },
-            });
+        for (const s of smppGateways) {
+          const creatingNewGateway = creatingNewCarrier || s.smpp_gateway_sid === '';
+
+          const method = creatingNewGateway
+            ? 'post'
+            : 'put';
+
+          const url = creatingNewGateway
+            ? '/SmppGateways'
+            : `/SmppGateways/${s.smpp_gateway_sid}`;
+
+          const data = {
+            ipv4: s.ipv4.trim(),
+            port: s.port.toString().trim(),
+            netmask: s.netmask,
+            inbound: s.inbound,
+            outbound: s.outbound,
+            use_tls: s.use_tls,
+            is_primary: s.is_primary
+          };
+
+          if (creatingNewGateway) {
+            data.voip_carrier_sid = voip_carrier_sid || carrierSid;
           }
+
+          const result = await axios({
+            method,
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url,
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+            data,
+          });
+          if (creatingNewGateway) {
+            completedSmppGateways.push(result.data.sid);
+          }
+        };
+      } catch (err) {
+        for (const sid of completedSipGateways) {
+          await axios({
+            method: 'delete',
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url: `/SipGateways/${sid}`,
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+        }
+        for (const sid of completedSmppGateways) {
+          await axios({
+            method: 'delete',
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url: `/SmppGateways/${sid}`,
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
         }
         if (voip_carrier_sid) {
           await axios({
@@ -840,6 +1027,19 @@ const CarriersAddEdit = ({ mode }) => {
               method: 'delete',
               baseURL: process.env.REACT_APP_API_BASE_URL,
               url: `/SipGateways/${remote.sip_gateway_sid}`,
+              headers: {
+                Authorization: `Bearer ${jwt}`,
+              },
+            });
+          }
+        }
+        for (const remote of smppGatewaysFromAPI) {
+          const match = smppGateways.filter(local => local.smpp_gateway_sid === remote.smpp_gateway_sid);
+          if (!match.length) {
+            await axios({
+              method: 'delete',
+              baseURL: process.env.REACT_APP_API_BASE_URL,
+              url: `/SmppGateways/${remote.smpp_gateway_sid}`,
               headers: {
                 Authorization: `Bearer ${jwt}`,
               },
@@ -1243,54 +1443,54 @@ const CarriersAddEdit = ({ mode }) => {
                 )}
               </StyledForm>
             </TabPane>
-            <TabPane tab="SMS" disabled={smpps.length !== 0} key="2">
+            <TabPane tab="SMS" disabled={smpps.length === 0} key="2">
             <StyledForm
                 large
               >
-                <Label htmlFor="username">System ID</Label>
+                <Label htmlFor="smpp_system_id">System ID</Label>
                 <Input
-                  name="username"
-                  id="username"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
+                  name="smpp_system_id"
+                  id="smpp_system_id"
+                  value={smpp_system_id}
+                  onChange={e => setSmppSystemId(e.target.value)}
                   placeholder="SIP username for authenticating outbound calls"
-                  invalid={usernameInvalid}
-                  ref={refUsername}
+                  invalid={smpp_system_idInvalid}
+                  ref={refSmppSystemId}
                 />
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="smpp_password">Password</Label>
                 <PasswordInput
                   allowShowPassword
-                  name="password"
-                  id="password"
-                  password={password}
-                  setPassword={setPassword}
+                  name="smpp_password"
+                  id="smpp_password"
+                  password={smpp_password}
+                  setPassword={setSmppPassword}
                   setErrorMessage={setErrorMessage}
                   placeholder="SIP password for authenticating outbound calls"
-                  invalid={passwordInvalid}
-                  ref={refPassword}
+                  invalid={smpp_passwordInvalid}
+                  ref={refSmppPassword}
                 />
 
-                <Label htmlFor="username">Inbound System ID</Label>
+                <Label htmlFor="smpp_inbound_system_id">Inbound System ID</Label>
                 <Input
-                  name="username"
-                  id="username"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
+                  name="smpp_inbound_system_id"
+                  id="smpp_inbound_system_id"
+                  value={smpp_inbound_system_id}
+                  onChange={e => setSmppInboundSystemId(e.target.value)}
                   placeholder="SIP username for authenticating outbound calls"
-                  invalid={usernameInvalid}
-                  ref={refUsername}
+                  invalid={smpp_inbound_system_idInvalid}
+                  ref={refSmppInboundSystemId}
                 />
-                <Label htmlFor="password">Inbound System Password</Label>
+                <Label htmlFor="smpp_inbound_password">Inbound System Password</Label>
                 <PasswordInput
                   allowShowPassword
-                  name="password"
-                  id="password"
-                  password={password}
-                  setPassword={setPassword}
+                  name="smpp_inbound_password"
+                  id="smpp_inbound_password"
+                  password={smpp_inbound_password}
+                  setPassword={setSmppInboundPassword}
                   setErrorMessage={setErrorMessage}
                   placeholder="SIP password for authenticating outbound calls"
-                  invalid={passwordInvalid}
-                  ref={refPassword}
+                  invalid={smpp_inbound_passwordInvalid}
+                  ref={refSmppInboundPassword}
                 />
 
                 <hr style={{ margin: '0.5rem -2rem' }} />
@@ -1311,10 +1511,11 @@ const CarriersAddEdit = ({ mode }) => {
                   <StyledLabel>{`Network Address / Port`}</StyledLabel>
                 </SIPGatewaysInputGroup>
                 {smppGateways.map((g, i) => (
-                  <SMPPGatewaysInputGroup key={i}>
+                  g.outbound?
+                  (<SMPPGatewaysInputGroup key={i}>
                     <Input
-                      name={`smpppGatewaysIp[${i}]`}
-                      id={`smpppGatewaysIp[${i}]`}
+                      name={`smppGatewaysIp[${i}]`}
+                      id={`smppGatewaysIp[${i}]`}
                       value={g.ipv4}
                       onChange={e => updateSmppGateways(e, i, 'ipv4')}
                       placeholder={'1.2.3.4'}
@@ -1323,14 +1524,25 @@ const CarriersAddEdit = ({ mode }) => {
                     />
                     <Input
                       width="5rem"
-                      name={`smpppGatewaysPort[${i}]`}
-                      id={`smpppGatewaysPort[${i}]`}
+                      name={`smppGatewaysPort[${i}]`}
+                      id={`smppGatewaysPort[${i}]`}
                       value={g.port}
                       onChange={e => updateSmppGateways(e, i, 'port')}
                       placeholder="2775"
                       invalid={g.invalidPort}
                       ref={ref => refSmppPort.current[i] = ref}
                     />
+                    <Select
+                      name={`smppgatewaysNetmask[${i}]`}
+                      id={`smppgatewaysNetmask[${i}]`}
+                      value={smppGateways[i].netmask}
+                      disabled={smppGateways[i].outbound}
+                      onChange={e => updateSmppGateways(e, i, 'netmask')}
+                    >
+                      {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
+                        <option value={item} key={item}>{item}</option>
+                      ))}
+                    </Select>
                     <SIPGatewaysChecboxGroup>
                       <Checkbox
                         id={`tls[${i}]`}
@@ -1349,8 +1561,11 @@ const CarriersAddEdit = ({ mode }) => {
                     </SIPGatewaysChecboxGroup>
                     <TrashButton
                       onClick={() => removeSmppGateway(i)}
+                      ref={ref => refSmppTrash.current[i] = ref}
                     />
-                  </SMPPGatewaysInputGroup>
+                  </SMPPGatewaysInputGroup>)
+                  :
+                  null
                 ))}
 
                 <StyledButton
@@ -1380,7 +1595,8 @@ const CarriersAddEdit = ({ mode }) => {
                   <StyledLabel>{`Network Address / Port`}</StyledLabel>
                 </SIPGatewaysInputGroup>
                 {smppGateways.map((g, i) => (
-                  <SMPPGatewaysInputGroup key={i}>
+                  g.inbound?
+                  (<SMPPGatewaysInputGroup key={i}>
                     <Input
                       name={`smpppGatewaysIp[${i}]`}
                       id={`smpppGatewaysIp[${i}]`}
@@ -1400,11 +1616,25 @@ const CarriersAddEdit = ({ mode }) => {
                       invalid={g.invalidPort}
                       ref={ref => refSmppPort.current[i] = ref}
                     />
+                    <Select
+                      name={`smppgatewaysNetmask[${i}]`}
+                      id={`smppgatewaysNetmask[${i}]`}
+                      value={smppGateways[i].netmask}
+                      disabled={smppGateways[i].outbound}
+                      onChange={e => updateSmppGateways(e, i, 'netmask')}
+                    >
+                      {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
+                        <option value={item} key={item}>{item}</option>
+                      ))}
+                    </Select>
                     <div></div>
                     <TrashButton
                       onClick={() => removeSmppGateway(i)}
+                      ref={ref => refSmppTrash.current[i] = ref}
                     />
-                  </SMPPGatewaysInputGroup>
+                  </SMPPGatewaysInputGroup>)
+                  :
+                  null
                 ))}
                 <StyledButton
                   square
