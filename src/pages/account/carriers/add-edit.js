@@ -258,7 +258,7 @@ const CarriersAddEdit = ({ mode }) => {
   const [ sbcs, setSbcs ] = useState('');
 
   const [smpps, setSmpps] = useState([]);
-  const [smppSubTitle, setSmppSubTitle] = useState('')
+  const [smppSubTitle, setSmppSubTitle] = useState('');
   useEffect(() => {
     const getAPIData = async () => {
       let isMounted = true;
@@ -1128,7 +1128,6 @@ const CarriersAddEdit = ({ mode }) => {
 
   const getSmppSubTitle = (smpps) => {
     let title = '';
-    let ips = [];
     if(smpps && smpps.length){
       title = 'Have your carrier send SMPP to';
       for(let i = 0; i < smpps.length; i++) {
