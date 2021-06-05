@@ -150,6 +150,12 @@ const CarrierItem = styled.div`
   ${(props) => props.disabled ? 'opacity: 0.5;' : ''}
 `;
 
+const Subtitle = styled.p`
+  font-size: 16px;
+  color: #231f20;
+  white-space: pre;
+`;
+
 const CarriersAddEdit = ({ mode }) => {
   const { width } = useContext(ResponsiveContext);
   const { voip_carrier_sid } = useParams();
@@ -249,12 +255,23 @@ const CarriersAddEdit = ({ mode }) => {
 
   const [predefinedCarriers, setPredefinedCarriers] = useState([]);
   const [staticIPs, setStaticIPs] = useState(null);
+  const [ sbcs, setSbcs ] = useState('');
 
   const [smpps, setSmpps] = useState([]);
+  const [smppSubTitle, setSmppSubTitle] = useState('')
   useEffect(() => {
     const getAPIData = async () => {
       let isMounted = true;
       try {
+        const sbcResults = await axios({
+          method: 'get',
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: `/Sbcs`,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        setSbcs(sbcResults.data);
         // Get SIP realm via /Users/me
         const usersMePromise = axios({
           method: 'get',
@@ -327,6 +344,7 @@ const CarriersAddEdit = ({ mode }) => {
         const usersMe = promiseResponses[0].data;
         setApplicationValues(promiseResponses[1].data);
         setSmpps(promiseResponses[2].data);
+        setSmppSubTitle(getSmppSubTitle(promiseResponses[2].data));
 
         if (usersMe.account) {
           setSipRealm(usersMe.account.sip_realm);
@@ -1108,20 +1126,35 @@ const CarriersAddEdit = ({ mode }) => {
     }
   };
 
+  const getSmppSubTitle = (smpps) => {
+    let title = '';
+    let ips = [];
+    if(smpps && smpps.length){
+      title = 'Have your carrier send SMPP to';
+      for(let i = 0; i < smpps.length; i++) {
+        if(smpps[i].is_primary){
+          title += ` ${smpps[i].ipv4}:${smpps[i].port}(primary)`;
+        }
+        else {
+          title += ` ${smpps[i].ipv4}:${smpps[i].port}(backup)`;
+        }
+      }
+    }
+    return title;
+  };
+
   const getSubTitle = () => {
     let title = <>&nbsp;</>;
+    let ips = [];
+    if(sbcs)sbcs.map(sbc => ips.push(sbc.ipv4));
     if (sipRealm) {
       title = staticIPs
         ? `Have your carrier send your calls to your static IP(s): ${staticIPs.join(
             ", "
           )}`
-        : `Have your carrier send calls to ${sipRealm}`;
+        : `Have your carrier send calls to ${sipRealm}\nIf necessary, have your carrier whitelist these IP: ${ips.join(", ")}`;
     }
     return title;
-  };
-
-  const handleTabChange = () => {
-
   };
 
   return (
@@ -1137,7 +1170,7 @@ const CarriersAddEdit = ({ mode }) => {
         {showLoader ? (
           <Loader height="376px" />
         ) : (
-          <Tabs defaultActiveKey="1" onChange={handleTabChange}>
+          <Tabs defaultActiveKey="1">
             <TabPane tab="Voice" key="1">
               <StyledForm
                 large
@@ -1443,8 +1476,9 @@ const CarriersAddEdit = ({ mode }) => {
                 )}
               </StyledForm>
             </TabPane>
-            <TabPane tab="SMS" disabled={smpps.length === 0} key="2">
-            <StyledForm
+            <TabPane tab="SMS" disabled={smpps.length !== 0} key="2">
+              <Subtitle>{smppSubTitle}</Subtitle>
+              <StyledForm
                 large
               >
                 <Label htmlFor="smpp_system_id">System ID</Label>

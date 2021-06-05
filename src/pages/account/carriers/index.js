@@ -76,9 +76,12 @@ const CarriersIndex = () => {
       }
 
       // Add appropriate gateways to each carrier
-      const carriersWithGateways = carriersResults.data.map(async t => {
+      let carriersWithGateways = [];
+      for(let i = 0; i < carriersResults.data.length; i++)
+      {
+        const t = carriersResults.data[i];
         // Get all SIP gateways
-        const gateways = await axios({
+        const gatewaysResult = await axios({
           method: 'get',
           baseURL: process.env.REACT_APP_API_BASE_URL,
           url: `/SipGateways?voip_carrier_sid=${t.voip_carrier_sid}`,
@@ -86,14 +89,15 @@ const CarriersIndex = () => {
             Authorization: `Bearer ${jwt}`,
           },
         });
+        const gateways = gatewaysResult.data;
         const application = applicationData.find(item => item.application_sid === t.application_sid);
         sortSipGateways(gateways);
-        return {
+        carriersWithGateways.push({
           ...t,
           gateways,
           application,
-        };
-      });
+        });
+      }
 
       const simplifiedCarriers = carriersWithGateways.map(t => ({
         sid:            t.voip_carrier_sid,
