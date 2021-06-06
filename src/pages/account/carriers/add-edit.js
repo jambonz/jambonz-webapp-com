@@ -231,9 +231,9 @@ const CarriersAddEdit = ({ mode }) => {
       port: 2775,
       voip_carrier_sid: '',
       inbound: false,
-      use_tls: false,
+      use_tls: 0,
       outbound: true,
-      is_primary: false,
+      is_primary: 0,
       invalidIp: false,
       invalidPort: false,
     }
@@ -501,8 +501,8 @@ const CarriersAddEdit = ({ mode }) => {
         inbound: inbound,
         outbound: !inbound,
         voip_carrier_sid: '',
-        use_tls: false,
-        is_primary: false,
+        use_tls: 0,
+        is_primary: 0,
         invalidIp: false,
         invalidPort: false,
       }
@@ -548,7 +548,7 @@ const CarriersAddEdit = ({ mode }) => {
       key === 'invalidPort'
         ? true
         : (key === 'use_tls') || (key === 'is_primary')
-          ? e.target.checked
+          ? e.target.checked?1:0
           : e.target.value;
     newSmppGateways[i][key] = newValue;
 
@@ -1141,7 +1141,7 @@ const CarriersAddEdit = ({ mode }) => {
     if(smpps && smpps.length){
       title = 'Have your carrier send SMPP to';
       for(let i = 0; i < smpps.length; i++) {
-        if(smpps[i].is_primary){
+        if(smpps[i].is_primary === 1){
           title += ` ${smpps[i].ipv4}:${smpps[i].port}(primary)`;
         }
         else {
@@ -1591,14 +1591,14 @@ const CarriersAddEdit = ({ mode }) => {
                         id={`tls[${i}]`}
                         label="TLS"
                         tooltip="Use TLS"
-                        checked={g.use_tls}
+                        checked={g.use_tls === 1}
                         onChange={e => updateSmppGateways(e, i, 'use_tls')}
                       />
                       <Checkbox
                         id={`primary[${i}]`}
                         label="Primary"
                         tooltip="Is primary"
-                        checked={g.is_primary}
+                        checked={g.is_primary === 1}
                         onChange={e => updateSmppGateways(e, i, 'is_primary')}
                       />
                     </SIPGatewaysChecboxGroup>
