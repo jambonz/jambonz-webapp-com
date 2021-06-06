@@ -805,7 +805,7 @@ const CarriersAddEdit = ({ mode }) => {
           //-----------------------------------------------------------------------------
           if (
             gateway.port && (
-              !(refSmppPort.test(gateway.port.toString().trim()))
+              !(regPort.test(gateway.port.toString().trim()))
               || (parseInt(gateway.port.toString().trim()) < 0)
               || (parseInt(gateway.port.toString().trim()) > 65535)
             )
