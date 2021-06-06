@@ -773,70 +773,72 @@ const CarriersAddEdit = ({ mode }) => {
         });
       });
 
-      smppGateways.forEach(async (gateway, i) => {
-        //-----------------------------------------------------------------------------
-        // IP validation
-        //-----------------------------------------------------------------------------
-        const type = regIp.test(gateway.ipv4.trim())
-          ? 'ip'
-          : 'invalid';
+      if(smpps && smpps.length > 0) {
+        smppGateways.forEach(async (gateway, i) => {
+          //-----------------------------------------------------------------------------
+          // IP validation
+          //-----------------------------------------------------------------------------
+          const type = regIp.test(gateway.ipv4.trim())
+            ? 'ip'
+            : 'invalid';
 
-        if (!gateway.ipv4) {
-          errorMessages.push('The IP Address cannot be blank. Please provide an IP address or delete the row.');
-          updateSmppGateways(null, i, 'invalidIp');
-          if (!focusHasBeenSet) {
-            refIp.current[i].focus();
-            focusHasBeenSet = true;
-          }
-        }
-
-        else if (type === 'invalid') {
-          errorMessages.push('Please provide a valid IP address or fully qualified domain name.');
-          updateSmppGateways(null, i, 'invalidIp');
-          if (!focusHasBeenSet) {
-            refSmppIp.current[i].focus();
-            focusHasBeenSet = true;
-          }
-        }
-
-        //-----------------------------------------------------------------------------
-        // Port validation
-        //-----------------------------------------------------------------------------
-        if (
-          gateway.port && (
-            !(refSmppPort.test(gateway.port.toString().trim()))
-            || (parseInt(gateway.port.toString().trim()) < 0)
-            || (parseInt(gateway.port.toString().trim()) > 65535)
-          )
-        ) {
-          errorMessages.push('Please provide a valid port number between 0 and 65535');
-          updateSmppGateways(null, i, 'invalidPort');
-          if (!focusHasBeenSet) {
-            refSmppPort.current[i].focus();
-            focusHasBeenSet = true;
-          }
-        }
-
-        //-----------------------------------------------------------------------------
-        // duplicates validation
-        //-----------------------------------------------------------------------------
-        smppGateways.forEach((otherGateway, j) => {
-          if (i >= j) return;
-          if (!gateway.ip) return;
-          if (type === 'invalid') return;
-          if (gateway.ip === otherGateway.ip && gateway.port === otherGateway.port) {
-            errorMessages.push('Each SIP gateway must have a unique IP address.');
+          if (!gateway.ipv4) {
+            errorMessages.push('The IP Address cannot be blank. Please provide an IP address or delete the row.');
             updateSmppGateways(null, i, 'invalidIp');
-            updateSmppGateways(null, i, 'invalidPort');
-            updateSmppGateways(null, j, 'invalidIp');
-            updateSmppGateways(null, j, 'invalidPort');
             if (!focusHasBeenSet) {
-              refSmppTrash.current[j].focus();
+              refIp.current[i].focus();
               focusHasBeenSet = true;
             }
           }
+
+          else if (type === 'invalid') {
+            errorMessages.push('Please provide a valid IP address or fully qualified domain name.');
+            updateSmppGateways(null, i, 'invalidIp');
+            if (!focusHasBeenSet) {
+              refSmppIp.current[i].focus();
+              focusHasBeenSet = true;
+            }
+          }
+
+          //-----------------------------------------------------------------------------
+          // Port validation
+          //-----------------------------------------------------------------------------
+          if (
+            gateway.port && (
+              !(refSmppPort.test(gateway.port.toString().trim()))
+              || (parseInt(gateway.port.toString().trim()) < 0)
+              || (parseInt(gateway.port.toString().trim()) > 65535)
+            )
+          ) {
+            errorMessages.push('Please provide a valid port number between 0 and 65535');
+            updateSmppGateways(null, i, 'invalidPort');
+            if (!focusHasBeenSet) {
+              refSmppPort.current[i].focus();
+              focusHasBeenSet = true;
+            }
+          }
+
+          //-----------------------------------------------------------------------------
+          // duplicates validation
+          //-----------------------------------------------------------------------------
+          smppGateways.forEach((otherGateway, j) => {
+            if (i >= j) return;
+            if (!gateway.ip) return;
+            if (type === 'invalid') return;
+            if (gateway.ip === otherGateway.ip && gateway.port === otherGateway.port) {
+              errorMessages.push('Each SIP gateway must have a unique IP address.');
+              updateSmppGateways(null, i, 'invalidIp');
+              updateSmppGateways(null, i, 'invalidPort');
+              updateSmppGateways(null, j, 'invalidIp');
+              updateSmppGateways(null, j, 'invalidPort');
+              if (!focusHasBeenSet) {
+                refSmppTrash.current[j].focus();
+                focusHasBeenSet = true;
+              }
+            }
+          });
         });
-      });
+      }
 
       // remove duplicate error messages
       for (let i = 0; i < errorMessages.length; i++) {
@@ -909,15 +911,17 @@ const CarriersAddEdit = ({ mode }) => {
           },
         });
         sipGatewaysFromAPI = results.data.filter(s => s.voip_carrier_sid === carrierSid);
-        results = await axios({
-          method: 'get',
-          baseURL: process.env.REACT_APP_API_BASE_URL,
-          url: `/SmppGateways?voip_carrier_sid=${voip_carrier_sid}`,
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        });
-        smppGatewaysFromAPI = results.data.filter(s => s.voip_carrier_sid === carrierSid);
+        if(smpps && smpps.length > 0) {
+          results = await axios({
+            method: 'get',
+            baseURL: process.env.REACT_APP_API_BASE_URL,
+            url: `/SmppGateways?voip_carrier_sid=${voip_carrier_sid}`,
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+          smppGatewaysFromAPI = results.data.filter(s => s.voip_carrier_sid === carrierSid);
+        }
       }
 
       //-----------------------------------------------------------------------------
@@ -964,44 +968,46 @@ const CarriersAddEdit = ({ mode }) => {
             completedSipGateways.push(result.data.sid);
           }
         };
-        for (const s of smppGateways) {
-          const creatingNewGateway = creatingNewCarrier || s.smpp_gateway_sid === '';
+        if(smpps && smpps.length > 0) {
+          for (const s of smppGateways) {
+            const creatingNewGateway = creatingNewCarrier || s.smpp_gateway_sid === '';
 
-          const method = creatingNewGateway
-            ? 'post'
-            : 'put';
+            const method = creatingNewGateway
+              ? 'post'
+              : 'put';
 
-          const url = creatingNewGateway
-            ? '/SmppGateways'
-            : `/SmppGateways/${s.smpp_gateway_sid}`;
+            const url = creatingNewGateway
+              ? '/SmppGateways'
+              : `/SmppGateways/${s.smpp_gateway_sid}`;
 
-          const data = {
-            ipv4: s.ipv4.trim(),
-            port: s.port.toString().trim(),
-            netmask: s.netmask,
-            inbound: s.inbound,
-            outbound: s.outbound,
-            use_tls: s.use_tls,
-            is_primary: s.is_primary
-          };
+            const data = {
+              ipv4: s.ipv4.trim(),
+              port: s.port.toString().trim(),
+              netmask: s.netmask,
+              inbound: s.inbound,
+              outbound: s.outbound,
+              use_tls: s.use_tls,
+              is_primary: s.is_primary
+            };
 
-          if (creatingNewGateway) {
-            data.voip_carrier_sid = voip_carrier_sid || carrierSid;
+            if (creatingNewGateway) {
+              data.voip_carrier_sid = voip_carrier_sid || carrierSid;
+            }
+
+            const result = await axios({
+              method,
+              baseURL: process.env.REACT_APP_API_BASE_URL,
+              url,
+              headers: {
+                Authorization: `Bearer ${jwt}`,
+              },
+              data,
+            });
+            if (creatingNewGateway) {
+              completedSmppGateways.push(result.data.sid);
+            }
           }
-
-          const result = await axios({
-            method,
-            baseURL: process.env.REACT_APP_API_BASE_URL,
-            url,
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-            data,
-          });
-          if (creatingNewGateway) {
-            completedSmppGateways.push(result.data.sid);
-          }
-        };
+        }
       } catch (err) {
         for (const sid of completedSipGateways) {
           await axios({
@@ -1013,15 +1019,17 @@ const CarriersAddEdit = ({ mode }) => {
             },
           });
         }
-        for (const sid of completedSmppGateways) {
-          await axios({
-            method: 'delete',
-            baseURL: process.env.REACT_APP_API_BASE_URL,
-            url: `/SmppGateways/${sid}`,
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          });
+        if(smpps && smpps.length > 0) {
+          for (const sid of completedSmppGateways) {
+            await axios({
+              method: 'delete',
+              baseURL: process.env.REACT_APP_API_BASE_URL,
+              url: `/SmppGateways/${sid}`,
+              headers: {
+                Authorization: `Bearer ${jwt}`,
+              },
+            });
+          }
         }
         if (voip_carrier_sid) {
           await axios({
@@ -1051,17 +1059,19 @@ const CarriersAddEdit = ({ mode }) => {
             });
           }
         }
-        for (const remote of smppGatewaysFromAPI) {
-          const match = smppGateways.filter(local => local.smpp_gateway_sid === remote.smpp_gateway_sid);
-          if (!match.length) {
-            await axios({
-              method: 'delete',
-              baseURL: process.env.REACT_APP_API_BASE_URL,
-              url: `/SmppGateways/${remote.smpp_gateway_sid}`,
-              headers: {
-                Authorization: `Bearer ${jwt}`,
-              },
-            });
+        if(smpps && smpps.length > 0) {
+          for (const remote of smppGatewaysFromAPI) {
+            const match = smppGateways.filter(local => local.smpp_gateway_sid === remote.smpp_gateway_sid);
+            if (!match.length) {
+              await axios({
+                method: 'delete',
+                baseURL: process.env.REACT_APP_API_BASE_URL,
+                url: `/SmppGateways/${remote.smpp_gateway_sid}`,
+                headers: {
+                  Authorization: `Bearer ${jwt}`,
+                },
+              });
+            }
           }
         }
       }
@@ -1475,7 +1485,7 @@ const CarriersAddEdit = ({ mode }) => {
                 )}
               </StyledForm>
             </TabPane>
-            <TabPane tab="SMS" disabled={smpps.length !== 0} key="2">
+            <TabPane tab="SMS" disabled={smpps.length === 0} key="2">
               <Subtitle>{smppSubTitle}</Subtitle>
               <StyledForm
                 large
