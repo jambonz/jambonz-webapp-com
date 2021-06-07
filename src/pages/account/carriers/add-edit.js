@@ -78,11 +78,18 @@ const SIPGatewaysInputGroup = styled(InputGroup)`
   }
 `;
 
-const SMPPGatewaysInputGroup = styled(InputGroup)`
+const SMPPGatewaysInboundInputGroup = styled(InputGroup)`
   grid-column: 1 / 3;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: 1fr 80px 70px 200px 50px;
+  grid-template-columns: 1fr 80px 70px 120px 50px;
+`;
+
+const SMPPGatewaysOutboundInputGroup = styled(InputGroup)`
+  grid-column: 1 / 3;
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: 1fr 80px 200px 50px;
 `;
 
 const SIPGatewaysChecboxGroup = styled.div`
@@ -502,7 +509,7 @@ const CarriersAddEdit = ({ mode }) => {
         outbound: !inbound,
         voip_carrier_sid: '',
         use_tls: 0,
-        is_primary: 0,
+        is_primary: 1,
         invalidIp: false,
         invalidPort: false,
       }
@@ -1555,7 +1562,7 @@ const CarriersAddEdit = ({ mode }) => {
                 </SIPGatewaysInputGroup>
                 {smppGateways.map((g, i) => (
                   g.outbound?
-                  (<SMPPGatewaysInputGroup key={i}>
+                  (<SMPPGatewaysOutboundInputGroup key={i}>
                     <Input
                       name={`smppGatewaysIp[${i}]`}
                       id={`smppGatewaysIp[${i}]`}
@@ -1575,17 +1582,6 @@ const CarriersAddEdit = ({ mode }) => {
                       invalid={g.invalidPort}
                       ref={ref => refSmppPort.current[i] = ref}
                     />
-                    <Select
-                      name={`smppgatewaysNetmask[${i}]`}
-                      id={`smppgatewaysNetmask[${i}]`}
-                      value={smppGateways[i].netmask}
-                      disabled={smppGateways[i].outbound}
-                      onChange={e => updateSmppGateways(e, i, 'netmask')}
-                    >
-                      {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
-                        <option value={item} key={item}>{item}</option>
-                      ))}
-                    </Select>
                     <SIPGatewaysChecboxGroup>
                       <Checkbox
                         id={`tls[${i}]`}
@@ -1606,7 +1602,7 @@ const CarriersAddEdit = ({ mode }) => {
                       onClick={() => removeSmppGateway(i)}
                       ref={ref => refSmppTrash.current[i] = ref}
                     />
-                  </SMPPGatewaysInputGroup>)
+                  </SMPPGatewaysOutboundInputGroup>)
                   :
                   null
                 ))}
@@ -1635,16 +1631,16 @@ const CarriersAddEdit = ({ mode }) => {
                   : null
                 }
                 <SIPGatewaysInputGroup>
-                  <StyledLabel>{`Network Address / Port`}</StyledLabel>
+                  <StyledLabel>{`Network Address / Port / Netmask`}</StyledLabel>
                 </SIPGatewaysInputGroup>
                 {smppGateways.map((g, i) => (
                   g.inbound?
-                  (<SMPPGatewaysInputGroup key={i}>
+                  (<SMPPGatewaysInboundInputGroup key={i}>
                     <Input
                       name={`smpppGatewaysIp[${i}]`}
                       id={`smpppGatewaysIp[${i}]`}
                       value={g.ipv4}
-                      onChange={e => updateSipGateways(e, i, 'ipv4')}
+                      onChange={e => updateSmppGateways(e, i, 'ipv4')}
                       placeholder={'1.2.3.4'}
                       invalid={g.invalidIp}
                       ref={ref => refSmppIp.current[i] = ref}
@@ -1675,7 +1671,7 @@ const CarriersAddEdit = ({ mode }) => {
                       onClick={() => removeSmppGateway(i)}
                       ref={ref => refSmppTrash.current[i] = ref}
                     />
-                  </SMPPGatewaysInputGroup>)
+                  </SMPPGatewaysInboundInputGroup>)
                   :
                   null
                 ))}
