@@ -240,7 +240,7 @@ const CarriersAddEdit = ({ mode }) => {
       inbound: false,
       use_tls: 0,
       outbound: true,
-      is_primary: 0,
+      is_primary: 1,
       invalidIp: false,
       invalidPort: false,
     }
@@ -509,7 +509,7 @@ const CarriersAddEdit = ({ mode }) => {
         outbound: !inbound,
         voip_carrier_sid: '',
         use_tls: 0,
-        is_primary: 1,
+        is_primary: 0,
         invalidIp: false,
         invalidPort: false,
       }
@@ -786,14 +786,27 @@ const CarriersAddEdit = ({ mode }) => {
           // IP validation
           //-----------------------------------------------------------------------------
           const type = regIp.test(gateway.ipv4.trim())
-            ? 'ip'
-            : 'invalid';
+          ? 'ip'
+          : regFqdn.test(gateway.ipv4.trim())
+            ? 'fqdn'
+            : regFqdnTopLevel.test(gateway.ipv4.trim())
+              ? 'fqdn-top-level'
+              : 'invalid';
 
           if (!gateway.ipv4) {
             errorMessages.push('The IP Address cannot be blank. Please provide an IP address or delete the row.');
             updateSmppGateways(null, i, 'invalidIp');
             if (!focusHasBeenSet) {
-              refIp.current[i].focus();
+              refSmppIp.current[i].focus();
+              focusHasBeenSet = true;
+            }
+          }
+
+          else if (type === 'fqdn-top-level') {
+            errorMessages.push('When using an FQDN, you must use a subdomain (e.g. sip.example.com).');
+            updateSipGateways(null, i, 'invalidIp');
+            if (!focusHasBeenSet) {
+              refSmppIp.current[i].focus();
               focusHasBeenSet = true;
             }
           }
@@ -821,6 +834,18 @@ const CarriersAddEdit = ({ mode }) => {
             updateSmppGateways(null, i, 'invalidPort');
             if (!focusHasBeenSet) {
               refSmppPort.current[i].focus();
+              focusHasBeenSet = true;
+            }
+          }
+
+          //-----------------------------------------------------------------------------
+          // inbound/outbound validation
+          //-----------------------------------------------------------------------------
+          if (type === 'fqdn' && (!gateway.outbound || gateway.inbound)) {
+            errorMessages.push('A fully qualified domain name may only be used for outbound calls.');
+            updateSmppGateways(null, i, 'invalidIp');
+            if (!focusHasBeenSet) {
+              refSmppIp.current[i].focus();
               focusHasBeenSet = true;
             }
           }
