@@ -780,98 +780,135 @@ const CarriersAddEdit = ({ mode }) => {
         });
       });
 
-      if(smpps && smpps.length > 0) {
-        smppGateways.forEach(async (gateway, i) => {
-          //-----------------------------------------------------------------------------
-          // IP validation
-          //-----------------------------------------------------------------------------
-          const type = regIp.test(gateway.ipv4.trim())
-          ? 'ip'
-          : regFqdn.test(gateway.ipv4.trim())
-            ? 'fqdn'
-            : regFqdnTopLevel.test(gateway.ipv4.trim())
-              ? 'fqdn-top-level'
-              : 'invalid';
-
-          if (!gateway.ipv4) {
-            errorMessages.push('The IP Address cannot be blank. Please provide an IP address or delete the row.');
-            updateSmppGateways(null, i, 'invalidIp');
-            if (!focusHasBeenSet) {
-              refSmppIp.current[i].focus();
-              focusHasBeenSet = true;
-            }
+      if(smpp_system_id || smpp_password || smpp_inbound_system_id || smpp_inbound_password) {
+        if ((smpp_system_id && !smpp_password) || (!smpp_system_id && smpp_password)) {
+          errorMessages.push('You must provide Password.');
+          setSmppPasswordInvalid(true);
+          if (!focusHasBeenSet) {
+            refSmppPassword.current.focus();
+            focusHasBeenSet = true;
           }
+        }
 
-          else if (type === 'fqdn-top-level') {
-            errorMessages.push('When using an FQDN, you must use a subdomain (e.g. sip.example.com).');
-            updateSipGateways(null, i, 'invalidIp');
-            if (!focusHasBeenSet) {
-              refSmppIp.current[i].focus();
-              focusHasBeenSet = true;
-            }
+        if (!smpp_system_id) {
+          errorMessages.push('You must provide System ID.');
+          setSmppSystemIdInvalid(true);
+          if (!focusHasBeenSet) {
+            refSmppSystemId.current.focus();
+            focusHasBeenSet = true;
           }
+        }
 
-          else if (type === 'invalid') {
-            errorMessages.push('Please provide a valid IP address or fully qualified domain name.');
-            updateSmppGateways(null, i, 'invalidIp');
-            if (!focusHasBeenSet) {
-              refSmppIp.current[i].focus();
-              focusHasBeenSet = true;
-            }
+        if (!smpp_inbound_system_id) {
+          errorMessages.push('You must provide Inbound System ID.');
+          setSmppInboundSystemIdInvalid(true);
+          if (!focusHasBeenSet) {
+            refSmppInboundSystemId.current.focus();
+            focusHasBeenSet = true;
           }
+        }
 
-          //-----------------------------------------------------------------------------
-          // Port validation
-          //-----------------------------------------------------------------------------
-          if (
-            gateway.port && (
-              !(regPort.test(gateway.port.toString().trim()))
-              || (parseInt(gateway.port.toString().trim()) < 0)
-              || (parseInt(gateway.port.toString().trim()) > 65535)
-            )
-          ) {
-            errorMessages.push('Please provide a valid port number between 0 and 65535');
-            updateSmppGateways(null, i, 'invalidPort');
-            if (!focusHasBeenSet) {
-              refSmppPort.current[i].focus();
-              focusHasBeenSet = true;
-            }
+        if (!smpp_inbound_password) {
+          errorMessages.push('You must provide Inbound System Password.');
+          setSmppInboundPasswordInvalid(true);
+          if (!focusHasBeenSet) {
+            refSmppInboundPassword.current.focus();
+            focusHasBeenSet = true;
           }
+        }
 
-          //-----------------------------------------------------------------------------
-          // inbound/outbound validation
-          //-----------------------------------------------------------------------------
-          if (type === 'fqdn' && (!gateway.outbound || gateway.inbound)) {
-            errorMessages.push('A fully qualified domain name may only be used for outbound calls.');
-            updateSmppGateways(null, i, 'invalidIp');
-            if (!focusHasBeenSet) {
-              refSmppIp.current[i].focus();
-              focusHasBeenSet = true;
-            }
-          }
+        if(smpps && smpps.length > 0) {
+          smppGateways.forEach(async (gateway, i) => {
+            //-----------------------------------------------------------------------------
+            // IP validation
+            //-----------------------------------------------------------------------------
+            const type = regIp.test(gateway.ipv4.trim())
+            ? 'ip'
+            : regFqdn.test(gateway.ipv4.trim())
+              ? 'fqdn'
+              : regFqdnTopLevel.test(gateway.ipv4.trim())
+                ? 'fqdn-top-level'
+                : 'invalid';
 
-          //-----------------------------------------------------------------------------
-          // duplicates validation
-          //-----------------------------------------------------------------------------
-          smppGateways.forEach((otherGateway, j) => {
-            if (i >= j) return;
-            if (!gateway.ip) return;
-            if (type === 'invalid') return;
-            if (gateway.ip === otherGateway.ip && gateway.port === otherGateway.port) {
-              errorMessages.push('Each SIP gateway must have a unique IP address.');
+            if (!gateway.ipv4) {
+              errorMessages.push('The IP Address cannot be blank. Please provide an IP address or delete the row.');
               updateSmppGateways(null, i, 'invalidIp');
-              updateSmppGateways(null, i, 'invalidPort');
-              updateSmppGateways(null, j, 'invalidIp');
-              updateSmppGateways(null, j, 'invalidPort');
               if (!focusHasBeenSet) {
-                refSmppTrash.current[j].focus();
+                refSmppIp.current[i].focus();
                 focusHasBeenSet = true;
               }
             }
-          });
-        });
-      }
 
+            else if (type === 'fqdn-top-level') {
+              errorMessages.push('When using an FQDN, you must use a subdomain (e.g. sip.example.com).');
+              updateSipGateways(null, i, 'invalidIp');
+              if (!focusHasBeenSet) {
+                refSmppIp.current[i].focus();
+                focusHasBeenSet = true;
+              }
+            }
+
+            else if (type === 'invalid') {
+              errorMessages.push('Please provide a valid IP address or fully qualified domain name.');
+              updateSmppGateways(null, i, 'invalidIp');
+              if (!focusHasBeenSet) {
+                refSmppIp.current[i].focus();
+                focusHasBeenSet = true;
+              }
+            }
+
+            //-----------------------------------------------------------------------------
+            // Port validation
+            //-----------------------------------------------------------------------------
+            if (
+              gateway.port && (
+                !(regPort.test(gateway.port.toString().trim()))
+                || (parseInt(gateway.port.toString().trim()) < 0)
+                || (parseInt(gateway.port.toString().trim()) > 65535)
+              )
+            ) {
+              errorMessages.push('Please provide a valid port number between 0 and 65535');
+              updateSmppGateways(null, i, 'invalidPort');
+              if (!focusHasBeenSet) {
+                refSmppPort.current[i].focus();
+                focusHasBeenSet = true;
+              }
+            }
+
+            //-----------------------------------------------------------------------------
+            // inbound/outbound validation
+            //-----------------------------------------------------------------------------
+            if (type === 'fqdn' && (!gateway.outbound || gateway.inbound)) {
+              errorMessages.push('A fully qualified domain name may only be used for outbound calls.');
+              updateSmppGateways(null, i, 'invalidIp');
+              if (!focusHasBeenSet) {
+                refSmppIp.current[i].focus();
+                focusHasBeenSet = true;
+              }
+            }
+
+            //-----------------------------------------------------------------------------
+            // duplicates validation
+            //-----------------------------------------------------------------------------
+            smppGateways.forEach((otherGateway, j) => {
+              if (i >= j) return;
+              if (!gateway.ip) return;
+              if (type === 'invalid') return;
+              if (gateway.ip === otherGateway.ip && gateway.port === otherGateway.port) {
+                errorMessages.push('Each SIP gateway must have a unique IP address.');
+                updateSmppGateways(null, i, 'invalidIp');
+                updateSmppGateways(null, i, 'invalidPort');
+                updateSmppGateways(null, j, 'invalidIp');
+                updateSmppGateways(null, j, 'invalidPort');
+                if (!focusHasBeenSet) {
+                  refSmppTrash.current[j].focus();
+                  focusHasBeenSet = true;
+                }
+              }
+            });
+          });
+        }
+      }
       // remove duplicate error messages
       for (let i = 0; i < errorMessages.length; i++) {
         for (let j = 0; j < errorMessages.length; j++) {
