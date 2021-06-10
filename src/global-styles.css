@@ -194,3 +194,7 @@ select {
 textarea {
   overflow: auto;
 }
+
+.ant-switch-checked {
+  background-color: #D91C5C;
+}

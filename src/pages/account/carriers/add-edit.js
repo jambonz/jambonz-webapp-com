@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styled from "styled-components/macro";
-import { Menu, Dropdown, Tabs } from "antd";
+import { Menu, Dropdown, Tabs, Switch } from "antd";
 
 import { NotificationDispatchContext } from '../../../contexts/NotificationContext';
 import InternalMain from '../../../components/wrappers/InternalMain';
@@ -24,14 +24,14 @@ import handleErrors from "../../../helpers/handleErrors";
 
 const { TabPane } = Tabs;
 
-const StyledSection = styled.div`
+const StyledSection = styled.fieldset`
   margin: auto;
   width: calc(100% - 0.5rem);
   margin-bottom: 1.5rem;
   padding: 2rem;
   border-radius: 0.5rem;
   background: #FFF;
-  box-shadow: 0 0px 0px rgb(0 0 0 / 10%), 0px 0px 0.25rem rgb(0 0 0 / 10%);
+  border:1px solid rgb(0 0 0 / 10%);
   
   > *:first-child {
     margin-top: 0;
@@ -63,6 +63,11 @@ const StyledForm = styled(Form)`
       width: calc(100% + 2rem);
     }
   }
+`;
+
+const StyledFormError = styled(FormError)`
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem
 `;
 
 const StyledLabel = styled(Label)`
@@ -100,14 +105,14 @@ const SMPPGatewaysInboundInputGroup = styled(InputGroup)`
   grid-column: 1 / 3;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: 1fr 80px 70px 120px 50px;
+  grid-template-columns: 1fr 80px 70px 30px 50px;
 `;
 
 const SMPPGatewaysOutboundInputGroup = styled(InputGroup)`
   grid-column: 1 / 3;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: 1fr 80px 200px 50px;
+  grid-template-columns: 1fr 80px 50px 50px 50px;
 `;
 
 const SIPGatewaysChecboxGroup = styled.div`
@@ -179,6 +184,13 @@ const Subtitle = styled.p`
   font-size: 16px;
   color: #231f20;
   white-space: pre;
+`;
+
+const StyledLegend = styled.legend`
+  font-size: 16px;
+  color: #231f20;
+  padding: 0 0.5rem;
+  width: fit-content;
 `;
 
 const CarriersAddEdit = ({ mode }) => {
@@ -574,7 +586,7 @@ const CarriersAddEdit = ({ mode }) => {
       key === 'invalidPort'
         ? true
         : (key === 'use_tls') || (key === 'is_primary')
-          ? e.target.checked?1:0
+          ? e?1:0
           : e.target.value;
     newSmppGateways[i][key] = newValue;
 
@@ -1576,13 +1588,11 @@ const CarriersAddEdit = ({ mode }) => {
                 >
                   +
                 </StyledButton>
-                {errorMessage && (
-                  <FormError grid message={errorMessage} />
-                )}
               </StyledForm>
             </TabPane>
             <TabPane tab="SMS" disabled={smpps.length === 0} key="2">
               <StyledSection>
+                <StyledLegend>Outbound SMPP</StyledLegend>
                 <Subtitle>{smppSubTitleForOutbound}</Subtitle>
                 <StyledForm
                   large
@@ -1619,14 +1629,12 @@ const CarriersAddEdit = ({ mode }) => {
                       color: '#231f20'
                     }}
                   >SMPP Outbound Gateways</div>
-                  {
-                    sipGateways.length
-                    ? <div>{/* for CSS grid layout */}</div>
-                    : null
-                  }
-                  <SIPGatewaysInputGroup>
-                    <StyledLabel>{`Network Address / Port`}</StyledLabel>
-                  </SIPGatewaysInputGroup>
+                  <SMPPGatewaysOutboundInputGroup>
+                    <Label>Network Address</Label>
+                    <Label>Port</Label>
+                    <Label>Use TLS</Label>
+                    <Label>Primary</Label>
+                  </SMPPGatewaysOutboundInputGroup>
                   {smppGateways.map((g, i) => (
                     g.outbound?
                     (<SMPPGatewaysOutboundInputGroup key={i}>
@@ -1649,22 +1657,20 @@ const CarriersAddEdit = ({ mode }) => {
                         invalid={g.invalidPort}
                         ref={ref => refSmppPort.current[i] = ref}
                       />
-                      <SIPGatewaysChecboxGroup>
-                        <Checkbox
-                          id={`tls[${i}]`}
-                          label="TLS"
-                          tooltip="Use TLS"
-                          checked={g.use_tls === 1}
-                          onChange={e => updateSmppGateways(e, i, 'use_tls')}
-                        />
-                        <Checkbox
-                          id={`primary[${i}]`}
-                          label="Primary"
-                          tooltip="Is primary"
-                          checked={g.is_primary === 1}
-                          onChange={e => updateSmppGateways(e, i, 'is_primary')}
-                        />
-                      </SIPGatewaysChecboxGroup>
+                      <Switch
+                        id={`tls[${i}]`}
+                        label="TLS"
+                        tooltip="Use TLS"
+                        checked={g.use_tls === 1}
+                        onChange={e => updateSmppGateways(e, i, 'use_tls')}
+                      />
+                      <Switch
+                        id={`primary[${i}]`}
+                        label="Primary"
+                        tooltip="Is primary"
+                        checked={g.is_primary === 1}
+                        onChange={e => updateSmppGateways(e, i, 'is_primary')}
+                      />
                       <TrashButton
                         onClick={() => removeSmppGateway(i)}
                         ref={ref => refSmppTrash.current[i] = ref}
@@ -1685,6 +1691,7 @@ const CarriersAddEdit = ({ mode }) => {
                 </StyledForm>
               </StyledSection>
               <StyledSection>
+                <StyledLegend>Inbound SMPP</StyledLegend>
                 <Subtitle>{smppSubTitleForInbound}</Subtitle>
                 <StyledForm
                   large
@@ -1785,7 +1792,7 @@ const CarriersAddEdit = ({ mode }) => {
           </Tabs>
         )}
         {errorMessage && (
-          <FormError grid message={errorMessage} />
+          <StyledFormError grid message={errorMessage} />
         )}
         <StyledButtonGroup flexEnd spaced>
           <Button
