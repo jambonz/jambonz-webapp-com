@@ -102,17 +102,17 @@ const SIPGatewaysInputGroup = styled(InputGroup)`
 `;
 
 const SMPPGatewaysInboundInputGroup = styled(InputGroup)`
-  grid-column: 1 / 3;
+  grid-column: 2 / 3;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: 1fr 80px 70px 30px 50px;
+  grid-template-columns: 1fr 80px 50px 70px;
 `;
 
 const SMPPGatewaysOutboundInputGroup = styled(InputGroup)`
-  grid-column: 1 / 3;
+  grid-column: 2 / 3;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: 1fr 80px 50px 50px 50px;
+  grid-template-columns: 1fr 80px 50px 20px 50px;
 `;
 
 const SIPGatewaysChecboxGroup = styled.div`
@@ -273,6 +273,18 @@ const CarriersAddEdit = ({ mode }) => {
       is_primary: 1,
       invalidIp: false,
       invalidPort: false,
+    },
+    {
+      smpp_gateway_sid: '',
+      ipv4: '',
+      port: 2775,
+      voip_carrier_sid: '',
+      inbound: true,
+      use_tls: 0,
+      outbound: false,
+      is_primary: 0,
+      invalidIp: false,
+      invalidPort: false,
     }
   ]);
 
@@ -297,6 +309,7 @@ const CarriersAddEdit = ({ mode }) => {
   const [smpps, setSmpps] = useState([]);
   const [smppSubTitleForInbound, setSmppSubTitleForInbound] = useState('');
   const [smppSubTitleForOutbound, setSmppSubTitleForOutbound] = useState('');
+  const [activeTab, setActiveTab] = useState('1');
   useEffect(() => {
     const getAPIData = async () => {
       let isMounted = true;
@@ -638,6 +651,7 @@ const CarriersAddEdit = ({ mode }) => {
         setNameInvalid(true);
         if (!focusHasBeenSet) {
           refName.current.focus();
+          setActiveTab('1');
           focusHasBeenSet = true;
         }
       }
@@ -652,6 +666,7 @@ const CarriersAddEdit = ({ mode }) => {
           } else {
             refPassword.current.focus();
           }
+          setActiveTab('1');
           focusHasBeenSet = true;
         }
       }
@@ -661,6 +676,7 @@ const CarriersAddEdit = ({ mode }) => {
         setUsernameInvalid(true);
         if (!focusHasBeenSet) {
           refUsername.current.focus();
+          setActiveTab('1');
           focusHasBeenSet = true;
         }
       }
@@ -670,6 +686,7 @@ const CarriersAddEdit = ({ mode }) => {
         setPasswordInvalid(true);
         if (!focusHasBeenSet) {
           refPassword.current.focus();
+          setActiveTab('1');
           focusHasBeenSet = true;
         }
       }
@@ -679,6 +696,7 @@ const CarriersAddEdit = ({ mode }) => {
         setRealmInvalid(true);
         if (!focusHasBeenSet) {
           refRealm.current.focus();
+          setActiveTab('1');
           focusHasBeenSet = true;
         }
       }
@@ -688,6 +706,7 @@ const CarriersAddEdit = ({ mode }) => {
         setTechPrefixInvalid(true);
         if (!focusHasBeenSet) {
           refTechPrefix.current.focus();
+          setActiveTab('1');
           focusHasBeenSet = true;
         }
       }
@@ -696,6 +715,7 @@ const CarriersAddEdit = ({ mode }) => {
         errorMessages.push('You must provide at least one SIP Gateway.');
         if (!focusHasBeenSet) {
           refAdd.current.focus();
+          setActiveTab('1');
           focusHasBeenSet = true;
         }
       }
@@ -722,6 +742,7 @@ const CarriersAddEdit = ({ mode }) => {
           updateSipGateways(null, i, 'invalidIp');
           if (!focusHasBeenSet) {
             refIp.current[i].focus();
+            setActiveTab('1');
             focusHasBeenSet = true;
           }
         }
@@ -731,6 +752,7 @@ const CarriersAddEdit = ({ mode }) => {
           updateSipGateways(null, i, 'invalidIp');
           if (!focusHasBeenSet) {
             refIp.current[i].focus();
+            setActiveTab('1');
             focusHasBeenSet = true;
           }
         }
@@ -740,6 +762,7 @@ const CarriersAddEdit = ({ mode }) => {
           updateSipGateways(null, i, 'invalidIp');
           if (!focusHasBeenSet) {
             refIp.current[i].focus();
+            setActiveTab('1');
             focusHasBeenSet = true;
           }
         }
@@ -758,6 +781,7 @@ const CarriersAddEdit = ({ mode }) => {
           updateSipGateways(null, i, 'invalidPort');
           if (!focusHasBeenSet) {
             refPort.current[i].focus();
+            setActiveTab('1');
             focusHasBeenSet = true;
           }
         }
@@ -776,6 +800,7 @@ const CarriersAddEdit = ({ mode }) => {
             } else {
               refOutbound.current[i].focus();
             }
+            setActiveTab('1');
             focusHasBeenSet = true;
           }
         }
@@ -786,6 +811,7 @@ const CarriersAddEdit = ({ mode }) => {
           updateSipGateways(null, i, 'invalidOutbound');
           if (!focusHasBeenSet) {
             refInbound.current[i].focus();
+            setActiveTab('1');
             focusHasBeenSet = true;
           }
         }
@@ -805,6 +831,7 @@ const CarriersAddEdit = ({ mode }) => {
             updateSipGateways(null, j, 'invalidPort');
             if (!focusHasBeenSet) {
               refTrash.current[j].focus();
+              setActiveTab('1');
               focusHasBeenSet = true;
             }
           }
@@ -817,6 +844,7 @@ const CarriersAddEdit = ({ mode }) => {
           setSmppPasswordInvalid(true);
           if (!focusHasBeenSet) {
             refSmppPassword.current.focus();
+            setActiveTab('2');
             focusHasBeenSet = true;
           }
         }
@@ -826,6 +854,7 @@ const CarriersAddEdit = ({ mode }) => {
           setSmppSystemIdInvalid(true);
           if (!focusHasBeenSet) {
             refSmppSystemId.current.focus();
+            setActiveTab('2');
             focusHasBeenSet = true;
           }
         }
@@ -835,6 +864,7 @@ const CarriersAddEdit = ({ mode }) => {
           setSmppInboundSystemIdInvalid(true);
           if (!focusHasBeenSet) {
             refSmppInboundSystemId.current.focus();
+            setActiveTab('2');
             focusHasBeenSet = true;
           }
         }
@@ -844,6 +874,7 @@ const CarriersAddEdit = ({ mode }) => {
           setSmppInboundPasswordInvalid(true);
           if (!focusHasBeenSet) {
             refSmppInboundPassword.current.focus();
+            setActiveTab('2');
             focusHasBeenSet = true;
           }
         }
@@ -866,15 +897,17 @@ const CarriersAddEdit = ({ mode }) => {
               updateSmppGateways(null, i, 'invalidIp');
               if (!focusHasBeenSet) {
                 refSmppIp.current[i].focus();
+                setActiveTab('2');
                 focusHasBeenSet = true;
               }
             }
 
             else if (type === 'fqdn-top-level') {
-              errorMessages.push('When using an FQDN, you must use a subdomain (e.g. sip.example.com).');
+              errorMessages.push('When using an FQDN, you must use a subdomain (e.g. smpp.example.com).');
               updateSipGateways(null, i, 'invalidIp');
               if (!focusHasBeenSet) {
                 refSmppIp.current[i].focus();
+                setActiveTab('2');
                 focusHasBeenSet = true;
               }
             }
@@ -884,6 +917,7 @@ const CarriersAddEdit = ({ mode }) => {
               updateSmppGateways(null, i, 'invalidIp');
               if (!focusHasBeenSet) {
                 refSmppIp.current[i].focus();
+                setActiveTab('2');
                 focusHasBeenSet = true;
               }
             }
@@ -902,6 +936,7 @@ const CarriersAddEdit = ({ mode }) => {
               updateSmppGateways(null, i, 'invalidPort');
               if (!focusHasBeenSet) {
                 refSmppPort.current[i].focus();
+                setActiveTab('2');
                 focusHasBeenSet = true;
               }
             }
@@ -914,6 +949,7 @@ const CarriersAddEdit = ({ mode }) => {
               updateSmppGateways(null, i, 'invalidIp');
               if (!focusHasBeenSet) {
                 refSmppIp.current[i].focus();
+                setActiveTab('2');
                 focusHasBeenSet = true;
               }
             }
@@ -933,6 +969,7 @@ const CarriersAddEdit = ({ mode }) => {
                 updateSmppGateways(null, j, 'invalidPort');
                 if (!focusHasBeenSet) {
                   refSmppTrash.current[j].focus();
+                  setActiveTab('2');
                   focusHasBeenSet = true;
                 }
               }
@@ -1241,17 +1278,13 @@ const CarriersAddEdit = ({ mode }) => {
     let titleForOutbound = 'If necessary, have you carrier whitelist these IP(s): ';
     if(smpps && smpps.length){
       for(let i = 0; i < smpps.length; i++) {
-        if(smpps[i].port){
-          if(smpps[i].use_tls === 1){
-            titleForInbound += `${smpps[i].ipv4}:${smpps[i].port}(tls), `;
-          }
-          else {
-            titleForInbound += `${smpps[i].ipv4}:${smpps[i].port}, `;
-          }
+        if(smpps[i].use_tls === 1){
+          titleForInbound += `${smpps[i].ipv4}:${smpps[i].port}(tls), `;
         }
         else {
-          titleForOutbound += `${smpps[i].ipv4}, `;
+          titleForInbound += `${smpps[i].ipv4}:${smpps[i].port}, `;
         }
+        titleForOutbound += `${smpps[i].ipv4}, `;
       }
       if(titleForInbound.indexOf(', ') > -1) titleForInbound = titleForInbound.slice(0, -2);
       if(titleForOutbound.indexOf(', ') > 15) titleForOutbound = titleForOutbound.slice(0, -2);
@@ -1273,7 +1306,9 @@ const CarriersAddEdit = ({ mode }) => {
     }
     return title;
   };
-
+  const onChangeTab = activeKey => {
+    setActiveTab(activeKey);
+  };
   return (
     <InternalMain
       type="form"
@@ -1287,7 +1322,7 @@ const CarriersAddEdit = ({ mode }) => {
         {showLoader ? (
           <Loader height="376px" />
         ) : (
-          <Tabs defaultActiveKey="1">
+          <Tabs activeKey={activeTab} onChange={onChangeTab}>
             <TabPane tab="Voice" key="1">
               <StyledForm
                 large
@@ -1620,20 +1655,20 @@ const CarriersAddEdit = ({ mode }) => {
                     ref={refSmppPassword}
                   />
 
-                  <hr style={{ margin: '0.5rem -2rem' }} />
-
                   <div
                     style={{
                       whiteSpace: 'nowrap',
                       textAlign: 'left',
-                      color: '#231f20'
+                      color: '#231f20',
+                      width: '170px'
                     }}
-                  >SMPP Outbound Gateways</div>
+                  >Carrier SMPP Gateways</div>
+                  <div/>
+                  <div/>
                   <SMPPGatewaysOutboundInputGroup>
-                    <Label>Network Address</Label>
+                    <Label>IP or DNS name</Label>
                     <Label>Port</Label>
                     <Label>Use TLS</Label>
-                    <Label>Primary</Label>
                   </SMPPGatewaysOutboundInputGroup>
                   {smppGateways.map((g, i) => (
                     g.outbound?
@@ -1664,13 +1699,13 @@ const CarriersAddEdit = ({ mode }) => {
                         checked={g.use_tls === 1}
                         onChange={e => updateSmppGateways(e, i, 'use_tls')}
                       />
-                      <Switch
+                      {/* <Switch
                         id={`primary[${i}]`}
                         label="Primary"
                         tooltip="Is primary"
                         checked={g.is_primary === 1}
                         onChange={e => updateSmppGateways(e, i, 'is_primary')}
-                      />
+                      /> */}
                       <TrashButton
                         onClick={() => removeSmppGateway(i)}
                         ref={ref => refSmppTrash.current[i] = ref}
@@ -1679,15 +1714,15 @@ const CarriersAddEdit = ({ mode }) => {
                     :
                     null
                   ))}
-
-                  <StyledButton
+                  <div/>
+                  <Button
                     square
                     type="button"
                     onClick={()=>addSmppGateway(false)}
                     ref={refAdd}
                   >
                     +
-                  </StyledButton>
+                  </Button>
                 </StyledForm>
               </StyledSection>
               <StyledSection>
@@ -1696,7 +1731,7 @@ const CarriersAddEdit = ({ mode }) => {
                 <StyledForm
                   large
                 >
-                  <Label htmlFor="smpp_inbound_system_id">Inbound System ID</Label>
+                  <Label htmlFor="smpp_inbound_system_id">System ID</Label>
                   <Input
                     name="smpp_inbound_system_id"
                     id="smpp_inbound_system_id"
@@ -1706,7 +1741,7 @@ const CarriersAddEdit = ({ mode }) => {
                     invalid={smpp_inbound_system_idInvalid}
                     ref={refSmppInboundSystemId}
                   />
-                  <Label htmlFor="smpp_inbound_password">Inbound System Password</Label>
+                  <Label htmlFor="smpp_inbound_password">Password</Label>
                   <PasswordInput
                     allowShowPassword
                     name="smpp_inbound_password"
@@ -1719,23 +1754,20 @@ const CarriersAddEdit = ({ mode }) => {
                     ref={refSmppInboundPassword}
                   />
 
-                  <hr style={{ margin: '0.5rem -2rem' }} />
-
                   <div
                     style={{
                       whiteSpace: 'nowrap',
                       textAlign: 'left',
-                      color: '#231f20'
+                      color: '#231f20',
+                      width: '170px'
                     }}
-                  >SMPP Inbound Gateways</div>
-                  {
-                    smppGateways.length
-                    ? <div>{/* for CSS grid layout */}</div>
-                    : null
-                  }
-                  <SIPGatewaysInputGroup>
-                    <StyledLabel>{`Network Address / Port / Netmask`}</StyledLabel>
-                  </SIPGatewaysInputGroup>
+                  >Carrier IP Address(es) to whitelist</div>
+                  <div/>
+                  <div/>
+                  <SMPPGatewaysInboundInputGroup>
+                    <Label>IP Address</Label>
+                    <Label>Netmask</Label>
+                  </SMPPGatewaysInboundInputGroup>
                   {smppGateways.map((g, i) => (
                     g.inbound?
                     (<SMPPGatewaysInboundInputGroup key={i}>
@@ -1748,7 +1780,7 @@ const CarriersAddEdit = ({ mode }) => {
                         invalid={g.invalidIp}
                         ref={ref => refSmppIp.current[i] = ref}
                       />
-                      <Input
+                      {/* <Input
                         width="5rem"
                         name={`smpppGatewaysPort[${i}]`}
                         id={`smpppGatewaysPort[${i}]`}
@@ -1757,7 +1789,7 @@ const CarriersAddEdit = ({ mode }) => {
                         placeholder="2775"
                         invalid={g.invalidPort}
                         ref={ref => refSmppPort.current[i] = ref}
-                      />
+                      /> */}
                       <Select
                         name={`smppgatewaysNetmask[${i}]`}
                         id={`smppgatewaysNetmask[${i}]`}
@@ -1769,23 +1801,24 @@ const CarriersAddEdit = ({ mode }) => {
                           <option value={item} key={item}>{item}</option>
                         ))}
                       </Select>
-                      <div></div>
                       <TrashButton
                         onClick={() => removeSmppGateway(i)}
                         ref={ref => refSmppTrash.current[i] = ref}
                       />
+                      <div></div>
                     </SMPPGatewaysInboundInputGroup>)
                     :
                     null
                   ))}
-                  <StyledButton
+                  <div/>
+                  <Button
                     square
                     type="button"
                     onClick={()=>addSmppGateway(true)}
                     ref={refAdd}
                   >
                     +
-                  </StyledButton>
+                  </Button>
                 </StyledForm>
               </StyledSection>
             </TabPane>
