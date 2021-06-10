@@ -24,6 +24,24 @@ import handleErrors from "../../../helpers/handleErrors";
 
 const { TabPane } = Tabs;
 
+const StyledSection = styled.div`
+  margin: auto;
+  width: calc(100% - 0.5rem);
+  margin-bottom: 1.5rem;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background: #FFF;
+  box-shadow: 0 0px 0px rgb(0 0 0 / 10%), 0px 0px 0.25rem rgb(0 0 0 / 10%);
+  
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+`;
+
 const StyledForm = styled(Form)`
   @media (max-width: 978.98px) {
     flex-direction: column;
@@ -265,7 +283,8 @@ const CarriersAddEdit = ({ mode }) => {
   const [ sbcs, setSbcs ] = useState('');
 
   const [smpps, setSmpps] = useState([]);
-  const [smppSubTitle, setSmppSubTitle] = useState('');
+  const [smppSubTitleForInbound, setSmppSubTitleForInbound] = useState('');
+  const [smppSubTitleForOutbound, setSmppSubTitleForOutbound] = useState('');
   useEffect(() => {
     const getAPIData = async () => {
       let isMounted = true;
@@ -351,7 +370,7 @@ const CarriersAddEdit = ({ mode }) => {
         const usersMe = promiseResponses[0].data;
         setApplicationValues(promiseResponses[1].data);
         setSmpps(promiseResponses[2].data);
-        setSmppSubTitle(getSmppSubTitle(promiseResponses[2].data));
+        getSmppSubTitle(promiseResponses[2].data);
 
         if (usersMe.account) {
           setSipRealm(usersMe.account.sip_realm);
@@ -1206,19 +1225,27 @@ const CarriersAddEdit = ({ mode }) => {
   };
 
   const getSmppSubTitle = (smpps) => {
-    let title = '';
+    let titleForInbound = 'Have your carrier send SMPP to ';
+    let titleForOutbound = 'If necessary, have you carrier whitelist these IP(s): ';
     if(smpps && smpps.length){
-      title = 'Have your carrier send SMPP to';
       for(let i = 0; i < smpps.length; i++) {
-        if(smpps[i].is_primary === 1){
-          title += ` ${smpps[i].ipv4}:${smpps[i].port}(primary)`;
+        if(smpps[i].port){
+          if(smpps[i].use_tls === 1){
+            titleForInbound += `${smpps[i].ipv4}:${smpps[i].port}(tls), `;
+          }
+          else {
+            titleForInbound += `${smpps[i].ipv4}:${smpps[i].port}, `;
+          }
         }
         else {
-          title += ` ${smpps[i].ipv4}:${smpps[i].port}(backup)`;
+          titleForOutbound += `${smpps[i].ipv4}, `;
         }
       }
+      if(titleForInbound.indexOf(', ') > -1) titleForInbound = titleForInbound.slice(0, -2);
+      if(titleForOutbound.indexOf(', ') > 15) titleForOutbound = titleForOutbound.slice(0, -2);
     }
-    return title;
+    setSmppSubTitleForInbound(titleForInbound);
+    setSmppSubTitleForOutbound(titleForOutbound);
   };
 
   const getSubTitle = () => {
@@ -1555,202 +1582,210 @@ const CarriersAddEdit = ({ mode }) => {
               </StyledForm>
             </TabPane>
             <TabPane tab="SMS" disabled={smpps.length === 0} key="2">
-              <Subtitle>{smppSubTitle}</Subtitle>
-              <StyledForm
-                large
-              >
-                <Label htmlFor="smpp_system_id">System ID</Label>
-                <Input
-                  name="smpp_system_id"
-                  id="smpp_system_id"
-                  value={smpp_system_id}
-                  onChange={e => setSmppSystemId(e.target.value)}
-                  placeholder="SIP username for authenticating outbound calls"
-                  invalid={smpp_system_idInvalid}
-                  ref={refSmppSystemId}
-                />
-                <Label htmlFor="smpp_password">Password</Label>
-                <PasswordInput
-                  allowShowPassword
-                  name="smpp_password"
-                  id="smpp_password"
-                  password={smpp_password}
-                  setPassword={setSmppPassword}
-                  setErrorMessage={setErrorMessage}
-                  placeholder="SIP password for authenticating outbound calls"
-                  invalid={smpp_passwordInvalid}
-                  ref={refSmppPassword}
-                />
-
-                <Label htmlFor="smpp_inbound_system_id">Inbound System ID</Label>
-                <Input
-                  name="smpp_inbound_system_id"
-                  id="smpp_inbound_system_id"
-                  value={smpp_inbound_system_id}
-                  onChange={e => setSmppInboundSystemId(e.target.value)}
-                  placeholder="SIP username for authenticating outbound calls"
-                  invalid={smpp_inbound_system_idInvalid}
-                  ref={refSmppInboundSystemId}
-                />
-                <Label htmlFor="smpp_inbound_password">Inbound System Password</Label>
-                <PasswordInput
-                  allowShowPassword
-                  name="smpp_inbound_password"
-                  id="smpp_inbound_password"
-                  password={smpp_inbound_password}
-                  setPassword={setSmppInboundPassword}
-                  setErrorMessage={setErrorMessage}
-                  placeholder="SIP password for authenticating outbound calls"
-                  invalid={smpp_inbound_passwordInvalid}
-                  ref={refSmppInboundPassword}
-                />
-
-                <hr style={{ margin: '0.5rem -2rem' }} />
-
-                <div
-                  style={{
-                    whiteSpace: 'nowrap',
-                    textAlign: 'left',
-                    color: '#231f20'
-                  }}
-                >SMPP Outbound Gateways</div>
-                {
-                  sipGateways.length
-                  ? <div>{/* for CSS grid layout */}</div>
-                  : null
-                }
-                <SIPGatewaysInputGroup>
-                  <StyledLabel>{`Network Address / Port`}</StyledLabel>
-                </SIPGatewaysInputGroup>
-                {smppGateways.map((g, i) => (
-                  g.outbound?
-                  (<SMPPGatewaysOutboundInputGroup key={i}>
-                    <Input
-                      name={`smppGatewaysIp[${i}]`}
-                      id={`smppGatewaysIp[${i}]`}
-                      value={g.ipv4}
-                      onChange={e => updateSmppGateways(e, i, 'ipv4')}
-                      placeholder={'1.2.3.4'}
-                      invalid={g.invalidIp}
-                      ref={ref => refSmppIp.current[i] = ref}
-                    />
-                    <Input
-                      width="5rem"
-                      name={`smppGatewaysPort[${i}]`}
-                      id={`smppGatewaysPort[${i}]`}
-                      value={g.port}
-                      onChange={e => updateSmppGateways(e, i, 'port')}
-                      placeholder="2775"
-                      invalid={g.invalidPort}
-                      ref={ref => refSmppPort.current[i] = ref}
-                    />
-                    <SIPGatewaysChecboxGroup>
-                      <Checkbox
-                        id={`tls[${i}]`}
-                        label="TLS"
-                        tooltip="Use TLS"
-                        checked={g.use_tls === 1}
-                        onChange={e => updateSmppGateways(e, i, 'use_tls')}
-                      />
-                      <Checkbox
-                        id={`primary[${i}]`}
-                        label="Primary"
-                        tooltip="Is primary"
-                        checked={g.is_primary === 1}
-                        onChange={e => updateSmppGateways(e, i, 'is_primary')}
-                      />
-                    </SIPGatewaysChecboxGroup>
-                    <TrashButton
-                      onClick={() => removeSmppGateway(i)}
-                      ref={ref => refSmppTrash.current[i] = ref}
-                    />
-                  </SMPPGatewaysOutboundInputGroup>)
-                  :
-                  null
-                ))}
-
-                <StyledButton
-                  square
-                  type="button"
-                  onClick={()=>addSmppGateway(false)}
-                  ref={refAdd}
+              <StyledSection>
+                <Subtitle>{smppSubTitleForOutbound}</Subtitle>
+                <StyledForm
+                  large
                 >
-                  +
-                </StyledButton>
+                  <Label htmlFor="smpp_system_id">System ID</Label>
+                  <Input
+                    name="smpp_system_id"
+                    id="smpp_system_id"
+                    value={smpp_system_id}
+                    onChange={e => setSmppSystemId(e.target.value)}
+                    placeholder="SIP username for authenticating outbound calls"
+                    invalid={smpp_system_idInvalid}
+                    ref={refSmppSystemId}
+                  />
+                  <Label htmlFor="smpp_password">Password</Label>
+                  <PasswordInput
+                    allowShowPassword
+                    name="smpp_password"
+                    id="smpp_password"
+                    password={smpp_password}
+                    setPassword={setSmppPassword}
+                    setErrorMessage={setErrorMessage}
+                    placeholder="SIP password for authenticating outbound calls"
+                    invalid={smpp_passwordInvalid}
+                    ref={refSmppPassword}
+                  />
 
-                <hr style={{ margin: '0.5rem -2rem' }} />
+                  <hr style={{ margin: '0.5rem -2rem' }} />
 
-                <div
-                  style={{
-                    whiteSpace: 'nowrap',
-                    textAlign: 'left',
-                    color: '#231f20'
-                  }}
-                >SMPP Inbound Gateways</div>
-                {
-                  smppGateways.length
-                  ? <div>{/* for CSS grid layout */}</div>
-                  : null
-                }
-                <SIPGatewaysInputGroup>
-                  <StyledLabel>{`Network Address / Port / Netmask`}</StyledLabel>
-                </SIPGatewaysInputGroup>
-                {smppGateways.map((g, i) => (
-                  g.inbound?
-                  (<SMPPGatewaysInboundInputGroup key={i}>
-                    <Input
-                      name={`smpppGatewaysIp[${i}]`}
-                      id={`smpppGatewaysIp[${i}]`}
-                      value={g.ipv4}
-                      onChange={e => updateSmppGateways(e, i, 'ipv4')}
-                      placeholder={'1.2.3.4'}
-                      invalid={g.invalidIp}
-                      ref={ref => refSmppIp.current[i] = ref}
-                    />
-                    <Input
-                      width="5rem"
-                      name={`smpppGatewaysPort[${i}]`}
-                      id={`smpppGatewaysPort[${i}]`}
-                      value={g.port}
-                      onChange={e => updateSmppGateways(e, i, 'port')}
-                      placeholder="2775"
-                      invalid={g.invalidPort}
-                      ref={ref => refSmppPort.current[i] = ref}
-                    />
-                    <Select
-                      name={`smppgatewaysNetmask[${i}]`}
-                      id={`smppgatewaysNetmask[${i}]`}
-                      value={smppGateways[i].netmask}
-                      disabled={smppGateways[i].outbound}
-                      onChange={e => updateSmppGateways(e, i, 'netmask')}
-                    >
-                      {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
-                        <option value={item} key={item}>{item}</option>
-                      ))}
-                    </Select>
-                    <div></div>
-                    <TrashButton
-                      onClick={() => removeSmppGateway(i)}
-                      ref={ref => refSmppTrash.current[i] = ref}
-                    />
-                  </SMPPGatewaysInboundInputGroup>)
-                  :
-                  null
-                ))}
-                <StyledButton
-                  square
-                  type="button"
-                  onClick={()=>addSmppGateway(true)}
-                  ref={refAdd}
+                  <div
+                    style={{
+                      whiteSpace: 'nowrap',
+                      textAlign: 'left',
+                      color: '#231f20'
+                    }}
+                  >SMPP Outbound Gateways</div>
+                  {
+                    sipGateways.length
+                    ? <div>{/* for CSS grid layout */}</div>
+                    : null
+                  }
+                  <SIPGatewaysInputGroup>
+                    <StyledLabel>{`Network Address / Port`}</StyledLabel>
+                  </SIPGatewaysInputGroup>
+                  {smppGateways.map((g, i) => (
+                    g.outbound?
+                    (<SMPPGatewaysOutboundInputGroup key={i}>
+                      <Input
+                        name={`smppGatewaysIp[${i}]`}
+                        id={`smppGatewaysIp[${i}]`}
+                        value={g.ipv4}
+                        onChange={e => updateSmppGateways(e, i, 'ipv4')}
+                        placeholder={'1.2.3.4'}
+                        invalid={g.invalidIp}
+                        ref={ref => refSmppIp.current[i] = ref}
+                      />
+                      <Input
+                        width="5rem"
+                        name={`smppGatewaysPort[${i}]`}
+                        id={`smppGatewaysPort[${i}]`}
+                        value={g.port}
+                        onChange={e => updateSmppGateways(e, i, 'port')}
+                        placeholder="2775"
+                        invalid={g.invalidPort}
+                        ref={ref => refSmppPort.current[i] = ref}
+                      />
+                      <SIPGatewaysChecboxGroup>
+                        <Checkbox
+                          id={`tls[${i}]`}
+                          label="TLS"
+                          tooltip="Use TLS"
+                          checked={g.use_tls === 1}
+                          onChange={e => updateSmppGateways(e, i, 'use_tls')}
+                        />
+                        <Checkbox
+                          id={`primary[${i}]`}
+                          label="Primary"
+                          tooltip="Is primary"
+                          checked={g.is_primary === 1}
+                          onChange={e => updateSmppGateways(e, i, 'is_primary')}
+                        />
+                      </SIPGatewaysChecboxGroup>
+                      <TrashButton
+                        onClick={() => removeSmppGateway(i)}
+                        ref={ref => refSmppTrash.current[i] = ref}
+                      />
+                    </SMPPGatewaysOutboundInputGroup>)
+                    :
+                    null
+                  ))}
+
+                  <StyledButton
+                    square
+                    type="button"
+                    onClick={()=>addSmppGateway(false)}
+                    ref={refAdd}
+                  >
+                    +
+                  </StyledButton>
+                </StyledForm>
+              </StyledSection>
+              <StyledSection>
+                <Subtitle>{smppSubTitleForInbound}</Subtitle>
+                <StyledForm
+                  large
                 >
-                  +
-                </StyledButton>
-                {errorMessage && (
-                  <FormError grid message={errorMessage} />
-                )}
-              </StyledForm>
+                  <Label htmlFor="smpp_inbound_system_id">Inbound System ID</Label>
+                  <Input
+                    name="smpp_inbound_system_id"
+                    id="smpp_inbound_system_id"
+                    value={smpp_inbound_system_id}
+                    onChange={e => setSmppInboundSystemId(e.target.value)}
+                    placeholder="SIP username for authenticating outbound calls"
+                    invalid={smpp_inbound_system_idInvalid}
+                    ref={refSmppInboundSystemId}
+                  />
+                  <Label htmlFor="smpp_inbound_password">Inbound System Password</Label>
+                  <PasswordInput
+                    allowShowPassword
+                    name="smpp_inbound_password"
+                    id="smpp_inbound_password"
+                    password={smpp_inbound_password}
+                    setPassword={setSmppInboundPassword}
+                    setErrorMessage={setErrorMessage}
+                    placeholder="SIP password for authenticating outbound calls"
+                    invalid={smpp_inbound_passwordInvalid}
+                    ref={refSmppInboundPassword}
+                  />
+
+                  <hr style={{ margin: '0.5rem -2rem' }} />
+
+                  <div
+                    style={{
+                      whiteSpace: 'nowrap',
+                      textAlign: 'left',
+                      color: '#231f20'
+                    }}
+                  >SMPP Inbound Gateways</div>
+                  {
+                    smppGateways.length
+                    ? <div>{/* for CSS grid layout */}</div>
+                    : null
+                  }
+                  <SIPGatewaysInputGroup>
+                    <StyledLabel>{`Network Address / Port / Netmask`}</StyledLabel>
+                  </SIPGatewaysInputGroup>
+                  {smppGateways.map((g, i) => (
+                    g.inbound?
+                    (<SMPPGatewaysInboundInputGroup key={i}>
+                      <Input
+                        name={`smpppGatewaysIp[${i}]`}
+                        id={`smpppGatewaysIp[${i}]`}
+                        value={g.ipv4}
+                        onChange={e => updateSmppGateways(e, i, 'ipv4')}
+                        placeholder={'1.2.3.4'}
+                        invalid={g.invalidIp}
+                        ref={ref => refSmppIp.current[i] = ref}
+                      />
+                      <Input
+                        width="5rem"
+                        name={`smpppGatewaysPort[${i}]`}
+                        id={`smpppGatewaysPort[${i}]`}
+                        value={g.port}
+                        onChange={e => updateSmppGateways(e, i, 'port')}
+                        placeholder="2775"
+                        invalid={g.invalidPort}
+                        ref={ref => refSmppPort.current[i] = ref}
+                      />
+                      <Select
+                        name={`smppgatewaysNetmask[${i}]`}
+                        id={`smppgatewaysNetmask[${i}]`}
+                        value={smppGateways[i].netmask}
+                        disabled={smppGateways[i].outbound}
+                        onChange={e => updateSmppGateways(e, i, 'netmask')}
+                      >
+                        {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
+                          <option value={item} key={item}>{item}</option>
+                        ))}
+                      </Select>
+                      <div></div>
+                      <TrashButton
+                        onClick={() => removeSmppGateway(i)}
+                        ref={ref => refSmppTrash.current[i] = ref}
+                      />
+                    </SMPPGatewaysInboundInputGroup>)
+                    :
+                    null
+                  ))}
+                  <StyledButton
+                    square
+                    type="button"
+                    onClick={()=>addSmppGateway(true)}
+                    ref={refAdd}
+                  >
+                    +
+                  </StyledButton>
+                </StyledForm>
+              </StyledSection>
             </TabPane>
           </Tabs>
+        )}
+        {errorMessage && (
+          <FormError grid message={errorMessage} />
         )}
         <StyledButtonGroup flexEnd spaced>
           <Button
