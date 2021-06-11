@@ -546,7 +546,7 @@ const CarriersAddEdit = ({ mode }) => {
     const newSmppGateways = [
       ...smppGateways,
       {
-        sip_gateway_sid: '',
+        smpp_gateway_sid: '',
         ipv4: '',
         port: 2775,
         inbound: inbound,
