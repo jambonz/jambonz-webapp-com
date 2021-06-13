@@ -1314,506 +1314,509 @@ const CarriersAddEdit = ({ mode }) => {
         {showLoader ? (
           <Loader height="376px" />
         ) : (
-          <Tabs activeKey={activeTab} onChange={onChangeTab}>
-            <TabPane tab="Voice" key="1">
-              <StyledForm
-                large
-              >
-                <Label htmlFor="name">Name</Label>
-                <NameFieldWrapper hasDropdown={type === 'add'}>
-                  <Input
-                    name="name"
-                    id="name"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    placeholder="Carrier name"
-                    invalid={nameInvalid}
-                    autoFocus
-                    ref={refName}
-                  />
-                  {type === 'add' && (
-                    <CarrierSelect>
-                      <Dropdown
-                        placement="bottomRight"
-                        trigger="click"
-                        overlay={
-                          <Menu>
-                            {predefinedCarriers.map((item) => {
-                              const disabled = !staticIPs && item.requires_static_ip;
-                              return (
-                                <Menu.Item key={item.value} disabled={disabled}>
-                                  <CarrierItem
-                                    disabled={disabled}
-                                    onClick={() => !disabled && pickupCarrier(item.value)}
-                                  >
-                                    {item.text}
-                                  </CarrierItem>
-                                </Menu.Item>
-                              );
-                            })}
-                          </Menu>
-                        }
-                      >
-                        <Button text formLink type="button">
-                          Select from list
-                        </Button>
-                      </Dropdown>
-                    </CarrierSelect>
-                  )}
-                </NameFieldWrapper>
-
-                <Label htmlFor="e164">active</Label>
-                <Checkbox
-                  noLeftMargin
-                  name="active"
-                  id="active"
-                  label=""
-                  checked={carrierActive}
-                  onChange={e => setCarrierActive(e.target.checked)}
+          <>
+            <StyledForm large>
+              <Label htmlFor="name">Name</Label>
+              <NameFieldWrapper hasDropdown={type === 'add'}>
+                <Input
+                  name="name"
+                  id="name"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="Carrier name"
+                  invalid={nameInvalid}
+                  autoFocus
+                  ref={refName}
                 />
-
-                <Label htmlFor="e164">E.164 Syntax</Label>
-                <Checkbox
-                  noLeftMargin
-                  name="e164"
-                  id="e164"
-                  label="prepend a leading + on origination attempts"
-                  checked={e164}
-                  onChange={e => setE164(e.target.checked)}
-                />
-
-                <Label htmlFor="application">Application</Label>
-                <Select
-                  name="application"
-                  id="application"
-                  value={application}
-                  onChange={e => setApplication(e.target.value)}
-                >
-                  <option value="">
-                    {type === 'add'
-                      ? '-- OPTIONAL: Application to invoke on calls arriving from this carrier --'
-                      : '-- NONE --'
-                    }
-                  </option>
-                  {applicationValues.map(a => (
-                    <option
-                      key={a.application_sid}
-                      value={a.application_sid}
-                    >
-                      {a.name}
-                    </option>
-                  ))}
-                </Select>
-
-                <hr style={{ margin: '0.5rem -2rem' }} />
-
-                {
-                  !authenticate ? (
-                    <>
-                      <Button
-                        text
-                        formLink
-                        type="button"
-                        onClick={e => setAuthenticate(!authenticate)}
-                      >
-                        Does your carrier require authentication on outbound calls?
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Label htmlFor="username">Username</Label>
-                      <Input
-                        name="username"
-                        id="username"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        placeholder="SIP username for authenticating outbound calls"
-                        invalid={usernameInvalid}
-                        ref={refUsername}
-                      />
-                      <Label htmlFor="password">Password</Label>
-                      <PasswordInput
-                        allowShowPassword
-                        name="password"
-                        id="password"
-                        password={password}
-                        setPassword={setPassword}
-                        setErrorMessage={setErrorMessage}
-                        placeholder="SIP password for authenticating outbound calls"
-                        invalid={passwordInvalid}
-                        ref={refPassword}
-                      />
-                      <div></div>
-                      <Checkbox
-                        noLeftMargin
-                        name="register"
-                        id="register"
-                        label="Carrier requires SIP Register before sending outbound calls"
-                        checked={register}
-                        onChange={e => setRegister(e.target.checked)}
-                      />
-                      {
-                        register ? (
-                          <>
-                            <Label htmlFor="realm">SIP Realm</Label>
-                            <Input
-                              name="realm"
-                              id="realm"
-                              value={realm}
-                              onChange={e => setRealm(e.target.value)}
-                              placeholder="SIP realm for registration"
-                              invalid={realmInvalid}
-                              ref={refRealm}
-                            />
-                          </>
-                        ) : (
-                          null
-                        )
+                {type === 'add' && (
+                  <CarrierSelect>
+                    <Dropdown
+                      placement="bottomRight"
+                      trigger="click"
+                      overlay={
+                        <Menu>
+                          {predefinedCarriers.map((item) => {
+                            const disabled = !staticIPs && item.requires_static_ip;
+                            return (
+                              <Menu.Item key={item.value} disabled={disabled}>
+                                <CarrierItem
+                                  disabled={disabled}
+                                  onClick={() => !disabled && pickupCarrier(item.value)}
+                                >
+                                  {item.text}
+                                </CarrierItem>
+                              </Menu.Item>
+                            );
+                          })}
+                        </Menu>
                       }
-                    </>
-                  )
-                }
-
-                <hr style={{ margin: '0.5rem -2rem' }} />
-
-                {
-                  requiredTechPrefix ? (
-                    <>
-                      <Label htmlFor="techPrefix">Tech prefix</Label>
-                      <Input
-                        name="techPrefix"
-                        id="techPrefix"
-                        value={techPrefix}
-                        onChange={e => setTechPrefix(e.target.value)}
-                        placeholder="Tech Prefix"
-                        invalid={techPrefixInvalid}
-                        ref={refTechPrefix}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        text
-                        formLink
-                        type="button"
-                        onClick={e => setRequiredTechPrefix(!requiredTechPrefix)}
-                      >
-                        Does your carrier require a tech prefix on outbound calls?
-                      </Button>
-                    </>
-                  )
-                }
-
-                <hr style={{ margin: '0.5rem -2rem' }} />
-
-                {
-                  suportSIP ? (
-                    <>
-                      <Label htmlFor="diversion">Diversion</Label>
-                      <Input
-                        name="diversion"
-                        id="diversion"
-                        value={diversion}
-                        onChange={e => setDiversion(e.target.value)}
-                        placeholder="Phone number or SIP URI"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        text
-                        formLink
-                        type="button"
-                        onClick={() => setSupportSIP(!suportSIP)}
-                      >
-                        Does your carrier support the SIP Diversion header for authenticating the calling number?
-                      </Button>
-                    </>
-                  )
-                }
-
-                <hr style={{ margin: '0.5rem -2rem' }} />
-
-                <div
-                  style={{
-                    whiteSpace: 'nowrap',
-                    textAlign: 'left',
-                    color: '#231f20'
-                  }}
-                >SIP Gateways</div>
-                {
-                  sipGateways.length
-                  ? <div>{/* for CSS grid layout */}</div>
-                  : null
-                }
-                <SIPGatewaysInputGroup>
-                  <StyledLabel>{`Network Address / Port / Netmask`}</StyledLabel>
-                </SIPGatewaysInputGroup>
-                {sipGateways.map((g, i) => (
-                  <SIPGatewaysInputGroup key={i}>
-                    <Input
-                      name={`sipGatewaysIp[${i}]`}
-                      id={`sipGatewaysIp[${i}]`}
-                      value={sipGateways[i].ip}
-                      onChange={e => updateSipGateways(e, i, 'ip')}
-                      placeholder={'1.2.3.4'}
-                      invalid={sipGateways[i].invalidIp}
-                      ref={ref => refIp.current[i] = ref}
-                    />
-                    <Input
-                      width="5rem"
-                      name={`sipGatewaysPort[${i}]`}
-                      id={`sipGatewaysPort[${i}]`}
-                      value={sipGateways[i].port}
-                      onChange={e => updateSipGateways(e, i, 'port')}
-                      placeholder="5060"
-                      invalid={sipGateways[i].invalidPort}
-                      ref={ref => refPort.current[i] = ref}
-                    />
-                    <Select
-                      name={`sipgatewaysNetmask[${i}]`}
-                      id={`sipgatewaysNetmask[${i}]`}
-                      value={sipGateways[i].netmask}
-                      disabled={sipGateways[i].outbound}
-                      onChange={e => updateSipGateways(e, i, 'netmask')}
                     >
-                      {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
-                        <option value={item} key={item}>{item}</option>
-                      ))}
-                    </Select>
-                    <SIPGatewaysChecboxGroup>
-                      <Checkbox
-                        id={`inbound[${i}]`}
-                        label={width > 1100 ? "Inbound" : "In"}
-                        tooltip="Sends us calls"
-                        checked={sipGateways[i].inbound}
-                        onChange={e => updateSipGateways(e, i, 'inbound')}
-                        invalid={sipGateways[i].invalidInbound}
-                        ref={ref => refInbound.current[i] = ref}
-                      />
-                      <Checkbox
-                        id={`outbound[${i}]`}
-                        label={width > 1100 ? "Outbound" : "Out"}
-                        tooltip="Accepts calls from us"
-                        checked={sipGateways[i].outbound}
-                        onChange={e => updateSipGateways(e, i, 'outbound')}
-                        invalid={sipGateways[i].invalidOutbound}
-                        ref={ref => refOutbound.current[i] = ref}
-                      />
-                      <TrashButton
-                        onClick={() => removeSipGateway(i)}
-                        ref={ref => refTrash.current[i] = ref}
-                      />
-                    </SIPGatewaysChecboxGroup>
-                  </SIPGatewaysInputGroup>
-                ))}
-                <StyledButton
-                  square
-                  type="button"
-                  onClick={addSipGateway}
-                  ref={refAdd}
-                >
-                  +
-                </StyledButton>
-              </StyledForm>
-            </TabPane>
-            <TabPane tab="SMS" disabled={smpps.length === 0} key="2">
-              <StyledSection>
-                <StyledLegend>Outbound SMPP</StyledLegend>
-                <Subtitle>{smppSubTitleForOutbound}</Subtitle>
+                      <Button text formLink type="button">
+                        Select from list
+                      </Button>
+                    </Dropdown>
+                  </CarrierSelect>
+                )}
+              </NameFieldWrapper>
+              <Label htmlFor="e164">active</Label>
+              <Checkbox
+                noLeftMargin
+                name="active"
+                id="active"
+                label=""
+                checked={carrierActive}
+                onChange={e => setCarrierActive(e.target.checked)}
+              />
+              <hr style={{ margin: '0.5rem 0' }} />
+            </StyledForm>
+            <Tabs activeKey={activeTab} onChange={onChangeTab}>
+              <TabPane tab="Voice" key="1">
                 <StyledForm
                   large
                 >
-                  <Label htmlFor="smpp_system_id">System ID</Label>
-                  <Input
-                    name="smpp_system_id"
-                    id="smpp_system_id"
-                    value={smpp_system_id}
-                    onChange={e => setSmppSystemId(e.target.value)}
-                    placeholder="SIP username for authenticating outbound messages"
-                    invalid={smpp_system_idInvalid}
-                    ref={refSmppSystemId}
-                  />
-                  <Label htmlFor="smpp_password">Password</Label>
-                  <PasswordInput
-                    allowShowPassword
-                    name="smpp_password"
-                    id="smpp_password"
-                    password={smpp_password}
-                    setPassword={setSmppPassword}
-                    setErrorMessage={setErrorMessage}
-                    placeholder="SIP password for authenticating outbound messages"
-                    invalid={smpp_passwordInvalid}
-                    ref={refSmppPassword}
+                  <Label htmlFor="e164">E.164 Syntax</Label>
+                  <Checkbox
+                    noLeftMargin
+                    name="e164"
+                    id="e164"
+                    label="prepend a leading + on origination attempts"
+                    checked={e164}
+                    onChange={e => setE164(e.target.checked)}
                   />
 
-                  <div
-                    style={{
-                      whiteSpace: 'nowrap',
-                      textAlign: 'left',
-                      color: '#231f20',
-                      width: '170px'
-                    }}
-                  >Carrier SMPP Gateways</div>
-                  <div/>
-                  <div/>
-                  <SMPPGatewaysOutboundInputGroup>
-                    <Label>IP or DNS name</Label>
-                    <Label>Port</Label>
-                    <Label>Use TLS</Label>
-                  </SMPPGatewaysOutboundInputGroup>
-                  {smppGateways.map((g, i) => (
-                    g.outbound?
-                    (<SMPPGatewaysOutboundInputGroup key={i}>
-                      <Input
-                        name={`smppGatewaysIp[${i}]`}
-                        id={`smppGatewaysIp[${i}]`}
-                        value={g.ipv4}
-                        onChange={e => updateSmppGateways(e, i, 'ipv4')}
-                        placeholder={'1.2.3.4'}
-                        invalid={g.invalidIp}
-                        ref={ref => refSmppIp.current[i] = ref}
-                      />
-                      <Input
-                        width="5rem"
-                        name={`smppGatewaysPort[${i}]`}
-                        id={`smppGatewaysPort[${i}]`}
-                        value={g.port}
-                        onChange={e => updateSmppGateways(e, i, 'port')}
-                        placeholder="2775"
-                        invalid={g.invalidPort}
-                        ref={ref => refSmppPort.current[i] = ref}
-                      />
-                      <Switch
-                        id={`tls[${i}]`}
-                        label="TLS"
-                        tooltip="Use TLS"
-                        checked={g.use_tls === 1}
-                        onChange={e => updateSmppGateways(e, i, 'use_tls')}
-                      />
-                      {/* <Switch
-                        id={`primary[${i}]`}
-                        label="Primary"
-                        tooltip="Is primary"
-                        checked={g.is_primary === 1}
-                        onChange={e => updateSmppGateways(e, i, 'is_primary')}
-                      /> */}
-                      <TrashButton
-                        onClick={() => removeSmppGateway(i)}
-                        ref={ref => refSmppTrash.current[i] = ref}
-                      />
-                    </SMPPGatewaysOutboundInputGroup>)
-                    :
-                    null
-                  ))}
-                  <div/>
-                  <Button
-                    square
-                    type="button"
-                    onClick={()=>addSmppGateway(false)}
-                    ref={refAdd}
+                  <Label htmlFor="application">Application</Label>
+                  <Select
+                    name="application"
+                    id="application"
+                    value={application}
+                    onChange={e => setApplication(e.target.value)}
                   >
-                    +
-                  </Button>
-                </StyledForm>
-              </StyledSection>
-              <StyledSection>
-                <StyledLegend>Inbound SMPP</StyledLegend>
-                <Subtitle>{smppSubTitleForInbound}</Subtitle>
-                <StyledForm
-                  large
-                >
-                  <Label htmlFor="smpp_inbound_system_id">System ID</Label>
-                  <Input
-                    name="smpp_inbound_system_id"
-                    id="smpp_inbound_system_id"
-                    readOnly={true}
-                    disabled={true}
-                    value={smpp_inbound_system_id}
-                    ref={refSmppInboundSystemId}
-                  />
-                  <Label htmlFor="smpp_inbound_password">Password</Label>
-                  <PasswordInput
-                    allowShowPassword
-                    name="smpp_inbound_password"
-                    id="smpp_inbound_password"
-                    password={smpp_inbound_password}
-                    setPassword={setSmppInboundPassword}
-                    setErrorMessage={setErrorMessage}
-                    placeholder="SIP password for authenticating inbound messages"
-                    invalid={smpp_inbound_passwordInvalid}
-                    ref={refSmppInboundPassword}
-                  />
+                    <option value="">
+                      {type === 'add'
+                        ? '-- OPTIONAL: Application to invoke on calls arriving from this carrier --'
+                        : '-- NONE --'
+                      }
+                    </option>
+                    {applicationValues.map(a => (
+                      <option
+                        key={a.application_sid}
+                        value={a.application_sid}
+                      >
+                        {a.name}
+                      </option>
+                    ))}
+                  </Select>
+
+                  <hr style={{ margin: '0.5rem -2rem' }} />
+
+                  {
+                    !authenticate ? (
+                      <>
+                        <Button
+                          text
+                          formLink
+                          type="button"
+                          onClick={e => setAuthenticate(!authenticate)}
+                        >
+                          Does your carrier require authentication on outbound calls?
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Label htmlFor="username">Username</Label>
+                        <Input
+                          name="username"
+                          id="username"
+                          value={username}
+                          onChange={e => setUsername(e.target.value)}
+                          placeholder="SIP username for authenticating outbound calls"
+                          invalid={usernameInvalid}
+                          ref={refUsername}
+                        />
+                        <Label htmlFor="password">Password</Label>
+                        <PasswordInput
+                          allowShowPassword
+                          name="password"
+                          id="password"
+                          password={password}
+                          setPassword={setPassword}
+                          setErrorMessage={setErrorMessage}
+                          placeholder="SIP password for authenticating outbound calls"
+                          invalid={passwordInvalid}
+                          ref={refPassword}
+                        />
+                        <div></div>
+                        <Checkbox
+                          noLeftMargin
+                          name="register"
+                          id="register"
+                          label="Carrier requires SIP Register before sending outbound calls"
+                          checked={register}
+                          onChange={e => setRegister(e.target.checked)}
+                        />
+                        {
+                          register ? (
+                            <>
+                              <Label htmlFor="realm">SIP Realm</Label>
+                              <Input
+                                name="realm"
+                                id="realm"
+                                value={realm}
+                                onChange={e => setRealm(e.target.value)}
+                                placeholder="SIP realm for registration"
+                                invalid={realmInvalid}
+                                ref={refRealm}
+                              />
+                            </>
+                          ) : (
+                            null
+                          )
+                        }
+                      </>
+                    )
+                  }
+
+                  <hr style={{ margin: '0.5rem -2rem' }} />
+
+                  {
+                    requiredTechPrefix ? (
+                      <>
+                        <Label htmlFor="techPrefix">Tech prefix</Label>
+                        <Input
+                          name="techPrefix"
+                          id="techPrefix"
+                          value={techPrefix}
+                          onChange={e => setTechPrefix(e.target.value)}
+                          placeholder="Tech Prefix"
+                          invalid={techPrefixInvalid}
+                          ref={refTechPrefix}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          text
+                          formLink
+                          type="button"
+                          onClick={e => setRequiredTechPrefix(!requiredTechPrefix)}
+                        >
+                          Does your carrier require a tech prefix on outbound calls?
+                        </Button>
+                      </>
+                    )
+                  }
+
+                  <hr style={{ margin: '0.5rem -2rem' }} />
+
+                  {
+                    suportSIP ? (
+                      <>
+                        <Label htmlFor="diversion">Diversion</Label>
+                        <Input
+                          name="diversion"
+                          id="diversion"
+                          value={diversion}
+                          onChange={e => setDiversion(e.target.value)}
+                          placeholder="Phone number or SIP URI"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          text
+                          formLink
+                          type="button"
+                          onClick={() => setSupportSIP(!suportSIP)}
+                        >
+                          Does your carrier support the SIP Diversion header for authenticating the calling number?
+                        </Button>
+                      </>
+                    )
+                  }
+
+                  <hr style={{ margin: '0.5rem -2rem' }} />
 
                   <div
                     style={{
                       whiteSpace: 'nowrap',
                       textAlign: 'left',
-                      color: '#231f20',
-                      width: '170px'
+                      color: '#231f20'
                     }}
-                  >Carrier IP Address(es) to whitelist</div>
-                  <div/>
-                  <div/>
-                  <SMPPGatewaysInboundInputGroup>
-                    <Label>IP Address</Label>
-                    <Label>Netmask</Label>
-                  </SMPPGatewaysInboundInputGroup>
-                  {smppGateways.map((g, i) => (
-                    g.inbound?
-                    (<SMPPGatewaysInboundInputGroup key={i}>
+                  >SIP Gateways</div>
+                  {
+                    sipGateways.length
+                    ? <div>{/* for CSS grid layout */}</div>
+                    : null
+                  }
+                  <SIPGatewaysInputGroup>
+                    <StyledLabel>{`Network Address / Port / Netmask`}</StyledLabel>
+                  </SIPGatewaysInputGroup>
+                  {sipGateways.map((g, i) => (
+                    <SIPGatewaysInputGroup key={i}>
                       <Input
-                        name={`smpppGatewaysIp[${i}]`}
-                        id={`smpppGatewaysIp[${i}]`}
-                        value={g.ipv4}
-                        onChange={e => updateSmppGateways(e, i, 'ipv4')}
+                        name={`sipGatewaysIp[${i}]`}
+                        id={`sipGatewaysIp[${i}]`}
+                        value={sipGateways[i].ip}
+                        onChange={e => updateSipGateways(e, i, 'ip')}
                         placeholder={'1.2.3.4'}
-                        invalid={g.invalidIp}
-                        ref={ref => refSmppIp.current[i] = ref}
+                        invalid={sipGateways[i].invalidIp}
+                        ref={ref => refIp.current[i] = ref}
                       />
-                      {/* <Input
+                      <Input
                         width="5rem"
-                        name={`smpppGatewaysPort[${i}]`}
-                        id={`smpppGatewaysPort[${i}]`}
-                        value={g.port}
-                        onChange={e => updateSmppGateways(e, i, 'port')}
-                        placeholder="2775"
-                        invalid={g.invalidPort}
-                        ref={ref => refSmppPort.current[i] = ref}
-                      /> */}
+                        name={`sipGatewaysPort[${i}]`}
+                        id={`sipGatewaysPort[${i}]`}
+                        value={sipGateways[i].port}
+                        onChange={e => updateSipGateways(e, i, 'port')}
+                        placeholder="5060"
+                        invalid={sipGateways[i].invalidPort}
+                        ref={ref => refPort.current[i] = ref}
+                      />
                       <Select
-                        name={`smppgatewaysNetmask[${i}]`}
-                        id={`smppgatewaysNetmask[${i}]`}
-                        value={smppGateways[i].netmask}
-                        disabled={smppGateways[i].outbound}
-                        onChange={e => updateSmppGateways(e, i, 'netmask')}
+                        name={`sipgatewaysNetmask[${i}]`}
+                        id={`sipgatewaysNetmask[${i}]`}
+                        value={sipGateways[i].netmask}
+                        disabled={sipGateways[i].outbound}
+                        onChange={e => updateSipGateways(e, i, 'netmask')}
                       >
                         {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
                           <option value={item} key={item}>{item}</option>
                         ))}
                       </Select>
-                      <TrashButton
-                        onClick={() => removeSmppGateway(i)}
-                        ref={ref => refSmppTrash.current[i] = ref}
-                      />
-                      <div></div>
-                    </SMPPGatewaysInboundInputGroup>)
-                    :
-                    null
+                      <SIPGatewaysChecboxGroup>
+                        <Checkbox
+                          id={`inbound[${i}]`}
+                          label={width > 1100 ? "Inbound" : "In"}
+                          tooltip="Sends us calls"
+                          checked={sipGateways[i].inbound}
+                          onChange={e => updateSipGateways(e, i, 'inbound')}
+                          invalid={sipGateways[i].invalidInbound}
+                          ref={ref => refInbound.current[i] = ref}
+                        />
+                        <Checkbox
+                          id={`outbound[${i}]`}
+                          label={width > 1100 ? "Outbound" : "Out"}
+                          tooltip="Accepts calls from us"
+                          checked={sipGateways[i].outbound}
+                          onChange={e => updateSipGateways(e, i, 'outbound')}
+                          invalid={sipGateways[i].invalidOutbound}
+                          ref={ref => refOutbound.current[i] = ref}
+                        />
+                        <TrashButton
+                          onClick={() => removeSipGateway(i)}
+                          ref={ref => refTrash.current[i] = ref}
+                        />
+                      </SIPGatewaysChecboxGroup>
+                    </SIPGatewaysInputGroup>
                   ))}
-                  <div/>
-                  <Button
+                  <StyledButton
                     square
                     type="button"
-                    onClick={()=>addSmppGateway(true)}
+                    onClick={addSipGateway}
                     ref={refAdd}
                   >
                     +
-                  </Button>
+                  </StyledButton>
                 </StyledForm>
-              </StyledSection>
-            </TabPane>
-          </Tabs>
+              </TabPane>
+              <TabPane tab="SMS" disabled={smpps.length === 0} key="2">
+                <StyledSection>
+                  <StyledLegend>Outbound SMPP</StyledLegend>
+                  <Subtitle>{smppSubTitleForOutbound}</Subtitle>
+                  <StyledForm
+                    large
+                  >
+                    <Label htmlFor="smpp_system_id">System ID</Label>
+                    <Input
+                      name="smpp_system_id"
+                      id="smpp_system_id"
+                      value={smpp_system_id}
+                      onChange={e => setSmppSystemId(e.target.value)}
+                      placeholder="SIP username for authenticating outbound messages"
+                      invalid={smpp_system_idInvalid}
+                      ref={refSmppSystemId}
+                    />
+                    <Label htmlFor="smpp_password">Password</Label>
+                    <PasswordInput
+                      allowShowPassword
+                      name="smpp_password"
+                      id="smpp_password"
+                      password={smpp_password}
+                      setPassword={setSmppPassword}
+                      setErrorMessage={setErrorMessage}
+                      placeholder="SIP password for authenticating outbound messages"
+                      invalid={smpp_passwordInvalid}
+                      ref={refSmppPassword}
+                    />
+
+                    <div
+                      style={{
+                        whiteSpace: 'nowrap',
+                        textAlign: 'left',
+                        color: '#231f20',
+                        width: '170px'
+                      }}
+                    >Carrier SMPP Gateways</div>
+                    <div/>
+                    <div/>
+                    <SMPPGatewaysOutboundInputGroup>
+                      <Label>IP or DNS name</Label>
+                      <Label>Port</Label>
+                      <Label>Use TLS</Label>
+                    </SMPPGatewaysOutboundInputGroup>
+                    {smppGateways.map((g, i) => (
+                      g.outbound?
+                      (<SMPPGatewaysOutboundInputGroup key={i}>
+                        <Input
+                          name={`smppGatewaysIp[${i}]`}
+                          id={`smppGatewaysIp[${i}]`}
+                          value={g.ipv4}
+                          onChange={e => updateSmppGateways(e, i, 'ipv4')}
+                          placeholder={'1.2.3.4'}
+                          invalid={g.invalidIp}
+                          ref={ref => refSmppIp.current[i] = ref}
+                        />
+                        <Input
+                          width="5rem"
+                          name={`smppGatewaysPort[${i}]`}
+                          id={`smppGatewaysPort[${i}]`}
+                          value={g.port}
+                          onChange={e => updateSmppGateways(e, i, 'port')}
+                          placeholder="2775"
+                          invalid={g.invalidPort}
+                          ref={ref => refSmppPort.current[i] = ref}
+                        />
+                        <Switch
+                          id={`tls[${i}]`}
+                          label="TLS"
+                          tooltip="Use TLS"
+                          checked={g.use_tls === 1}
+                          onChange={e => updateSmppGateways(e, i, 'use_tls')}
+                        />
+                        {/* <Switch
+                          id={`primary[${i}]`}
+                          label="Primary"
+                          tooltip="Is primary"
+                          checked={g.is_primary === 1}
+                          onChange={e => updateSmppGateways(e, i, 'is_primary')}
+                        /> */}
+                        <TrashButton
+                          onClick={() => removeSmppGateway(i)}
+                          ref={ref => refSmppTrash.current[i] = ref}
+                        />
+                      </SMPPGatewaysOutboundInputGroup>)
+                      :
+                      null
+                    ))}
+                    <div/>
+                    <Button
+                      square
+                      type="button"
+                      onClick={()=>addSmppGateway(false)}
+                      ref={refAdd}
+                    >
+                      +
+                    </Button>
+                  </StyledForm>
+                </StyledSection>
+                <StyledSection>
+                  <StyledLegend>Inbound SMPP</StyledLegend>
+                  <Subtitle>{smppSubTitleForInbound}</Subtitle>
+                  <StyledForm
+                    large
+                  >
+                    <Label htmlFor="smpp_inbound_system_id">System ID</Label>
+                    <Input
+                      name="smpp_inbound_system_id"
+                      id="smpp_inbound_system_id"
+                      readOnly={true}
+                      disabled={true}
+                      value={smpp_inbound_system_id}
+                      ref={refSmppInboundSystemId}
+                    />
+                    <Label htmlFor="smpp_inbound_password">Password</Label>
+                    <PasswordInput
+                      allowShowPassword
+                      name="smpp_inbound_password"
+                      id="smpp_inbound_password"
+                      password={smpp_inbound_password}
+                      setPassword={setSmppInboundPassword}
+                      setErrorMessage={setErrorMessage}
+                      placeholder="SIP password for authenticating inbound messages"
+                      invalid={smpp_inbound_passwordInvalid}
+                      ref={refSmppInboundPassword}
+                    />
+
+                    <div
+                      style={{
+                        whiteSpace: 'nowrap',
+                        textAlign: 'left',
+                        color: '#231f20',
+                        width: '170px'
+                      }}
+                    >Carrier IP Address(es) to whitelist</div>
+                    <div/>
+                    <div/>
+                    <SMPPGatewaysInboundInputGroup>
+                      <Label>IP Address</Label>
+                      <Label>Netmask</Label>
+                    </SMPPGatewaysInboundInputGroup>
+                    {smppGateways.map((g, i) => (
+                      g.inbound?
+                      (<SMPPGatewaysInboundInputGroup key={i}>
+                        <Input
+                          name={`smpppGatewaysIp[${i}]`}
+                          id={`smpppGatewaysIp[${i}]`}
+                          value={g.ipv4}
+                          onChange={e => updateSmppGateways(e, i, 'ipv4')}
+                          placeholder={'1.2.3.4'}
+                          invalid={g.invalidIp}
+                          ref={ref => refSmppIp.current[i] = ref}
+                        />
+                        {/* <Input
+                          width="5rem"
+                          name={`smpppGatewaysPort[${i}]`}
+                          id={`smpppGatewaysPort[${i}]`}
+                          value={g.port}
+                          onChange={e => updateSmppGateways(e, i, 'port')}
+                          placeholder="2775"
+                          invalid={g.invalidPort}
+                          ref={ref => refSmppPort.current[i] = ref}
+                        /> */}
+                        <Select
+                          name={`smppgatewaysNetmask[${i}]`}
+                          id={`smppgatewaysNetmask[${i}]`}
+                          value={smppGateways[i].netmask}
+                          disabled={smppGateways[i].outbound}
+                          onChange={e => updateSmppGateways(e, i, 'netmask')}
+                        >
+                          {Array.from(Array(32 + 1).keys()).slice(1).reverse().map((item) => (
+                            <option value={item} key={item}>{item}</option>
+                          ))}
+                        </Select>
+                        <TrashButton
+                          onClick={() => removeSmppGateway(i)}
+                          ref={ref => refSmppTrash.current[i] = ref}
+                        />
+                        <div></div>
+                      </SMPPGatewaysInboundInputGroup>)
+                      :
+                      null
+                    ))}
+                    <div/>
+                    <Button
+                      square
+                      type="button"
+                      onClick={()=>addSmppGateway(true)}
+                      ref={refAdd}
+                    >
+                      +
+                    </Button>
+                  </StyledForm>
+                </StyledSection>
+              </TabPane>
+            </Tabs>
+          </>
         )}
         {errorMessage && (
           <StyledFormError grid message={errorMessage} />
