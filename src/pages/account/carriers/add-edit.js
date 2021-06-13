@@ -1630,7 +1630,7 @@ const CarriersAddEdit = ({ mode }) => {
                     id="smpp_system_id"
                     value={smpp_system_id}
                     onChange={e => setSmppSystemId(e.target.value)}
-                    placeholder="SIP username for authenticating outbound calls"
+                    placeholder="SIP username for authenticating outbound messages"
                     invalid={smpp_system_idInvalid}
                     ref={refSmppSystemId}
                   />
@@ -1642,7 +1642,7 @@ const CarriersAddEdit = ({ mode }) => {
                     password={smpp_password}
                     setPassword={setSmppPassword}
                     setErrorMessage={setErrorMessage}
-                    placeholder="SIP password for authenticating outbound calls"
+                    placeholder="SIP password for authenticating outbound messages"
                     invalid={smpp_passwordInvalid}
                     ref={refSmppPassword}
                   />
@@ -1740,7 +1740,7 @@ const CarriersAddEdit = ({ mode }) => {
                     password={smpp_inbound_password}
                     setPassword={setSmppInboundPassword}
                     setErrorMessage={setErrorMessage}
-                    placeholder="SIP password for authenticating outbound calls"
+                    placeholder="SIP password for authenticating inbound messages"
                     invalid={smpp_inbound_passwordInvalid}
                     ref={refSmppInboundPassword}
                   />
