@@ -257,7 +257,6 @@ const CarriersAddEdit = ({ mode }) => {
   const [ smpp_password,        setSmppPassword        ] = useState('');
   const [ smpp_passwordInvalid, setSmppPasswordInvalid ] = useState(false);
   const [ smpp_inbound_system_id,        setSmppInboundSystemId        ] = useState('');
-  const [ smpp_inbound_system_idInvalid, setSmppInboundSystemIdInvalid ] = useState(false);
   const [ smpp_inbound_password,        setSmppInboundPassword        ] = useState('');
   const [ smpp_inbound_passwordInvalid, setSmppInboundPasswordInvalid ] = useState(false);
 
@@ -453,7 +452,9 @@ const CarriersAddEdit = ({ mode }) => {
           })));
           setSmppSystemId(carrier.smpp_system_id || '');
           setSmppPassword(carrier.smpp_password || '');
-          setSmppInboundSystemId(carrier.smpp_inbound_system_id || '');
+          // Explicitly set inbound system ID to SIP realm subdomain
+          // E.g. For 'daveh.sip.jambonz.us' it would need to set it to 'daveh'
+          setSmppInboundSystemId(usersMe.account.sip_realm.split('.').shift());
           setSmppInboundPassword(carrier.smpp_inbound_password || '');
           setSmppGateways(currentSmppGateways.map(s => ({
             smpp_gateway_sid: s.smpp_gateway_sid,
@@ -626,7 +627,6 @@ const CarriersAddEdit = ({ mode }) => {
     setSipGateways(newSipGateways);
     setSmppSystemIdInvalid(false);
     setSmppPasswordInvalid(false);
-    setSmppInboundSystemIdInvalid(false);
     setSmppInboundPasswordInvalid(false);
     const newSmppGateways = [...smppGateways];
     newSmppGateways.forEach((s, i) => {
@@ -838,7 +838,9 @@ const CarriersAddEdit = ({ mode }) => {
         });
       });
 
-      if(smpp_system_id || smpp_password || smpp_inbound_system_id || smpp_inbound_password) {
+      // Removing `smpp_inbound_system_id` from this condition
+      // Reason: `smpp_inbound_system_id` is now explicitly set as SIP realm subdomain
+      if(smpp_system_id || smpp_password || smpp_inbound_password) {
         if ((smpp_system_id && !smpp_password) || (!smpp_system_id && smpp_password)) {
           errorMessages.push('You must provide Password.');
           setSmppPasswordInvalid(true);
@@ -854,16 +856,6 @@ const CarriersAddEdit = ({ mode }) => {
           setSmppSystemIdInvalid(true);
           if (!focusHasBeenSet) {
             refSmppSystemId.current.focus();
-            setActiveTab('2');
-            focusHasBeenSet = true;
-          }
-        }
-
-        if (!smpp_inbound_system_id) {
-          errorMessages.push('You must provide Inbound System ID.');
-          setSmppInboundSystemIdInvalid(true);
-          if (!focusHasBeenSet) {
-            refSmppInboundSystemId.current.focus();
             setActiveTab('2');
             focusHasBeenSet = true;
           }
@@ -1735,10 +1727,9 @@ const CarriersAddEdit = ({ mode }) => {
                   <Input
                     name="smpp_inbound_system_id"
                     id="smpp_inbound_system_id"
+                    readOnly={true}
+                    disabled={true}
                     value={smpp_inbound_system_id}
-                    onChange={e => setSmppInboundSystemId(e.target.value)}
-                    placeholder="SIP username for authenticating outbound calls"
-                    invalid={smpp_inbound_system_idInvalid}
                     ref={refSmppInboundSystemId}
                   />
                   <Label htmlFor="smpp_inbound_password">Password</Label>
