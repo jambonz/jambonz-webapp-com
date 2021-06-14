@@ -645,13 +645,16 @@ const CarriersAddEdit = ({ mode }) => {
       resetInvalidFields();
       let errorMessages = [];
       let focusHasBeenSet = false;
+      const regIp = /^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])$/;
+      const regFqdn = /^([a-zA-Z][^.]*)(\.[^.]+){2,}$/;
+      const regFqdnTopLevel = /^([a-zA-Z][^.]*)(\.[^.]+)$/;
+      const regPort = /^[0-9]+$/;
 
       if (!name) {
         errorMessages.push('Please provide a name.');
         setNameInvalid(true);
         if (!focusHasBeenSet) {
           refName.current.focus();
-          setActiveTab('1');
           focusHasBeenSet = true;
         }
       }
@@ -720,11 +723,6 @@ const CarriersAddEdit = ({ mode }) => {
         }
       }
 
-      const regIp = /^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])$/;
-      const regFqdn = /^([a-zA-Z][^.]*)(\.[^.]+){2,}$/;
-      const regFqdnTopLevel = /^([a-zA-Z][^.]*)(\.[^.]+)$/;
-      const regPort = /^[0-9]+$/;
-
       sipGateways.forEach(async (gateway, i) => {
         //-----------------------------------------------------------------------------
         // IP validation
@@ -738,7 +736,7 @@ const CarriersAddEdit = ({ mode }) => {
               : 'invalid';
 
         if (!gateway.ip) {
-          errorMessages.push('The IP Address cannot be blank. Please provide an IP address or delete the row.');
+          errorMessages.push('The SIP Gateway IP Address cannot be blank. Please provide an IP address or delete the row.');
           updateSipGateways(null, i, 'invalidIp');
           if (!focusHasBeenSet) {
             refIp.current[i].focus();
@@ -758,7 +756,7 @@ const CarriersAddEdit = ({ mode }) => {
         }
 
         else if (type === 'invalid') {
-          errorMessages.push('Please provide a valid IP address or fully qualified domain name.');
+          errorMessages.push('Please provide a valid SIP Gateway IP address or fully qualified domain name.');
           updateSipGateways(null, i, 'invalidIp');
           if (!focusHasBeenSet) {
             refIp.current[i].focus();
@@ -838,21 +836,10 @@ const CarriersAddEdit = ({ mode }) => {
         });
       });
 
-      // Removing `smpp_inbound_system_id` from this condition
-      // Reason: `smpp_inbound_system_id` is now explicitly set as SIP realm subdomain
-      if(smpp_system_id || smpp_password || smpp_inbound_password) {
-        if ((smpp_system_id && !smpp_password) || (!smpp_system_id && smpp_password)) {
-          errorMessages.push('You must provide Password.');
-          setSmppPasswordInvalid(true);
-          if (!focusHasBeenSet) {
-            refSmppPassword.current.focus();
-            setActiveTab('2');
-            focusHasBeenSet = true;
-          }
-        }
-
+      // These validations need to execute for SMS tab
+      if (parseInt(activeTab, 10) === 2) {
         if (!smpp_system_id) {
-          errorMessages.push('You must provide System ID.');
+          errorMessages.push('You must provide Outbound System ID.');
           setSmppSystemIdInvalid(true);
           if (!focusHasBeenSet) {
             refSmppSystemId.current.focus();
@@ -861,17 +848,40 @@ const CarriersAddEdit = ({ mode }) => {
           }
         }
 
-        if (!smpp_inbound_password) {
-          errorMessages.push('You must provide Inbound System Password.');
-          setSmppInboundPasswordInvalid(true);
+        if (!smpp_password) {
+          errorMessages.push('You must provide Outbound System Password.');
+          setSmppPasswordInvalid(true);
           if (!focusHasBeenSet) {
-            refSmppInboundPassword.current.focus();
+            refSmppPassword.current.focus();
             setActiveTab('2');
             focusHasBeenSet = true;
           }
         }
 
         if(smpps && smpps.length > 0) {
+          const smppInboundGateways = smppGateways.filter((g) => g.inbound);
+          const smppOutboundGateways = smppGateways.filter((g) => g.outbound);
+
+          // Validate Outbound Gateways -- At least one is required
+          if (!smppOutboundGateways.length) {
+            errorMessages.push('You must provide at least one Outbound Gateway.');
+            addSmppGateway(false); // False means NOT inbound, so YES it is outbound
+            setActiveTab('2'); // SMPP tab
+          }
+
+          // Validate Inbound Gateways -- Password required ONLY if adding Gateway(s)
+          if (smppInboundGateways.length) {
+            if (!smpp_inbound_password) {
+              errorMessages.push('You must provide an Inbound System Password when adding IP Address(es) to whitelist.');
+              setSmppInboundPasswordInvalid(true);
+              if (!focusHasBeenSet) {
+                refSmppInboundPassword.current.focus();
+                setActiveTab('2');
+                focusHasBeenSet = true;
+              }
+            }
+          }
+
           smppGateways.forEach(async (gateway, i) => {
             //-----------------------------------------------------------------------------
             // IP validation
@@ -883,9 +893,9 @@ const CarriersAddEdit = ({ mode }) => {
               : regFqdnTopLevel.test(gateway.ipv4.trim())
                 ? 'fqdn-top-level'
                 : 'invalid';
-
+            const gatewayTypeText = gateway.outbound ? 'Outbound' : 'Inbound';
             if (!gateway.ipv4) {
-              errorMessages.push('The IP Address cannot be blank. Please provide an IP address or delete the row.');
+              errorMessages.push(`The ${gatewayTypeText} IP Address cannot be blank. Please provide an IP address or delete the row.`);
               updateSmppGateways(null, i, 'invalidIp');
               if (!focusHasBeenSet) {
                 refSmppIp.current[i].focus();
@@ -905,7 +915,7 @@ const CarriersAddEdit = ({ mode }) => {
             }
 
             else if (type === 'invalid') {
-              errorMessages.push('Please provide a valid IP address or fully qualified domain name.');
+              errorMessages.push(`Please provide a valid ${gatewayTypeText} IP address or fully qualified domain name.`);
               updateSmppGateways(null, i, 'invalidIp');
               if (!focusHasBeenSet) {
                 refSmppIp.current[i].focus();
@@ -924,7 +934,7 @@ const CarriersAddEdit = ({ mode }) => {
                 || (parseInt(gateway.port.toString().trim()) > 65535)
               )
             ) {
-              errorMessages.push('Please provide a valid port number between 0 and 65535');
+              errorMessages.push(`Please provide a valid ${gatewayTypeText} port number between 0 and 65535`);
               updateSmppGateways(null, i, 'invalidPort');
               if (!focusHasBeenSet) {
                 refSmppPort.current[i].focus();
@@ -954,7 +964,7 @@ const CarriersAddEdit = ({ mode }) => {
               if (!gateway.ip) return;
               if (type === 'invalid') return;
               if (gateway.ip === otherGateway.ip && gateway.port === otherGateway.port) {
-                errorMessages.push('Each SIP gateway must have a unique IP address.');
+                errorMessages.push('Each SMPP gateway must have a unique IP address.');
                 updateSmppGateways(null, i, 'invalidIp');
                 updateSmppGateways(null, i, 'invalidPort');
                 updateSmppGateways(null, j, 'invalidIp');
