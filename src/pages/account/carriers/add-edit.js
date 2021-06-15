@@ -19,6 +19,7 @@ import TrashButton from '../../../components/elements/TrashButton';
 import Loader from '../../../components/blocks/Loader';
 import sortSipGateways from '../../../helpers/sortSipGateways';
 import Select from '../../../components/elements/Select';
+import { LinkWithTooltip } from '../../../components/elements/Tooltip';
 import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 import handleErrors from "../../../helpers/handleErrors";
 
@@ -193,6 +194,34 @@ const StyledLegend = styled.legend`
   width: fit-content;
 `;
 
+const CarriersVoiceTipText = ({sbcs, sipRealm}) => {
+  const text = <>
+    SIP signaling IPs:
+    {sbcs.map((sbc) => <span key={sbc.ipv4}><br />{sbc.ipv4}</span>)}
+  </>;
+
+  return (
+    <>
+      <span>Have your carrier send calls to {sipRealm}</span><br />
+      <span>If necessary, have your carriers whitelist <LinkWithTooltip tipText={text}>our SIP signaling IPs</LinkWithTooltip></span>
+    </>
+  );
+};
+
+const CarriersSmppTipText = ({smpps}) => {
+  const text = <>
+    SMPP signaling IPs:
+    {smpps.map((smpp) => <span key={smpp.ipv4}><br />{smpp.ipv4}</span>)}
+  </>;
+
+  return (
+    <>
+      <span>Have your carriers send SMPP to smpp.jambonz.us, port 2775 (no encryption) or 3550 (tls)</span><br />
+      <span>If necessary, have your carriers whitelist <LinkWithTooltip tipText={text}>our SMPP signaling IPs</LinkWithTooltip></span>
+    </>
+  );
+};
+
 const CarriersAddEdit = ({ mode }) => {
   const { width } = useContext(ResponsiveContext);
   const { voip_carrier_sid } = useParams();
@@ -306,8 +335,6 @@ const CarriersAddEdit = ({ mode }) => {
   const [ sbcs, setSbcs ] = useState('');
 
   const [smpps, setSmpps] = useState([]);
-  const [smppSubTitleForInbound, setSmppSubTitleForInbound] = useState('');
-  const [smppSubTitleForOutbound, setSmppSubTitleForOutbound] = useState('');
   const [activeTab, setActiveTab] = useState('1');
   useEffect(() => {
     const getAPIData = async () => {
@@ -394,7 +421,6 @@ const CarriersAddEdit = ({ mode }) => {
         const usersMe = promiseResponses[0].data;
         setApplicationValues(promiseResponses[1].data);
         setSmpps(promiseResponses[2].data);
-        getSmppSubTitle(promiseResponses[2].data);
 
         if (usersMe.account) {
           setSipRealm(usersMe.account.sip_realm);
@@ -1277,39 +1303,6 @@ const CarriersAddEdit = ({ mode }) => {
     }
   };
 
-  const getSmppSubTitle = (smpps) => {
-    let titleForInbound = 'Have your carrier send SMPP to ';
-    let titleForOutbound = 'If necessary, have you carrier whitelist these IP(s): ';
-    if(smpps && smpps.length){
-      for(let i = 0; i < smpps.length; i++) {
-        if(smpps[i].use_tls === 1){
-          titleForInbound += `${smpps[i].ipv4}:${smpps[i].port}(tls), `;
-        }
-        else {
-          titleForInbound += `${smpps[i].ipv4}:${smpps[i].port}, `;
-        }
-        titleForOutbound += `${smpps[i].ipv4}, `;
-      }
-      if(titleForInbound.indexOf(', ') > -1) titleForInbound = titleForInbound.slice(0, -2);
-      if(titleForOutbound.indexOf(', ') > 15) titleForOutbound = titleForOutbound.slice(0, -2);
-    }
-    setSmppSubTitleForInbound(titleForInbound);
-    setSmppSubTitleForOutbound(titleForOutbound);
-  };
-
-  const getSubTitle = () => {
-    let title = <>&nbsp;</>;
-    let ips = [];
-    if(sbcs)sbcs.map(sbc => ips.push(sbc.ipv4));
-    if (sipRealm) {
-      title = staticIPs
-        ? `Have your carrier send your calls to your static IP(s): ${staticIPs.join(
-            ", "
-          )}`
-        : `Have your carrier send calls to ${sipRealm}\nIf necessary, have your carrier whitelist these IP: ${ips.join(", ")}`;
-    }
-    return title;
-  };
   const onChangeTab = activeKey => {
     setActiveTab(activeKey);
   };
@@ -1317,7 +1310,6 @@ const CarriersAddEdit = ({ mode }) => {
     <InternalMain
       type="form"
       title={pageTitle}
-      subtitle={getSubTitle()}
       breadcrumbs={[
         { name: 'Back to Carriers', url: '/account/carriers' },
       ]}
@@ -1383,9 +1375,11 @@ const CarriersAddEdit = ({ mode }) => {
             </StyledForm>
             <Tabs activeKey={activeTab} onChange={onChangeTab}>
               <TabPane tab="Voice" key="1">
-                <StyledForm
-                  large
-                >
+                <Subtitle style={{ textAlign: 'left', margin: '15px 0' }}>
+                  <CarriersVoiceTipText sbcs={sbcs} sipRealm={sipRealm} />
+                </Subtitle>
+                <StyledForm large>
+                  <hr style={{ margin: '0.5rem -2rem' }} />
                   <Label htmlFor="e164">E.164 Syntax</Label>
                   <Checkbox
                     noLeftMargin
@@ -1632,9 +1626,11 @@ const CarriersAddEdit = ({ mode }) => {
                 </StyledForm>
               </TabPane>
               <TabPane tab="SMS" disabled={smpps.length === 0} key="2">
+                <Subtitle style={{ textAlign: 'left', margin: '15px 0' }}>
+                  <CarriersSmppTipText smpps={smpps} />
+                </Subtitle>
                 <StyledSection>
                   <StyledLegend>Outbound SMPP</StyledLegend>
-                  <Subtitle>{smppSubTitleForOutbound}</Subtitle>
                   <StyledForm
                     large
                   >
@@ -1733,7 +1729,6 @@ const CarriersAddEdit = ({ mode }) => {
                 </StyledSection>
                 <StyledSection>
                   <StyledLegend>Inbound SMPP</StyledLegend>
-                  <Subtitle>{smppSubTitleForInbound}</Subtitle>
                   <StyledForm
                     large
                   >
