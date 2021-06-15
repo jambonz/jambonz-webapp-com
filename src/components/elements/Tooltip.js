@@ -1,4 +1,7 @@
 import styled from 'styled-components/macro';
+import { useState, useRef, useEffect } from 'react';
+
+import Link from './Link';
 
 const Tooltip = styled.span`
   display: none;
@@ -18,5 +21,101 @@ const Tooltip = styled.span`
     white-space: nowrap;
   }
 `;
+
+const StyledLinkWithTooltip = styled.span`
+  position: relative;
+
+  > span {
+    font-size: 14px;
+    position: absolute;
+    left: 50%;
+    transform: translate3d(-50%, calc(-100% - 5px), 0);
+    padding: 0.75rem 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #C6C6C6;
+    background: #FFF;
+    z-index: 80;
+
+    &:after {
+      content: "";
+      width: 0; 
+      height: 0; 
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid #FFF;
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    &:before {
+      content: "";
+      width: 0; 
+      height: 0; 
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #C6C6C6;
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+  }
+`;
+
+const LinkWithTooltip = props => {
+  const [isActive, setIsActive] = useState(false);
+  const tooltipRef = useRef();
+  const triggerRef = useRef();
+
+  const handleLinkClick = () => {
+    setIsActive((oldActive) => {
+      const newActive = !oldActive;
+      return newActive;
+    });
+  };
+
+  const handleOuterClick = (e) => {
+    if (!tooltipRef.current) {
+      return;
+    }
+
+    if (tooltipRef.current.contains(e.target)) {
+      return;
+    }
+
+    if (triggerRef.current.contains(e.target)) {
+      return;
+    }
+
+    handleLinkClick();
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOuterClick, false);
+
+    return () => document.removeEventListener('click', handleOuterClick, false);
+  }, []); // Empty means only execute useEffect once!
+
+  return (
+    <StyledLinkWithTooltip>
+      <Link to="#" onClick={handleLinkClick}>
+        <span ref={triggerRef}>{props.children}</span>
+      </Link>
+      {isActive ? (
+        <span ref={tooltipRef}>
+          {props.tipText}
+        </span>
+      ) : null}
+    </StyledLinkWithTooltip>
+  );
+};
+
+export {
+  LinkWithTooltip,
+};
 
 export default Tooltip;
