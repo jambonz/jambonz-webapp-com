@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 import Link from './Link';
 
@@ -71,14 +71,14 @@ const LinkWithTooltip = props => {
   const tooltipRef = useRef();
   const triggerRef = useRef();
 
-  const handleLinkClick = () => {
+  const handleLinkClick = useCallback(() => {
     setIsActive((oldActive) => {
       const newActive = !oldActive;
       return newActive;
     });
-  };
+  }, [setIsActive]);
 
-  const handleOuterClick = (e) => {
+  const handleOuterClick = useCallback((e) => {
     if (!tooltipRef.current) {
       return;
     }
@@ -92,13 +92,13 @@ const LinkWithTooltip = props => {
     }
 
     handleLinkClick();
-  };
+  }, [tooltipRef, triggerRef, handleLinkClick]);
 
   useEffect(() => {
     document.addEventListener('click', handleOuterClick, false);
 
     return () => document.removeEventListener('click', handleOuterClick, false);
-  }, []); // Empty means only execute useEffect once!
+  }, [handleOuterClick]);
 
   return (
     <StyledLinkWithTooltip>
