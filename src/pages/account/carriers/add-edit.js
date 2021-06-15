@@ -399,6 +399,9 @@ const CarriersAddEdit = ({ mode }) => {
         if (usersMe.account) {
           setSipRealm(usersMe.account.sip_realm);
           setStaticIPs(usersMe.account.static_ips || null);
+          // Explicitly set inbound system ID to SIP realm subdomain
+          // E.g. For 'daveh.sip.jambonz.us' it would need to set it to 'daveh'
+          setSmppInboundSystemId(usersMe.account.sip_realm.split('.').shift());
         }
 
         if (type === 'edit') {
@@ -452,9 +455,6 @@ const CarriersAddEdit = ({ mode }) => {
           })));
           setSmppSystemId(carrier.smpp_system_id || '');
           setSmppPassword(carrier.smpp_password || '');
-          // Explicitly set inbound system ID to SIP realm subdomain
-          // E.g. For 'daveh.sip.jambonz.us' it would need to set it to 'daveh'
-          setSmppInboundSystemId(usersMe.account.sip_realm.split('.').shift());
           setSmppInboundPassword(carrier.smpp_inbound_password || '');
           setSmppGateways(currentSmppGateways.map(s => ({
             smpp_gateway_sid: s.smpp_gateway_sid,
