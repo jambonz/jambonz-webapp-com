@@ -837,7 +837,7 @@ const CarriersAddEdit = ({ mode }) => {
       });
 
       // These validations need to execute for SMS tab
-      if (parseInt(activeTab, 10) === 2) {
+      if (smpp_system_id || smpp_password || smpp_inbound_password) {
         if (!smpp_system_id) {
           errorMessages.push('You must provide Outbound System ID.');
           setSmppSystemIdInvalid(true);
