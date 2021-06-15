@@ -836,8 +836,10 @@ const CarriersAddEdit = ({ mode }) => {
         });
       });
 
+      const smppIpStringCheck = smppGateways.map((g) => g.ipv4).join('');
+
       // These validations need to execute for SMS tab
-      if (smpp_system_id || smpp_password || smpp_inbound_password) {
+      if (smpp_system_id || smpp_password || smpp_inbound_password || smppIpStringCheck !== '') {
         if (!smpp_system_id) {
           errorMessages.push('You must provide Outbound System ID.');
           setSmppSystemIdInvalid(true);
