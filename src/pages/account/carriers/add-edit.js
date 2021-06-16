@@ -862,10 +862,10 @@ const CarriersAddEdit = ({ mode }) => {
         });
       });
 
-      const smppIpStringCheck = smppGateways.map((g) => g.ipv4).join('');
+      const assertEmptySmppIpsForAll = smppGateways.map((g) => g.ipv4.trim()).join('');
 
       // These validations need to execute for SMS tab
-      if (smpp_system_id || smpp_password || smpp_inbound_password || smppIpStringCheck !== '') {
+      if (smpp_system_id || smpp_password || smpp_inbound_password || assertEmptySmppIpsForAll !== '') {
         if (!smpp_system_id) {
           errorMessages.push('You must provide Outbound System ID.');
           setSmppSystemIdInvalid(true);
@@ -889,6 +889,7 @@ const CarriersAddEdit = ({ mode }) => {
         if(smpps && smpps.length > 0) {
           const smppInboundGateways = smppGateways.filter((g) => g.inbound);
           const smppOutboundGateways = smppGateways.filter((g) => g.outbound);
+          const assertEmptySmppIpsForInbound = smppInboundGateways.map((g) => g.ipv4.trim()).join('');
 
           // Validate Outbound Gateways -- At least one is required
           if (!smppOutboundGateways.length) {
@@ -899,7 +900,8 @@ const CarriersAddEdit = ({ mode }) => {
 
           // Validate Inbound Gateways -- Password required ONLY if adding Gateway(s)
           if (smppInboundGateways.length) {
-            if (!smpp_inbound_password) {
+            // We only need to validate this if the user entered something into an Inbound IP field
+            if (!smpp_inbound_password && assertEmptySmppIpsForInbound !== '') {
               errorMessages.push('You must provide an Inbound System Password when adding IP Address(es) to whitelist.');
               setSmppInboundPasswordInvalid(true);
               if (!focusHasBeenSet) {
@@ -920,9 +922,9 @@ const CarriersAddEdit = ({ mode }) => {
               ? 'fqdn'
               : regFqdnTopLevel.test(gateway.ipv4.trim())
                 ? 'fqdn-top-level'
-                : 'invalid';
+                : (gateway.ipv4.trim() === '') ? 'empty' : 'invalid';
             const gatewayTypeText = gateway.outbound ? 'Outbound' : 'Inbound';
-            if (!gateway.ipv4) {
+            if (!gateway.ipv4 && gateway.outbound) {
               errorMessages.push(`The ${gatewayTypeText} IP Address cannot be blank. Please provide an IP address or delete the row.`);
               updateSmppGateways(null, i, 'invalidIp');
               if (!focusHasBeenSet) {
@@ -956,10 +958,10 @@ const CarriersAddEdit = ({ mode }) => {
             // Port validation
             //-----------------------------------------------------------------------------
             if (
-              gateway.port && (
+              !gateway.port || (gateway.port && (
                 !(regPort.test(gateway.port.toString().trim()))
                 || (parseInt(gateway.port.toString().trim()) < 0)
-                || (parseInt(gateway.port.toString().trim()) > 65535)
+                || (parseInt(gateway.port.toString().trim()) > 65535))
               )
             ) {
               errorMessages.push(`Please provide a valid ${gatewayTypeText} port number between 0 and 65535`);
