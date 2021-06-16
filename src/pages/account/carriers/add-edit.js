@@ -54,14 +54,8 @@ const StyledForm = styled(Form)`
     }
 
     & > hr {
-      width: calc(100% + 4rem);
-    }
-  }
-  
-  ${props => props.theme.mobileOnly} {
-    & > hr {
-      margin: 0.5rem -1rem !important;
-      width: calc(100% + 2rem);
+      width: 100%;
+      margin: 0.5rem 0;
     }
   }
 `;
@@ -182,9 +176,9 @@ const CarrierItem = styled.div`
 `;
 
 const Subtitle = styled.p`
-  font-size: 16px;
+  font-size: 14px;
   color: #231f20;
-  white-space: pre;
+  margin: 15px 0;
 `;
 
 const StyledLegend = styled.legend`
@@ -1373,15 +1367,15 @@ const CarriersAddEdit = ({ mode }) => {
                 checked={carrierActive}
                 onChange={e => setCarrierActive(e.target.checked)}
               />
-              <hr style={{ margin: '0.5rem 0' }} />
+              <hr style={{ margin: '0.5rem 0', maxWidth: '100%' }} />
             </StyledForm>
             <Tabs activeKey={activeTab} onChange={onChangeTab}>
               <TabPane tab="Voice" key="1">
-                <Subtitle style={{ textAlign: 'left', margin: '15px 0' }}>
+                <Subtitle>
                   <CarriersVoiceTipText sbcs={sbcs} sipRealm={sipRealm} />
                 </Subtitle>
                 <StyledForm large>
-                  <hr style={{ margin: '0.5rem -2rem' }} />
+                  <hr />
                   <Label htmlFor="e164">E.164 Syntax</Label>
                   <Checkbox
                     noLeftMargin
@@ -1415,7 +1409,7 @@ const CarriersAddEdit = ({ mode }) => {
                     ))}
                   </Select>
 
-                  <hr style={{ margin: '0.5rem -2rem' }} />
+                  <hr />
 
                   {
                     !authenticate ? (
@@ -1484,7 +1478,7 @@ const CarriersAddEdit = ({ mode }) => {
                     )
                   }
 
-                  <hr style={{ margin: '0.5rem -2rem' }} />
+                  <hr />
 
                   {
                     requiredTechPrefix ? (
@@ -1514,7 +1508,7 @@ const CarriersAddEdit = ({ mode }) => {
                     )
                   }
 
-                  <hr style={{ margin: '0.5rem -2rem' }} />
+                  <hr />
 
                   {
                     suportSIP ? (
@@ -1542,7 +1536,7 @@ const CarriersAddEdit = ({ mode }) => {
                     )
                   }
 
-                  <hr style={{ margin: '0.5rem -2rem' }} />
+                  <hr />
 
                   <div
                     style={{
@@ -1628,7 +1622,7 @@ const CarriersAddEdit = ({ mode }) => {
                 </StyledForm>
               </TabPane>
               <TabPane tab="SMS" disabled={smpps.length === 0} key="2">
-                <Subtitle style={{ textAlign: 'left', margin: '15px 0' }}>
+                <Subtitle>
                   <CarriersSmppTipText smpps={smpps} />
                 </Subtitle>
                 <StyledSection>

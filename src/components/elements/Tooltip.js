@@ -35,6 +35,7 @@ const StyledLinkWithTooltip = styled.span`
     border: 1px solid #C6C6C6;
     background: #FFF;
     z-index: 80;
+    white-space: pre;
 
     &:after {
       content: "";
