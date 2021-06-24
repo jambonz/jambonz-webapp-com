@@ -31,16 +31,6 @@ const CarriersIndex = () => {
         },
       });
 
-      // Get all SIP gateways
-      const gatewayResultsPromise = axios({
-        method: 'get',
-        baseURL: process.env.REACT_APP_API_BASE_URL,
-        url: '/SipGateways',
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-
       // Get SIP realm via /Users/me
       const usersMePromise = axios({
         method: 'get',
@@ -53,11 +43,9 @@ const CarriersIndex = () => {
 
       const [
         carriersResults,
-        gatewayResults,
         usersMe,
       ] = await Promise.all([
         carriersResultsPromise,
-        gatewayResultsPromise,
         usersMePromise,
       ]);
 
@@ -88,16 +76,28 @@ const CarriersIndex = () => {
       }
 
       // Add appropriate gateways to each carrier
-      const carriersWithGateways = carriersResults.data.map(t => {
-        const gateways = gatewayResults.data.filter(g => t.voip_carrier_sid === g.voip_carrier_sid);
+      let carriersWithGateways = [];
+      for(let i = 0; i < carriersResults.data.length; i++)
+      {
+        const t = carriersResults.data[i];
+        // Get all SIP gateways
+        const gatewaysResult = await axios({
+          method: 'get',
+          baseURL: process.env.REACT_APP_API_BASE_URL,
+          url: `/SipGateways?voip_carrier_sid=${t.voip_carrier_sid}`,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        const gateways = gatewaysResult.data;
         const application = applicationData.find(item => item.application_sid === t.application_sid);
         sortSipGateways(gateways);
-        return {
+        carriersWithGateways.push({
           ...t,
           gateways,
           application,
-        };
-      });
+        });
+      }
 
       const simplifiedCarriers = carriersWithGateways.map(t => ({
         sid:            t.voip_carrier_sid,
