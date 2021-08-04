@@ -18,7 +18,7 @@ import Label from "../../../components/elements/Label";
 import { NotificationDispatchContext } from "../../../contexts/NotificationContext";
 import { ResponsiveContext } from "../../../contexts/ResponsiveContext";
 
-const stripePromise = loadStripe("pk_test_EChRaX9Tjk8csZZVSeoGqNvu00lsJzjaU0");
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_API_PUBLISHABLE_KEY);
 
 const Form = styled.form`
   display: grid;
