@@ -20,6 +20,8 @@ import ApiKeysNew from './pages/account/api-keys/new';
 import ApiKeysDelete from './pages/account/api-keys/delete';
 import RegistrationWebhookAddEdit from './pages/account/registration-webhook/add-edit';
 import RegistrationWebhookDelete from './pages/account/registration-webhook/delete';
+import QueueEventWebhookAddEdit from './pages/account/queue-event-webhook/add-edit';
+import QueueEventWebhookDelete from './pages/account/queue-event-webhook/delete';
 import SipRealmEdit from './pages/account/sip-realm/edit';
 import ApplicationsIndex from './pages/account/applications/index';
 import ApplicationsAddEdit from './pages/account/applications/add-edit';
@@ -83,6 +85,10 @@ function Routes() {
               <Route exact path="/account/registration-webhook/add"><RegistrationWebhookAddEdit /></Route>
               <Route exact path="/account/registration-webhook/:webhook_sid/edit"><RegistrationWebhookAddEdit /></Route>
               <Route exact path="/account/registration-webhook/:webhook_sid/delete"><RegistrationWebhookDelete /></Route>
+
+              <Route exact path="/account/queue-event-webhook/add"><QueueEventWebhookAddEdit /></Route>
+              <Route exact path="/account/queue-event-webhook/:webhook_sid/edit"><QueueEventWebhookAddEdit /></Route>
+              <Route exact path="/account/queue-event-webhook/:webhook_sid/delete"><QueueEventWebhookDelete /></Route>
 
               <Route exact path="/account/device-application/add"><DeviceApplicationAddEdit /></Route>
               <Route exact path="/account/device-application/:device_calling_application_sid/edit"><DeviceApplicationAddEdit /></Route>

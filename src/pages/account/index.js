@@ -89,8 +89,6 @@ const AccountHome = () => {
   localStorage.removeItem('location-before-oauth');
 
   const [ data,                         setData                         ] = useState({});
-  const [ registrationWebhookUrl,       setRegistrationWebhookUrl       ] = useState('');
-  const [ registrationWebhookMenuItems, setRegistrationWebhookMenuItems ] = useState([]);
   const [ showLoader,                   setShowLoader                   ] = useState(true);
   const [accountSetupCompleted, setAccountSetupCompleted] = useState(false);
   const [showConfirmSecret, setShowConfirmSecret] = useState(false);
@@ -99,6 +97,7 @@ const AccountHome = () => {
   const [enabledCardDetailRecord, setEnabledCardDetailRecord] = useState(false);
   const [applicationMenuItems, setApplicationMenuItems] = useState([]);
   const [applicationList, setApplicationList] = useState([]);
+  const [webhooks, setWebhooks] = useState([]);
 
   const [mobile, setMobile] = useState(false);
 
@@ -304,42 +303,54 @@ const AccountHome = () => {
         setWebhookSecret((userResponse.data.account || {}).webhook_secret);
         setEnabledCardDetailRecord(!(userResponse.data.account || {}).disable_cdrs);
 
-        if (userResponse.data.account && userResponse.data.account.registration_hook_sid) {
-          const webhook_sid = userResponse.data.account.registration_hook_sid;
-          const regWebhookResponse = await axios({
-            method: 'get',
-            baseURL: process.env.REACT_APP_API_BASE_URL,
-            url: `/Webhooks/${webhook_sid}`,
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          });
+        setWebhooks(await Promise.all(['registration_hook_sid', 'queue_event_hook_sid'].map(async (webhookProp) => {
+          const webhookKey = webhookProp.replace('_hook_sid', '').replace(/_/g, '-');
+          const webhookMap = {
+            key: webhookKey,
+            url: '',
+            items: [],
+            label: webhookKey.split('-').map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`).join(' '),
+          };
 
-          if (regWebhookResponse.data && regWebhookResponse.data.url) {
-            setRegistrationWebhookUrl(regWebhookResponse.data.url);
+          if (userResponse.data.account && userResponse.data.account[webhookProp]) {
+            const webhookSid = userResponse.data.account[webhookProp];
+            const response = await axios({
+              method: 'get',
+              baseURL: process.env.REACT_APP_API_BASE_URL,
+              url: `/Webhooks/${webhookSid}`,
+              headers: {
+                Authorization: `Bearer ${jwt}`,
+              },
+            });
+
+            if (response.data && response.data.url) {
+              webhookMap.url = response.data.url;
+            }
+
+            webhookMap.items = [
+              {
+                name: 'Edit',
+                type: 'link',
+                url: `/account/${webhookKey}-webhook/${webhookSid}/edit`,
+              },
+              {
+                name: 'Delete',
+                type: 'link',
+                url: `/account/${webhookKey}-webhook/${webhookSid}/delete`,
+              },
+            ];
+          } else {
+            webhookMap.items = [
+              {
+                name: 'Add',
+                type: 'link',
+                url: `/account/${webhookKey}-webhook/add`,
+              },
+            ];
           }
 
-          setRegistrationWebhookMenuItems([
-            {
-              name: 'Edit',
-              type: 'link',
-              url: `/account/registration-webhook/${webhook_sid}/edit`,
-            },
-            {
-              name: 'Delete',
-              type: 'link',
-              url: `/account/registration-webhook/${webhook_sid}/delete`,
-            },
-          ]);
-        } else {
-          setRegistrationWebhookMenuItems([
-            {
-              name: 'Add',
-              type: 'link',
-              url: `/account/registration-webhook/add`,
-            },
-          ]);
-        }
+          return webhookMap;
+        })));
 
         if (userResponse.data && userResponse.data.account && userResponse.data.account.device_calling_application_sid) {
           const { device_calling_application_sid } = userResponse.data.account;
@@ -451,18 +462,22 @@ const AccountHome = () => {
                       />
                     </Td>
                   </tr>
-                  <tr>
-                    <Th scope="row" color="#da1c5c">Registration Webhook</Th>
-                    <Td overflow="hidden">{registrationWebhookUrl || 'None'}</Td>
-                    <Td containsMenuButton>
-                      <TableMenu
-                        open={currentMenu === 'account-home-registration-webhook'}
-                        handleCurrentMenu={() => setCurrentMenu('account-home-registration-webhook')}
-                        disabled={modalOpen}
-                        menuItems={registrationWebhookMenuItems}
-                      />
-                    </Td>
-                  </tr>
+                  {webhooks.map((webhook) => {
+                    return (
+                      <tr key={webhook.key}>
+                        <Th scope="row" color="#da1c5c">{webhook.label} Webhook</Th>
+                        <Td overflow="hidden">{webhook.url || 'None'}</Td>
+                        <Td containsMenuButton>
+                          <TableMenu
+                            open={currentMenu === `account-home-${webhook.key}-webhook`}
+                            handleCurrentMenu={() => setCurrentMenu(`account-home-${webhook.key}-webhook`)}
+                            disabled={modalOpen}
+                            menuItems={webhook.items}
+                          />
+                        </Td>
+                      </tr>
+                    );
+                  })}
                   <tr>
                     <Th scope="row" color="#da1c5c">Device calling application</Th>
                     <Td overflow="hidden">
