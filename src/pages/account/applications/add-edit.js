@@ -152,7 +152,7 @@ const ApplicationsAddEdit = () => {
 
   const [ applicationSid, setApplicationSid ] = useState([]);
 
-  const showMessagingHook = false;
+  const showMessagingHook = true;
 
   useEffect(() => {
     const getAPIData = async () => {

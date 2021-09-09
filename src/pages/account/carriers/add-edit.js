@@ -210,7 +210,7 @@ const CarriersSmppTipText = ({smpps}) => {
 
   return (
     <>
-      <span>Have your carriers send SMPP to smpp.jambonz.us, port 2775 (no encryption) or 3550 (tls)</span><br />
+      <span>Have your carriers send SMPP to smpp.jambonz.us, port 2775 (no encryption)</span><br />
       <span>If necessary, have your carriers whitelist <LinkWithTooltip tipText={text}>our SMPP signaling IPs</LinkWithTooltip></span>
     </>
   );
@@ -860,6 +860,9 @@ const CarriersAddEdit = ({ mode }) => {
 
       // These validations need to execute for SMS tab
       if (smpp_system_id || smpp_password || smpp_inbound_password || assertEmptySmppIpsForAll !== '') {
+        // DH: allow creation of smpp gateways without system id/password, as we can get those
+        // aftewr the fact from TelecomxXchange
+        /*
         if (!smpp_system_id) {
           errorMessages.push('You must provide Outbound System ID.');
           setSmppSystemIdInvalid(true);
@@ -879,11 +882,12 @@ const CarriersAddEdit = ({ mode }) => {
             focusHasBeenSet = true;
           }
         }
+        */
 
         if(smpps && smpps.length > 0) {
           const smppInboundGateways = smppGateways.filter((g) => g.inbound);
           const smppOutboundGateways = smppGateways.filter((g) => g.outbound);
-          const assertEmptySmppIpsForInbound = smppInboundGateways.map((g) => g.ipv4.trim()).join('');
+          // const assertEmptySmppIpsForInbound = smppInboundGateways.map((g) => g.ipv4.trim()).join('');
 
           // Validate Outbound Gateways -- At least one is required
           if (!smppOutboundGateways.length) {
@@ -895,6 +899,9 @@ const CarriersAddEdit = ({ mode }) => {
           // Validate Inbound Gateways -- Password required ONLY if adding Gateway(s)
           if (smppInboundGateways.length) {
             // We only need to validate this if the user entered something into an Inbound IP field
+
+            // DH: see above
+            /*
             if (!smpp_inbound_password && assertEmptySmppIpsForInbound !== '') {
               errorMessages.push('You must provide an Inbound System Password when adding IP Address(es) to whitelist.');
               setSmppInboundPasswordInvalid(true);
@@ -904,6 +911,7 @@ const CarriersAddEdit = ({ mode }) => {
                 focusHasBeenSet = true;
               }
             }
+            */
           }
 
           smppGateways.forEach(async (gateway, i) => {
