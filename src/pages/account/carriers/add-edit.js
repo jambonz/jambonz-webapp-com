@@ -583,9 +583,32 @@ const CarriersAddEdit = ({ mode }) => {
   };
 
   const removeSipGateway = index => {
-    const newSipGateways = sipGateways.filter((s,i) => i !== index);
-    setSipGateways(newSipGateways);
-    setErrorMessage('');
+    if (sipGateways.length > 1) {
+      const newSipGateways = sipGateways.filter((s,i) => i !== index);
+      setSipGateways(newSipGateways);
+      setErrorMessage('');
+
+      axios({
+        method: 'delete',
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        url: `/SipGateways/${sipGateways[index].sip_gateway_sid}`,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      }).then(() => {
+        dispatch({
+          type: 'ADD',
+          level: 'success',
+          message: 'SIP Gateway Deleted Successfully'
+        });
+      });
+    } else {
+      dispatch({
+        type: 'ADD',
+        level: 'error',
+        message: 'You must retain at least one SIP Gateway'
+      });
+    }
   };
 
   const removeSmppGateway = index => {
