@@ -19,6 +19,8 @@ import SpeechSynthesisLanguageGoogle from '../../../data/SpeechSynthesisLanguage
 import SpeechSynthesisLanguageAws from '../../../data/SpeechSynthesisLanguageAws';
 import SpeechRecognizerLanguageGoogle from '../../../data/SpeechRecognizerLanguageGoogle';
 import SpeechRecognizerLanguageAws from '../../../data/SpeechRecognizerLanguageAws';
+import SpeechRecognizerLanguageMicrosoft from '../../../data/SpeechRecognizerLanguageMicrosoft';
+import SpeechSynthesisLanguageMicrosoft from '../../../data/SpeechSynthesisLanguageMicrosoft';
 import Loader from '../../../components/blocks/Loader';
 import CopyableText from '../../../components/elements/CopyableText';
 
@@ -665,6 +667,10 @@ const ApplicationsAddEdit = () => {
                     ? SpeechSynthesisLanguageGoogle.find(l => (
                         l.code === speechSynthesisLanguage
                       ))
+                    : e.target.value === 'microsoft'
+                    ? SpeechSynthesisLanguageMicrosoft.find(l => (
+                        l.code === speechSynthesisLanguage
+                      ))
                     : SpeechSynthesisLanguageAws.find(l => (
                         l.code === speechSynthesisLanguage
                       ));
@@ -678,9 +684,13 @@ const ApplicationsAddEdit = () => {
                       return;
                     }
 
-                    newLang = SpeechSynthesisLanguageAws.find(l => (
-                      l.code === 'en-US'
-                    ));
+                    newLang = e.target.value === 'aws'
+                      ? SpeechSynthesisLanguageAws.find(l => (
+                          l.code === 'en-US'
+                        ))
+                      : SpeechSynthesisLanguageMicrosoft.find(l => (
+                          l.code === 'en-US'
+                        ));
                   }
 
                   // Update state to reflect first voice option for language
@@ -689,6 +699,7 @@ const ApplicationsAddEdit = () => {
               >
                 <option value="google">Google</option>
                 <option value="aws">AWS</option>
+                <option value="microsoft">Microsoft</option>
               </Select>
               <StyledLabel middle htmlFor="speechSynthesisLanguage">Language</StyledLabel>
               <Select
@@ -711,6 +722,10 @@ const ApplicationsAddEdit = () => {
                     ? SpeechSynthesisLanguageGoogle.find(l => (
                         l.code === e.target.value
                       ))
+                    : speechSynthesisVendor === 'microsoft'
+                    ? SpeechSynthesisLanguageMicrosoft.find(l => (
+                        l.code === e.target.value
+                      ))
                     : SpeechSynthesisLanguageAws.find(l => (
                         l.code === e.target.value
                       ));
@@ -721,6 +736,10 @@ const ApplicationsAddEdit = () => {
               >
                 {speechSynthesisVendor === 'google' ? (
                   SpeechSynthesisLanguageGoogle.map(l => (
+                    <option key={l.code} value={l.code}>{l.name}</option>
+                  ))
+                ) : speechSynthesisVendor === 'microsoft' ? (
+                  SpeechSynthesisLanguageMicrosoft.map(l => (
                     <option key={l.code} value={l.code}>{l.name}</option>
                   ))
                 ) : (
@@ -741,6 +760,12 @@ const ApplicationsAddEdit = () => {
                     .filter(l => l.code === speechSynthesisLanguage)
                     .map(m => m.voices.map(v => (
                         <option key={v.value} value={v.value}>{v.name}</option>
+                    )))
+                ) : speechSynthesisVendor === 'microsoft' ? (
+                  SpeechSynthesisLanguageMicrosoft
+                    .filter(l => l.code === speechSynthesisLanguage)
+                    .map(m => m.voices.map(v => (
+                      <option key={v.value} value={v.value}>{v.name}</option>
                     )))
                 ) : (
                   SpeechSynthesisLanguageAws
@@ -779,6 +804,7 @@ const ApplicationsAddEdit = () => {
               >
                 <option value="google">Google</option>
                 <option value="aws">AWS</option>
+                <option value="microsoft">Microsoft</option>
               </Select>
               <StyledLabel middle htmlFor="speechRecognizerLanguage">Language</StyledLabel>
               <Select
@@ -789,6 +815,10 @@ const ApplicationsAddEdit = () => {
               >
                 {speechRecognizerVendor === 'google' ? (
                   SpeechRecognizerLanguageGoogle.map(l => (
+                    <option key={l.code} value={l.code}>{l.name}</option>
+                  ))
+                ) : speechRecognizerVendor === 'microsoft' ? (
+                  SpeechRecognizerLanguageMicrosoft.map(l => (
                     <option key={l.code} value={l.code}>{l.name}</option>
                   ))
                 ) : (
