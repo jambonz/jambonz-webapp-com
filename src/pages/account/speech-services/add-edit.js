@@ -36,14 +36,6 @@ const StyledForm = styled(Form)`
   }
 `;
 
-const VendorText = styled.span`
-  color: #231f20;
-
-  ${props => props.theme.mobileOnly} {
-    margin-bottom: -0.5rem;
-  }
-`;
-
 const Space = styled.div`
   ${props => props.theme.mobileOnly} {
     display: none;
