@@ -1,84 +1,124 @@
-const MicrosoftAzureRegions = [
+const regions = [
   {
-    name: 'Asia (East)',
-    value: 'eastasia'
-  },
-  {
-    name: 'Asia (Southeast)',
-    value: 'southeastasia'
-  },
-  {
-    name: 'Australia (East)',
+    name: 'Australia - East (australiaeast)',
     value: 'australiaeast'
   },
   {
-    name: 'Brazil (South)',
+    name: 'Brazil - South (brazilsouth)',
     value: 'brazilsouth'
   },
   {
-    name: 'Canada (Central)',
+    name: 'Canada - Central (canadacentral)',
     value: 'canadacentral'
   },
   {
-    name: 'Europe (North)',
+    name: 'East Asia (eastasia)',
+    value: 'eastasia'
+  },
+  {
+    name: 'Europe - North (northeurope)',
     value: 'northeurope'
   },
   {
-    name: 'Europe (West)',
+    name: 'Europe - West (westeurope)',
     value: 'westeurope'
   },
   {
-    name: 'France (Central)',
+    name: 'France - Central (francecentral)',
     value: 'francecentral'
   },
   {
-    name: 'India (Central)',
+    name: 'Germany - West Central (germanywestcentral)',
+    value: 'germanywestcentral'
+  },
+  {
+    name: 'India - Central (centralindia)',
     value: 'centralindia'
   },
   {
-    name: 'Japan (East)',
+    name: 'Japan - East (japaneast)',
     value: 'japaneast'
   },
   {
-    name: 'Korea (Central)',
+    name: 'Japan - West (japanwest)',
+    value: 'japanwest'
+  },
+  {
+    name: 'Korea - Central (koreacentral)',
     value: 'koreacentral'
   },
   {
-    name: 'South Africa (North)',
+    name: 'Norway - East (norwayeast)',
+    value: 'norwayeast'
+  },
+  {
+    name: 'South Africa - North (southafricanorth)',
     value: 'southafricanorth'
   },
   {
-    name: 'UK (South)',
+    name: 'Southeast Asia (southeastasia)',
+    value: 'southeastasia'
+  },
+  {
+    name: 'Switzerland - North (switzerlandnorth)',
+    value: 'switzerlandnorth'
+  },
+  {
+    name: 'Switzerland - West (switzerlandwest)',
+    value: 'switzerlandwest'
+  },
+  {
+    name: 'UAE - North (uaenorth)',
+    value: 'uaenorth'
+  },
+  {
+    name: 'UK - South (uksouth)',
     value: 'uksouth'
   },
   {
-    name: 'US (West Central)',
-    value: 'westcentralus'
+    name: 'US - Central (centralus)',
+    value: 'centralus'
   },
   {
-    name: 'US (East)',
+    name: 'US - East (eastus)',
     value: 'eastus'
   },
   {
-    name: 'US (East 2)',
+    name: 'US - East 2 (eastus2)',
     value: 'eastus2'
   },
   {
-    name: 'US (North Central)',
+    name: 'US - Gov Arizona (usgovarizona)',
+    value: 'usgovarizona'
+  },
+  {
+    name: 'US - Gov Virginia (usgovvirginia)',
+    value: 'usgovvirginia'
+  },
+  {
+    name: 'US - North Central (northcentralus)',
     value: 'northcentralus'
   },
   {
-    name: 'US (South Central)',
+    name: 'US - South Central (southcentralus)',
     value: 'southcentralus'
   },
   {
-    name: 'US (West)',
+    name: 'US - West Central (westcentralus)',
+    value: 'westcentralus'
+  },
+  {
+    name: 'US - West (westus)',
     value: 'westus'
   },
   {
-    name: 'US (West 2)',
+    name: 'US - West 2 (westus2)',
     value: 'westus2'
   },
+  {
+    name: 'US - West 3 (westus3)',
+    value: 'westus3'
+  }
 ];
 
-export default MicrosoftAzureRegions;
+export default regions;

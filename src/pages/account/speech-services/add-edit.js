@@ -12,7 +12,6 @@ import Input from '../../../components/elements/Input';
 import Label from '../../../components/elements/Label';
 import InputGroup from '../../../components/elements/InputGroup';
 import PasswordInput from '../../../components/elements/PasswordInput';
-import Radio from '../../../components/elements/Radio';
 import Checkbox from '../../../components/elements/Checkbox';
 import FileUpload from '../../../components/elements/FileUpload';
 import Code from '../../../components/elements/Code';
@@ -22,6 +21,7 @@ import Loader from '../../../components/blocks/Loader';
 import Select from '../../../components/elements/Select';
 
 import MicrosoftAzureRegions from '../../../data/MicrosoftAzureRegions';
+import AmazonAwsRegions from '../../../data/AwsRegions';
 
 const StyledForm = styled(Form)`
   ${props => props.theme.mobileOnly} {
@@ -33,14 +33,6 @@ const StyledForm = styled(Form)`
     & > * {
       width: 100%;
     }
-  }
-`;
-
-const VendorText = styled.span`
-  color: #231f20;
-
-  ${props => props.theme.mobileOnly} {
-    margin-bottom: -0.5rem;
   }
 `;
 
@@ -103,6 +95,7 @@ const SpeechServicesAddEdit = () => {
   const refUseForStt = useRef(null);
   const refApiKey = useRef(null);
   const refRegion = useRef(null);
+  const refAwsRegion = useRef(null);
 
   // Form inputs
   const [ vendor,              setVendor              ] = useState('');
@@ -114,6 +107,7 @@ const SpeechServicesAddEdit = () => {
   const [ useForStt,           setUseForStt           ] = useState(false);
   const [ apiKey,              setApiKey              ] = useState('');
   const [ region,              setRegion              ] = useState('');
+  const [ awsregion,           setAwsRegion           ] = useState('');
 
   // Invalid form inputs
   const [ invalidVendorGoogle,    setInvalidVendorGoogle    ] = useState(false);
@@ -125,6 +119,7 @@ const SpeechServicesAddEdit = () => {
   const [ invalidUseForStt,       setInvalidUseForStt       ] = useState(false);
   const [ invalidApiKey,          setInvalidApiKey          ] = useState(false);
   const [ invalidRegion,          setInvalidRegion          ] = useState(false);
+  const [ invalidAwsRegion,       setInvalidAwsRegion       ] = useState(false);
 
   const [ originalTtsValue,       setOriginalTtsValue       ] = useState(null);
   const [ originalSttValue,       setOriginalSttValue       ] = useState(null);
@@ -164,6 +159,7 @@ const SpeechServicesAddEdit = () => {
           setSecretAccessKey(     speechCredential.data.secret_access_key || '');
           setApiKey(              speechCredential.data.api_key           || '');
           setRegion(              speechCredential.data.region            || '');
+          setAwsRegion(           speechCredential.data.aws_region         || '');
           setUseForTts(           speechCredential.data.use_for_tts       || false);
           setUseForStt(           speechCredential.data.use_for_stt       || false);
           setOriginalTtsValue(    speechCredential.data.use_for_tts       || false);
@@ -273,6 +269,15 @@ const SpeechServicesAddEdit = () => {
         }
       }
 
+      if (vendor === 'aws' && !awsregion) {
+        errorMessages.push('Please select a region.');
+        setInvalidAwsRegion(true);
+        if (!focusHasBeenSet) {
+          refAwsRegion.current.focus();
+          focusHasBeenSet = true;
+        }
+      }
+
       if (vendor === 'microsoft' && !apiKey) {
         errorMessages.push('Please provide an API key.');
         setInvalidApiKey(true);
@@ -317,11 +322,6 @@ const SpeechServicesAddEdit = () => {
           if (!focusHasBeenSet) {
             refVendorGoogle.current.focus();
           }
-        } else if (vendor === 'aws') {
-          setInvalidVendorAws(true);
-          if (!focusHasBeenSet) {
-            refVendorAws.current.focus();
-          }
         }
         return;
       }
@@ -349,6 +349,7 @@ const SpeechServicesAddEdit = () => {
           service_key: vendor === 'google' ? JSON.stringify(serviceKey) : null,
           access_key_id: vendor === 'aws' ? accessKeyId : null,
           secret_access_key: vendor === 'aws' ? secretAccessKey : null,
+          aws_region: vendor === 'aws' ? awsregion : null,
           api_key: vendor === 'microsoft' ? apiKey : null,
           region: vendor === 'microsoft' ? region : null,
           use_for_tts: useForTts,
@@ -503,42 +504,22 @@ const SpeechServicesAddEdit = () => {
             large
             onSubmit={handleSubmit}
           >
-            <VendorText>Vendor</VendorText>
-            <InputGroup>
-              <Radio
-                noLeftMargin
-                name="vendor"
-                id="google"
-                label="Google"
-                checked={vendor === 'google'}
-                onChange={() => setVendor('google')}
-                invalid={invalidVendorGoogle}
-                ref={refVendorGoogle}
-                disabled={type === 'edit'}
-              />
-
-              <Radio
-                name="vendor"
-                id="aws"
-                label="Amazon Web Services"
-                checked={vendor === 'aws'}
-                onChange={() => setVendor('aws')}
-                invalid={invalidVendorAws}
-                ref={refVendorAws}
-                disabled={type === 'edit'}
-              />
-
-            <Radio
+            <Label htmlFor="vendor">Vendor</Label>
+            <Select
               name="vendor"
-              id="microsoft"
-              label="Microsoft"
-              checked={vendor === 'microsoft'}
-              onChange={() => setVendor('microsoft')}
-              invalid={invalidVendorMs}
-              ref={refVendorMs}
-              disabled={type === 'edit'}
-            />
-            </InputGroup>
+              id="vendor"
+              value={vendor}
+              onChange={e => setVendor(e.target.value)}
+              {...[refVendorGoogle, refVendorAws, refVendorMs]}
+              invalid={[invalidVendorGoogle, invalidVendorAws, invalidVendorMs].includes(true)}
+            >
+              <option value="">
+                Select a Vendor
+              </option>
+              <option value="google">Google</option>
+              <option value="aws">AWS</option>
+              <option value="microsoft">Microsoft</option>
+            </Select>
 
             {vendor === 'google' ? (
               <>
@@ -585,6 +566,28 @@ const SpeechServicesAddEdit = () => {
                   ref={refSecretAccessKey}
                   disabled={type === 'edit'}
                 />
+
+                <Label htmlFor="region">Region</Label>
+                <Select
+                  name="region"
+                  id="region"
+                  value={awsregion}
+                  onChange={e => setAwsRegion(e.target.value)}
+                  ref={refAwsRegion}
+                  invalid={invalidAwsRegion}
+                >
+                  <option value="">
+                    Select a region
+                  </option>
+                  {AmazonAwsRegions.map(r => (
+                    <option
+                      key={r.value}
+                      value={r.value}
+                    >
+                      {r.name}
+                    </option>
+                  ))}
+                </Select>
               </>
             ) : vendor === 'microsoft' ? (
               <>
@@ -610,7 +613,7 @@ const SpeechServicesAddEdit = () => {
                   invalid={invalidRegion}
                 >
                   <option value="">
-                    All regions
+                    Select a region
                   </option>
                   {MicrosoftAzureRegions.map(r => (
                     <option
