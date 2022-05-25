@@ -510,7 +510,7 @@ const SpeechServicesAddEdit = () => {
               id="vendor"
               value={vendor}
               onChange={e => setVendor(e.target.value)}
-              ref={[refVendorGoogle, refVendorAws, refVendorMs]}
+              {...[refVendorGoogle, refVendorAws, refVendorMs]}
               invalid={[invalidVendorGoogle, invalidVendorAws, invalidVendorMs].includes(true)}
             >
               <option value="">
